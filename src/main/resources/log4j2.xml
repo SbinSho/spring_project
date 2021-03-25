@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration
+	xmlns:log4j="http://jakarta.apache.org/log4j/"> <!-- Appenders -->
+
+	<!-- 해당 설정파일에서 사용하는 프로퍼티 -->
+	<Properties>
+		<Property name="layoutPattern">%d{yyyy.MM.dd HH:mm:ss} %-5p: %C-%m%n</Property>
+	</Properties>
+
+	<!-- LogEvent를 전달해주는 Appender -->
+	<Appenders>
+		<Console name="Console_Appender" target="SYSTEM_OUT">
+			<PatternLayout pattern="${layoutPattern}" />
+		</Console>
+	</Appenders>
+
+	<Loggers>
+	
+		<Root level="warn">
+			<AppenderRef ref="Console_Appender" />
+		</Root>
+
+		<Logger name="com.goCamping.controller" level="info"
+			additivity="false">
+			<AppenderRef ref="Console_Appender" />
+		</Logger>
+
+		<!-- 3rdparty Loggers -->
+		<Logger name="org.springframework.core" level="info"/>
+
+		<Logger name="org.springframework.beans" level="info"/>
+		
+		<Logger name="org.springframework.context" level="info" />
+		
+		<Logger name="org.springframework.web" level="info" />
+		
+	</Loggers>
+</Configuration>
+
