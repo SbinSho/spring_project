@@ -3,6 +3,26 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-
-
+	
+	<!-- Mysql Datasource 객체 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/spring_project?serverTimezone=UTC"/>
+		<property name="username" value="spring_project" />
+		<property name="password" value="spring_project"/>
+	</bean>
+	
+	
+	<!-- sqlSessionFactory 생성 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis/config/mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath:mybatis/member-mapper.xml" />
+	</bean>
+	
+	<!-- sqlSessionTemplate 생성 -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+	</bean>
+	
 </beans>

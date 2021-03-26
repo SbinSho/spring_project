@@ -54,7 +54,10 @@
 						<a class="nav-link" href="#">로그인</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/member/join.do">회원가입</a>
+						<a class="nav-link" href="/member/join">회원가입</a>
+					</li>								      
+					<li class="nav-item">
+						<a class="nav-link" href="#">사업장 등록</a>
 					</li>								      
 				</ul>
 			</div>
@@ -92,8 +95,7 @@
 					Omnis optio neque consectetur consequatur magni in nisi, natus
 					beatae quidem quam odit commodi ducimus totam eum, alias, adipisci
 					nesciunt voluptate. Voluptatum.</p>
-				<a class="btn btn-primary btn-lg" href="#">Call to Action
-					&raquo;</a>
+				<a class="btn btn-primary btn-lg" href="#">Call to Action&raquo;</a>
 			</div>
 			<div class="col-md-4 mb-5">
 				<h2>Contact Us</h2>

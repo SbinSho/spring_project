@@ -20,32 +20,37 @@
 </head>
 <body>
 	<div class="signup-form">
-	    <form id="member_form" method="post" onsubmit="return check();">
+	    <form:form commandName="memberVO" id="join_form" method="post">
 			<h2>회원가입</h2>
 			<p class="hint-text">Create your account. It's free and only takes a minute.</p>
 			<div class="form-group">
 	        	<label for="user_id">아이디</label>
-				<input  type="text" id="user_id" class="form-control" placeholder="아이디" />
+				<form:input  path="user_id" id="user_id" class="form-control" placeholder="아이디" />
+				<form:errors path="user_id"  />
 				<span id="userid_check"></span>
 	        </div>
 	        <div class="form-group">
 	        	<label for="user_name">이름</label>
-				<input type="text" id="user_name" class="form-control" placeholder="이름"/>
+				<form:input path="user_name" id="user_name" class="form-control" placeholder="이름"/>
+				<form:errors path="user_name"/>
 				<span id="username_check"></span>
 	        </div>
 	        <div class="form-group">
 	        	<label for="user_nickname">닉네임</label>
-				<input type="text" id="user_nickname" class="form-control" placeholder="이름"/>
+				<form:input  path="user_nickname" id="user_nickname" class="form-control" placeholder="닉네임"/>
+				<form:errors path="user_nickname" />
 				<span id="usernickname_check"></span>
 	        </div>
 	        <div class="form-group">
 	        	<label for="user_email">이메일</label>
-				<input type="email" id="user_email" class="form-control" placeholder="이름"/>
+				<form:input  type="email" path="user_mail" id="user_mail" class="form-control" placeholder="이메일"/>
+				<form:errors path="user_mail"/>
 				<span id="useremail_check"></span>
 	        </div>
 			<div class="form-group">
 				<label for="user_pwd">비밀번호</label>
-	            <input type="password" class="form-control" id="user_pwd" name="userpwd" placeholder="비밀번호" />
+	            <form:password path="user_pwd" id="user_pwd" class="form-control" placeholder="비밀번호" />
+	            <form:errors path="user_pwd"/>
 	           	<span id="password_check"></span>
 	        </div>
 			<div class="form-group">
@@ -56,10 +61,18 @@
 			<div class="form-group">
 	            <button type="submit" class="btn btn-primary btn-lg btn-block">회원가입</button>
 	        </div>
-	    </form>
+	    </form:form>
 		<div class="text-center">
 			Already have an account? <a href="<c:url value='/member/login'/>">로그인</a>
 		</div>
 	</div>
 </body>
+
+<script>
+	
+
+
+
+</script>
+
 </html>
