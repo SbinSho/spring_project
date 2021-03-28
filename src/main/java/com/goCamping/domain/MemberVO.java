@@ -10,26 +10,13 @@ import javax.validation.constraints.Pattern;
 public class MemberVO {
 	
 	
-	@Pattern(regexp = "/^[가-힣a-zA-Z0-9]{2,10}$/", message ="2~10 글자의 한글, 영어, 숫자만 사용가능")
 	private String user_id;
-	
-	@Pattern(regexp = "/[0-5]|[가-힣]/", message = "2~5글자의 한글만 입력가능")
 	private String user_name;
-	
-	@Pattern(regexp = "/^[가-힣a-zA-Z0-9]{2,10}$/", message ="2~10 글자의 한글, 영어, 숫자만 사용가능")
 	private String user_nickname;
-	
-	@Pattern(regexp = "[a-zA-z0-9]+@[a-zA-z]+[.]+[a-zA-z.]+", message = "ex) example@example.go")
 	private String user_mail;
-	
-	@Pattern(regexp="\"^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$\"", message="최소 8자리 숫자, 문자, 특수문자 각각 1개 이상 포함")
 	private String user_pwd;
-	
-	@Past
-	Timestamp user_regdate;
-	
-	@Null
-	Boolean business_check;
+	private Timestamp user_regdate;
+	private Boolean business_check;
 	
 	
 	public String getUser_id() {

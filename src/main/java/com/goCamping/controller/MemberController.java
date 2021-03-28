@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.goCamping.domain.MemberVO;
 import com.goCamping.service.MemberService;
+import com.goCamping.validator.MemberValidator;
 
 @Controller
 @RequestMapping("/member")
@@ -26,17 +27,19 @@ public class MemberController {
 	@Autowired
 	private MemberService service;
 	
+	@Autowired
+	private MemberValidator validator;
+	
 	@RequestMapping( value="/join", method = RequestMethod.GET )
 	public String join(@ModelAttribute MemberVO memberVO) {
 		
 		logger.info(" join GET 진입");
 		
-		
 		return "/member/join";
 		
 	}
 	@RequestMapping( value="/join", method = RequestMethod.POST )
-	public String join(@Valid MemberVO memberVO, BindingResult bindingResult) {
+	public String join(MemberVO memberVO, BindingResult bindingResult) {
 		
 		logger.info("join POST 진입");
 		

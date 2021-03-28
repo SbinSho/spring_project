@@ -3,11 +3,14 @@ package com.goCamping.validator;
 
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.goCamping.domain.MemberVO;
 
+@Component
 public class MemberValidator implements Validator {
 	
 	private static final String emailRegExp = 
@@ -29,7 +32,15 @@ public class MemberValidator implements Validator {
 	// 첫 번째 파라미터로 전달받은 객체를 검증하고 오류 결과를 Errors에 담는 기능을 한다.
 	@Override
 	public void validate(Object target, Errors errors) {
-		// TODO Auto-generated method stub
+		
+		MemberVO regMbr = (MemberVO) target;
+		
+		if(regMbr.getUser_mail() == null || regMbr.getUser_mail().trim().isEmpty()) {
+			errors.rejectValue("user_mail", "bad");
+		}
+		
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user_name", "requierd");
+		ValidationUtils.rejectIfEmpty(errors, "user_pwd", "requierd");
 		
 	}
 
