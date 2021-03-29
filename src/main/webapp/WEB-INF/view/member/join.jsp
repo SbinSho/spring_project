@@ -53,7 +53,7 @@
 	        	<label for="auth_code">인증코드</label>
 	        	<input type="text" id="auth_code" class="form-control">
 	        	<br>
-	        	<input class="btn btn-secondary" type="button" value="확인">
+	        	<button type="button" class="btn btn-secondary">확인하기</button>
 	        </div>
 	        <div class="form-group">
 				<button type="button" id="email_check" class="btn btn-secondary">인증하기</button>	        
@@ -85,6 +85,9 @@
 	var mailFlag = false;
 	var pwFlag = false;
 	var pw_chFlag = false;
+	
+	let flag_map = new Map();
+	flag_map
 	
 	// 아이디 유효성 검사
 	$("#id_check").click(function() {
@@ -268,39 +271,23 @@
 	
 	function form_check() {
 		
+		let myMap = new Map()
+		myMap.set(0, 'zero')
+		myMap.set(1, 'one')
 		
-		var user_id = $("#user_id").val();
-		var user_name = $("#user_name").val();
-		var user_mail = $("#user_mail").val();
-		var user_password = $("#user_pwd").val();
+		myMap.forEach(function(value, key) {
+			console.log(key + ' = ' + value)
+		})
 		
-		if (user_name == "" || user_id == "" || user_password == "" || user_mail == "") {
-
-			alert("입력되지 않은 정보가 존재합니다.");
-			return false;
-		}
+		myMap.set(0,'zzzz')
+		myMap.set(1,'oooo')
 		
-		// 모든 입력란의 유효성 검증 체크
-		if ( idFlag == true && nameFlag == true && mailFlag == true && pwFlag == true && pw_chFlag == true) {
-
-			var confirm_check = confirm("현재 입력된 정보로 가입하시겠습니까?");
-			
-			if(confirm_check == true){
-				return true;
-				
-			} 
-
-			return false;
-
-		} else {
-
-			alert("잘못된 입력 정보가 있습니다!");
-			return false;
-			
-		}
+		myMap.forEach(function(value, key){
+			console.log(key + ' = ' + value)
+		})
 		
+		return false;
 	}
-
 	
 	
 	
