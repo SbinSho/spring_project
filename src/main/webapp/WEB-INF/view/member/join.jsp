@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
@@ -22,22 +22,21 @@
 <script
 	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 
-<link href="<c:url value='/css/bootstrap/bootstrap.min.css'/>"
-	rel="stylesheet">
+<link href="<c:url value='/css/bootstrap/bootstrap.min.css'/>" rel="stylesheet">
 <link href="<c:url value='/css/join.css'/>" rel="stylesheet">
 
 </head>
 <body>
 	<div class="signup-form">
-		<form:form commandName="memberVO" id="join_form" method="post"
-			onsubmit="return form_check();">
+		<form:form commandName="memberVO" id="join_form" method="post" onsubmit="return form_check();">
+			<input type="hidden" id="RSAModulus" value="${RSAModulus}" /><!-- 서버에서 전달한값을 셋팅한다. -->
+			<input type="hidden" id="RSAExponent" value="${RSAExponent}" /><!-- 서버에서 전달한값을 셋팅한다. -->
 			<h2>회원가입</h2>
 			<p class="hint-text">Create your account. It's free and only
 				takes a minute.</p>
 			<div class="form-group">
 				<label for="user_id">아이디</label>
-				<form:input path="user_id" id="user_id" class="form-control"
-					placeholder="아이디" />
+				<form:input path="user_id" id="user_id" class="form-control" placeholder="아이디" />
 				<form:errors path="user_id" />
 			</div>
 			<div class="form-group">
@@ -75,8 +74,7 @@
 			</div>
 			<div class="form-group">
 				<label for="user_pwd">비밀번호</label>
-				<form:password path="user_pwd" id="user_pwd" class="form-control"
-					placeholder="비밀번호" />
+				<form:password path="user_pwd" id="user_pwd" class="form-control" placeholder="비밀번호" />
 				<form:errors path="user_pwd" />
 				<span id="password_check"></span>
 			</div>
@@ -88,12 +86,21 @@
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary btn-lg btn-block">회원가입</button>
 			</div>
+			<div class="form-group">
+				<button type="button" id="test" class="btn btn-primary btn-lg btn-block">암호화</button>
+			</div>
 		</form:form>
 		<div class="text-center">
 			Already have an account? <a href="<c:url value='/member/login'/>">로그인</a>
 		</div>
 	</div>
 </body>
+
+<!-- RSA 자바스크립트 라이브러리 -->
+<script type="text/javascript" src="/js/rsa/jsbn.js"></script>
+<script type="text/javascript" src="/js/rsa/rsa.js"></script>
+<script type="text/javascript" src="/js/rsa/prng4.js"></script>
+<script type="text/javascript" src="/js/rsa/rng.js"></script>
 
 <script>
 	
@@ -103,6 +110,10 @@
 	var mailFlag = false;
 	var pwFlag = false;
 	var pw_con_Flag = false;
+	
+	// RSA 암호화 생성
+	var rsa = new RSAKey();
+	rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
 	
 	// 아이디 유효성 검사
 	$("#id_check").click(function() {
@@ -378,9 +389,10 @@
 		var user_id = $("#user_id").val();
 		var user_name = $("#user_name").val();
 		var user_nickname = $("#user_nickname").val();
-		var user_password = $("#user_pwd").val();
+		var user_pwd = $("#user_pwd").val();
 		
-		if ( user_id == "" || user_name == "" || user_nickname == "" || user_password == "") {
+
+		if ( user_id == "" || user_name == "" || user_nickname == "" || user_pwd == "") {
 
 			alert("입력되지 않은 정보가 존재합니다.");
 			return false;
@@ -390,6 +402,12 @@
 			
 			var confirm_check = confirm("현재 입력된 정보로 가입하시겠습니까?");
 			if(confirm_check == true){
+				
+				// 암호화된 비밀번호
+				var en_pwd = rsa.encrypt(user_pwd);
+				
+				$("#user_pwd").val(en_pwd);
+				
 				return true;
 			} 
 			return false;

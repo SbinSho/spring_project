@@ -36,6 +36,12 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
 
 		<!-- spring mvc 테스트를 위한 의존설정 -->
 		<dependency>
@@ -136,7 +142,7 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 		<!-- 이메일 인증을 위한 의존 설정 end -->
-		
+
 	</dependencies>
 
 	<build>

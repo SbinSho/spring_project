@@ -1,17 +1,24 @@
 package com.goCamping.controller;
 
-import org.apache.logging.log4j.Logger;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPublicKeySpec;
 
-import java.util.List;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.goCamping.domain.MemberVO;
 import com.goCamping.service.MailService;
 import com.goCamping.service.MemberService;
-import com.goCamping.validator.MemberValidator;
 
 @Controller
 @RequestMapping("/member")
@@ -36,14 +42,35 @@ public class MemberController {
 	private MailService mail_service;
 	
 	
+	// 회원가입 페이지 이동
 	@RequestMapping( value="/join", method = RequestMethod.GET )
-	public String join(@ModelAttribute MemberVO memberVO) {
+	public String join(@ModelAttribute MemberVO memberVO, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		logger.info("join GET 요청");
+		
+		HttpSession session = request.getSession();
+		
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+		generator.initialize(1024);
+		KeyPair keyPair = generator.genKeyPair();
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		PublicKey publicKey = keyPair.getPublic();
+		PrivateKey privateKey = keyPair.getPrivate();
+ 
+		session.setAttribute("_RSA_WEB_Key_", privateKey);   //세션에 RSA 개인키를 세션에 저장한다.
+		RSAPublicKeySpec publicSpec = (RSAPublicKeySpec) keyFactory.getKeySpec(publicKey, RSAPublicKeySpec.class);
+		String publicKeyModulus = publicSpec.getModulus().toString(16);
+		String publicKeyExponent = publicSpec.getPublicExponent().toString(16);
+ 
+		request.setAttribute("RSAModulus", publicKeyModulus);  //로그인 폼에 Input Hidden에 값을 셋팅하기위해서
+		request.setAttribute("RSAExponent", publicKeyExponent);   //로그인 폼에 Input Hidden에 값을 셋팅하기위해서
+		
 		
 		return "/member/join";
 		
 	}
+	
+	// 회원가입 처리
 	@RequestMapping( value="/join", method = RequestMethod.POST )
 	public String join(MemberVO memberVO, BindingResult bindingResult) throws Exception{
 		
@@ -59,7 +86,10 @@ public class MemberController {
 			return "/member/join";
 		}
 		
-		member_service.member_join(memberVO);
+		
+		logger.info("패스워드 확인 : " + memberVO.getUser_pwd()); 
+		
+//		member_service.member_join(memberVO);
 		
 		
 		return "redirect:/";
@@ -117,6 +147,7 @@ public class MemberController {
 		return mail_result; 
 	}
 	
+	// 메일 인증코드 확인 처리
 	@RequestMapping( value = "/authCheck", method = RequestMethod.POST)
 	@ResponseBody
 	public int auth_check(@RequestParam("auth_code") String auth_code, HttpSession session) {
