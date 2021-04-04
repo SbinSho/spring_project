@@ -1,4 +1,4 @@
-package com.goCamping.domain;
+package com.goCamping.dto;
 
 import java.sql.Timestamp;
 
@@ -6,10 +6,8 @@ import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 
-import com.goCamping.dto.EncryptDTO;
 
-
-public class MemberVO {
+public class MemberDTO {
 	
 	
 	private String user_id;
@@ -20,14 +18,26 @@ public class MemberVO {
 	private Timestamp user_regdate;
 	private Boolean business_check;
 	
-	public MemberVO() {};
-	
-	public MemberVO(EncryptDTO encryptDTO) {
-		this.user_id = encryptDTO.getEn_userID();
-		this.user_name = encryptDTO.getEn_userName();
-		this.user_nickname = encryptDTO.getEn_userNickName();
-		this.user_mail = encryptDTO.getEn_userMail();
-		this.user_pwd = encryptDTO.getEn_userPwd();
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+	public void setUser_nickname(String user_nickname) {
+		this.user_nickname = user_nickname;
+	}
+	public void setUser_mail(String user_mail) {
+		this.user_mail = user_mail;
+	}
+	public void setUser_pwd(String user_pwd) {
+		this.user_pwd = user_pwd;
+	}
+	public void setUser_regdate(Timestamp user_regdate) {
+		this.user_regdate = user_regdate;
+	}
+	public void setBusiness_check(Boolean business_check) {
+		this.business_check = business_check;
 	}
 	
 	public String getUser_id() {

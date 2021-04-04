@@ -1,14 +1,9 @@
 package com.goCamping.controller;
 
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAPublicKeySpec;
+import java.util.Map;
 
+import javax.crypto.Cipher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -17,8 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.goCamping.domain.MemberVO;
+import com.goCamping.dto.EncryptDTO;
+import com.goCamping.dto.MemberDTO;
+import com.goCamping.service.EncryptService;
 import com.goCamping.service.MailService;
 import com.goCamping.service.MemberService;
 
@@ -41,56 +37,62 @@ public class MemberController {
 	@Autowired
 	private MailService mail_service;
 	
+	@Autowired
+	private EncryptService encrypt_service;
+	
 	
 	// 회원가입 페이지 이동
 	@RequestMapping( value="/join", method = RequestMethod.GET )
-	public String join(@ModelAttribute MemberVO memberVO, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String join(@ModelAttribute MemberDTO memberDTO, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		logger.info("join GET 요청");
 		
 		HttpSession session = request.getSession();
+
+		Map<String, Object> map = encrypt_service.createKey();
 		
-		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-		generator.initialize(1024);
-		KeyPair keyPair = generator.genKeyPair();
-		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-		PublicKey publicKey = keyPair.getPublic();
-		PrivateKey privateKey = keyPair.getPrivate();
- 
-		session.setAttribute("_RSA_WEB_Key_", privateKey);   //세션에 RSA 개인키를 세션에 저장한다.
-		RSAPublicKeySpec publicSpec = (RSAPublicKeySpec) keyFactory.getKeySpec(publicKey, RSAPublicKeySpec.class);
-		String publicKeyModulus = publicSpec.getModulus().toString(16);
-		String publicKeyExponent = publicSpec.getPublicExponent().toString(16);
- 
-		request.setAttribute("RSAModulus", publicKeyModulus);  //로그인 폼에 Input Hidden에 값을 셋팅하기위해서
-		request.setAttribute("RSAExponent", publicKeyExponent);   //로그인 폼에 Input Hidden에 값을 셋팅하기위해서
+		// 반환된 값 확인 및 타입 확인
+		/*for ( String key : map.keySet()) {
+			System.out.println(map.get(key).getClass().getName());
+			System.out.println("key : " + key + " value : " + map.get(key));
+		}*/
 		
-		
-		return "/member/join";
-		
-	}
-	
-	// 회원가입 처리
-	@RequestMapping( value="/join", method = RequestMethod.POST )
-	public String join(MemberVO memberVO, BindingResult bindingResult) throws Exception{
-		
-		logger.info("join POST 요청");
-		
-		
-		// 객체의 유효성 검증
-		if(bindingResult.hasErrors()) {
+		if (map != null) {
 			
-			logger.info("MemberVO 객체 검증 실패");
-			
-			// 객체 유효성 검증 실패시 다시 회원가입 view로 이동 ( join.jsp )
+			session.setAttribute("_RSA_WEB_KEY_", map.get("_RSA_WEB_KEY_"));
+			request.setAttribute("RSAModulus", map.get("RSAModulus"));
+			request.setAttribute("RSAExponent", map.get("RSAExponent"));
 			return "/member/join";
 		}
 		
 		
-		logger.info("패스워드 확인 : " + memberVO.getUser_pwd()); 
+		return "redirect:/";
 		
-//		member_service.member_join(memberVO);
+	}
+	 
+	// 회원가입 처리
+	@RequestMapping( value="/join", method = RequestMethod.POST )
+	public String join(EncryptDTO encryptDTO, HttpServletRequest request) throws Exception{
 		
+		logger.info("join POST 요청");
+		
+		
+		
+		// 현재 세션 가져온다.
+		HttpSession session = request.getSession();
+		// 세션에 저장된 개인키를 가져온다.
+		PrivateKey privateKey = (PrivateKey) session.getAttribute("_RSA_WEB_KEY_");
+		
+		
+		if(privateKey != null) {
+			
+			if(encrypt_service.decryptRsa(privateKey, encryptDTO) != null) {
+				
+				MemberVO memberVO = new MemberVO(encryptDTO);
+				member_service.member_join(memberVO);
+			};
+			
+		}
 		
 		return "redirect:/";
 		

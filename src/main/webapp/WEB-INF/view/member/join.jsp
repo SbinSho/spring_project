@@ -16,9 +16,7 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"
-	integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-	crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script
 	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 
@@ -28,7 +26,7 @@
 </head>
 <body>
 	<div class="signup-form">
-		<form:form commandName="memberVO" id="join_form" method="post" onsubmit="return form_check();">
+		<form:form commandName="memberDTO">
 			<input type="hidden" id="RSAModulus" value="${RSAModulus}" /><!-- 서버에서 전달한값을 셋팅한다. -->
 			<input type="hidden" id="RSAExponent" value="${RSAExponent}" /><!-- 서버에서 전달한값을 셋팅한다. -->
 			<h2>회원가입</h2>
@@ -44,15 +42,13 @@
 			</div>
 			<div class="form-group">
 				<label for="user_name">이름</label>
-				<form:input path="user_name" id="user_name" class="form-control"
-					placeholder="이름" />
-				<form:errors path="user_name" />
+				<form:input path="user_name" id="user_name" class="form-control" placeholder="이름" />
+				<form:errors path="user_name"/>
 				<span id="username_check"></span>
 			</div>
 			<div class="form-group">
 				<label for="user_nickname">닉네임</label>
-				<form:input path="user_nickname" id="user_nickname"
-					class="form-control" placeholder="닉네임" />
+				<form:input path="user_nickname" id="user_nickname" class="form-control" placeholder="닉네임" />
 				<form:errors path="user_nickname" />
 			</div>
 			<div class="form-group">
@@ -60,8 +56,7 @@
 			</div>
 			<div class="form-group">
 				<label for="user_email">이메일</label>
-				<form:input type="email" path="user_mail" id="user_mail"
-					class="form-control" placeholder="이메일" />
+				<form:input type="email" path="user_mail" id="user_mail" class="form-control" placeholder="이메일" />
 				<form:errors path="user_mail" />
 			</div>
 			<div class="form-group div_auth" style="display: none;">
@@ -79,21 +74,25 @@
 				<span id="password_check"></span>
 			</div>
 			<div class="form-group">
-				<label for="user_con_pwd">비밀번호 재확인</label> <input type="password"
-					class="form-control" id="user_con_pwd" placeholder="비밀번호 확인">
+				<label for="user_con_pwd">비밀번호 재확인</label> <input type="password" class="form-control" id="user_con_pwd" placeholder="비밀번호 확인">
 				<span id="password_con_check"></span>
 			</div>
 			<div class="form-group">
-				<button type="submit" class="btn btn-primary btn-lg btn-block">회원가입</button>
+				<button type="button" class="btn btn-primary btn-lg btn-block" onclick="form_check();">회원가입</button>
 			</div>
-			<div class="form-group">
-				<button type="button" id="test" class="btn btn-primary btn-lg btn-block">암호화</button>
+			<div class="text-center">
+				Already have an account? <a href="<c:url value='/member/login'/>">로그인</a>
 			</div>
 		</form:form>
-		<div class="text-center">
-			Already have an account? <a href="<c:url value='/member/login'/>">로그인</a>
-		</div>
 	</div>
+	
+	<form id="JoinForm" method="post">
+		<input type="hidden" id="en_userID" name="en_userID"/>
+		<input type="hidden" id="en_userName" name="en_userName"/>
+		<input type="hidden" id="en_userNickName" name="en_userNickName" />
+		<input type="hidden" id="en_userMail" name="en_userMail"/>
+		<input type="hidden" id="en_userPwd" name="en_userPwd"/>
+	</form>
 </body>
 
 <!-- RSA 자바스크립트 라이브러리 -->
@@ -110,10 +109,6 @@
 	var mailFlag = false;
 	var pwFlag = false;
 	var pw_con_Flag = false;
-	
-	// RSA 암호화 생성
-	var rsa = new RSAKey();
-	rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
 	
 	// 아이디 유효성 검사
 	$("#id_check").click(function() {
@@ -147,8 +142,11 @@
 					success: function(data) {
 						
 						if(data == 1){
+							
 							alert("이미 사용중인 아이디 입니다.");
+							
 						} else {
+							
 							if(confirm("사용가능한 닉네임 입니다. 사용하시겠습니까?")){
 								$("#user_id").attr("readonly", "true");
 								$("#id_check").text("다시입력");
@@ -269,31 +267,31 @@
 			
 			
 			if(isMAIL.test(user_mail)){
-				$.ajax({
-					type: "POST",
-					url: "/member/mailCheck",
-					data : { user_mail : user_mail },
-					success: function(data) {
-						if(data == 1){
+// 				$.ajax({
+// 					type: "POST",
+// 					url: "/member/mailCheck",
+// 					data : { user_mail : user_mail },
+// 					success: function(data) {
+// 						if(data == 1){
 							
-							alert("이미 사용중인 메일입니다.");
+// 							alert("이미 사용중인 메일입니다.");
 							
-						} else if(data == 0){
+// 						} else if(data == 0){
 							
-							alert("인증코드가 전송되었습니다.");
+// 							alert("인증코드가 전송되었습니다.");
 							
 							$("#user_mail").attr("readonly", "true");
 							$("#mail_check").hide();
 							$(".div_auth").show( 1000 );
 							
-						} else {
-							alert("이메일 보내기 실패, 관리자에게 문의 바랍니다.");
-						}
-					},
-					error: function(error) {
-						alert("에러 발생! 관리자에게 문의 바랍니다.");
-					}
-				});
+// 						} else {
+// 							alert("이메일 보내기 실패, 관리자에게 문의 바랍니다.");
+// 						}
+// 					},
+// 					error: function(error) {
+// 						alert("에러 발생! 관리자에게 문의 바랍니다.");
+// 					}
+// 				});
 				
 			} 
 			
@@ -306,19 +304,19 @@
 	
 	// 메일 인증코드 확인하기
 	$("#auth_check").click(function() {
-		var auth_code = $("#auth_code").val();
+// 		var auth_code = $("#auth_code").val();
 			
-		if( auth_code == ""){
-			alert("인증코드를 입력해주세요!");
-			return false;
-		}
+// 		if( auth_code == ""){
+// 			alert("인증코드를 입력해주세요!");
+// 			return false;
+// 		}
 		
-		$.ajax({
-			type:"POST",
-			url: "/member/authCheck",
-			data: {auth_code : auth_code},
-			success: function(data){
-				if(data == 1){
+// 		$.ajax({
+// 			type:"POST",
+// 			url: "/member/authCheck",
+// 			data: {auth_code : auth_code},
+// 			success: function(data){
+// 				if(data == 1){
 						
 					alert("인증완료!");
 
@@ -331,15 +329,15 @@
 						
 					mailFlag = true;
 						
-				} else {
-					alert("인증번호가 일치하지 않습니다.");
-				}
-			},
-			error: function(error){
-				alert("관리자에게 문의 바랍니다!");
-			}
+// 				} else {
+// 					alert("인증번호가 일치하지 않습니다.");
+// 				}
+// 			},
+// 			error: function(error){
+// 				alert("관리자에게 문의 바랍니다!");
+// 			}
 				
-		});
+// 		});
 			
 	})
 	
@@ -361,7 +359,7 @@
 			
 			$("#password_check").css("color", "red");
 			$("#password_check").text("숫자와 영문자 조합으로 8~20자리를 사용해야 합니다.");
-			pwFlag = true;
+			pwFlag = false;
 		}
 		
 	})
@@ -389,6 +387,7 @@
 		var user_id = $("#user_id").val();
 		var user_name = $("#user_name").val();
 		var user_nickname = $("#user_nickname").val();
+		var user_mail = $("#user_mail").val();
 		var user_pwd = $("#user_pwd").val();
 		
 
@@ -398,26 +397,47 @@
 			return false;
 		}		
 			
-		if (idFlag && nameFlag && nickFlag && mailFlag && pwFlag && pw_con_Flag) {
+// 		if (idFlag && nameFlag && nickFlag && mailFlag && pwFlag && pw_con_Flag) {
 			
 			var confirm_check = confirm("현재 입력된 정보로 가입하시겠습니까?");
+			
 			if(confirm_check == true){
 				
-				// 암호화된 비밀번호
-				var en_pwd = rsa.encrypt(user_pwd);
+				submitEncryptedForm(user_id, user_name, user_nickname, user_mail, user_pwd);
 				
-				$("#user_pwd").val(en_pwd);
-				
-				return true;
-			} 
-			return false;
-		} else {
-			alert("잘못된 입력 정보가 있습니다!");
-			return false;
-		}		
-		return false;
+				return false;
+			}
+
+// 		} 
+		
+// 		else {
+// 			alert("중복확인 및 메일 인증코드를 다시 확인해주세요!");
+// 			return false;
+// 		}
+		
 	}
 	
+	function submitEncryptedForm(user_id, user_name, user_nickname, user_mail, user_pwd){
+		
+		// RSA 암호화 생성
+		var rsa = new RSAKey();
+		rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
+		
+		// 암호화된 비밀번호
+		var en_id = rsa.encrypt(user_id);
+		var en_name = rsa.encrypt(user_name);
+		var en_nickname = rsa.encrypt(user_nickname);
+		var en_mail = rsa.encrypt(user_mail);
+		var en_pwd = rsa.encrypt(user_pwd);
+		
+		$("#en_userID").val(en_id);
+		$("#en_userName").val(en_name);
+		$("#en_userNickName").val(en_nickname);
+		$("#en_userMail").val(en_mail);
+		$("#en_userPwd").val(en_pwd);
+		
+		$("#JoinForm").submit();
+	}
 
 
 </script>
