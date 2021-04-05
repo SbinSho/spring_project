@@ -1,5 +1,6 @@
 package com.goCamping.dto;
 
+
 public class EncryptDTO {
 	
 	private String en_userID;

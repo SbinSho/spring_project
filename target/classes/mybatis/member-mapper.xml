@@ -23,7 +23,7 @@
 		USER_MAIL = #{user_mail}
 	</select>
 	
-	<insert id="member_join" parameterType="memberVO">
+	<insert id="member_create" parameterType="memberVO">
 		INSERT INTO MEMBER (USER_ID, USER_NAME, USER_NICKNAME, USER_MAIL, USER_PWD)
 		VALUES
 		(#{user_id}, #{user_name}, #{user_nickname}, #{user_mail}, #{user_pwd})

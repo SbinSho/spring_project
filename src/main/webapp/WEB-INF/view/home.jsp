@@ -51,7 +51,7 @@
 				        </div>
 			      </li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">로그인</a>
+						<a class="nav-link" href="/member/login">로그인</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/member/join">회원가입</a>
@@ -168,6 +168,14 @@
 		</div>
 		<!-- /.container -->
 	</footer>
+
+	<script>
+		var result = "${result}";
+		if( result == "member_create_success"){
+			alert("회원가입 성공!");
+		}
+	
+	</script>
 
 	<!-- Bootstrap core JavaScript -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

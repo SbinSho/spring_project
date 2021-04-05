@@ -14,6 +14,6 @@ public interface MemberDAO {
 	public int mail_Check(String user_mail) throws Exception;
 	
 	// 회원가입 처리
-	public int member_join(MemberVO memberVO) throws Exception;
+	public int member_create(MemberVO memberVO) throws Exception;
 
 }

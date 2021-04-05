@@ -35,8 +35,8 @@ public class MemberDAOImpl implements MemberDAO {
 
 	// 회원가입 처리
 	@Override
-	public int member_join(MemberVO memberVO) throws Exception {
-		return session.insert(NAMESPACE + ".member_join", memberVO);
+	public int member_create(MemberVO memberVO) throws Exception {
+		return session.insert(NAMESPACE + ".member_create", memberVO);
 	}
 	
 	

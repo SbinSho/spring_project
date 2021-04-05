@@ -11,7 +11,7 @@ import org.springframework.validation.Validator;
 import com.goCamping.domain.MemberVO;
 
 @Component
-public class MemberValidator implements Validator {
+public class EncryptValidator implements Validator {
 	
 	private static final String emailRegExp = 
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -19,7 +19,7 @@ public class MemberValidator implements Validator {
 	
 	private Pattern pattern;
 	
-	public MemberValidator() {
+	public EncryptValidator() {
 		pattern = Pattern.compile(emailRegExp);
 	}
 
@@ -33,14 +33,12 @@ public class MemberValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		
-		MemberVO regMbr = (MemberVO) target;
-		
-		if(regMbr.getUser_mail() == null || regMbr.getUser_mail().trim().isEmpty()) {
-			errors.rejectValue("user_mail", "bad");
-		}
-		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user_name", "requierd");
-		ValidationUtils.rejectIfEmpty(errors, "user_pwd", "requierd");
+	
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "en_userID", "NotBlank");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "en_userName", "NotBlank");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "en_userNickName", "NotBlank");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "en_userMail", "NotBlank");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "en_userPwd", "NotBlank");
 		
 	}
 

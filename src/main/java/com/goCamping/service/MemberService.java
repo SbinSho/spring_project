@@ -1,6 +1,6 @@
 package com.goCamping.service;
 
-import com.goCamping.domain.MemberVO;
+import com.goCamping.dto.EncryptDTO;
 
 public interface MemberService {
 
@@ -11,6 +11,7 @@ public interface MemberService {
 	public int nick_Check(String user_nickname) throws Exception;
 	
 	// 회원가입 처리
-	public int member_join(MemberVO memberVO) throws Exception;
+	public int member_create(EncryptDTO encryptDTO) throws Exception;
+
 	
 }
