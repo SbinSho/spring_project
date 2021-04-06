@@ -1,20 +1,17 @@
 package com.goCamping.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.goCamping.dao.MemberDAO;
 import com.goCamping.domain.MemberVO;
-import com.goCamping.dto.EncryptDTO;
+import com.goCamping.dto.MemberJoinDTO;
+import com.goCamping.dto.MemberLoginDTO;
 
 @Service
 public class MeberServiceImpl implements MemberService {
 
-	private static final Logger logger = LogManager.getLogger(MemberService.class);
-	
 	@Autowired
 	private MemberDAO mdao;
 	
@@ -37,26 +34,49 @@ public class MeberServiceImpl implements MemberService {
 
 	// 회원가입 처리
 	@Override
-	public int member_create(EncryptDTO encryptDTO) throws Exception {
+	public Boolean member_create(MemberJoinDTO MemberJoinDTO) throws Exception {
 		
 		// 사용자에게 입력받은 비밀번호 및 메일 추출
-		String rawMail = encryptDTO.getEn_userMail();
-		String rawPassowrd = encryptDTO.getEn_userPwd();
+		String Mail = MemberJoinDTO.getUser_mail();
+		String Passowrd = MemberJoinDTO.getUser_pwd();
 		
 		
 		// 암호화된 메일 및 비밀번호로 변경
-		encryptDTO.setEn_userPwd(passwordEncoder.encode(rawPassowrd));
-		encryptDTO.setEn_userMail(passwordEncoder.encode(rawMail));
-		
-		logger.info("암호화 처리 완료");
-		logger.info("암호화된 이메일 : "+ encryptDTO.getEn_userMail());
-		logger.info("암호화된 비밀번호 : "+ encryptDTO.getEn_userPwd());
+		MemberJoinDTO.setUser_mail(passwordEncoder.encode(Mail));
+		MemberJoinDTO.setUser_pwd(passwordEncoder.encode(Passowrd));
 		
 		// DB에 저장하기 위한 VO객체 생성 ( 개인 정보 암호화 객체 )
-		MemberVO memberVO = new MemberVO(encryptDTO);
+		MemberVO memberVO = new MemberVO(MemberJoinDTO);
 		
-		return mdao.member_create(memberVO);
+		if(mdao.member_create(memberVO) == 1) {
+			return true;
+		}
 		
+		return false;
+		
+	}
+
+	// 로그인 처리
+	@Override
+	public boolean member_login(MemberLoginDTO memberLoginDTO) throws Exception {
+		
+		// 사용자에게 입력받은 비밀번호
+		String user_id = memberLoginDTO.getUser_id();
+		String rawPassword = memberLoginDTO.getUser_pwd();
+		
+		// DB에서 현재 입력된 id에 해당하는 정보를 가져와서 MemberVO 타입의 객체 생성
+		MemberVO memberVO = mdao.member_login(memberLoginDTO);
+		
+		if(memberVO != null) {
+			// DB에서 가져온 인코딩된 비밀번호
+			String encodedPassword = memberVO.getUser_pwd();
+			// DB에서 가져온 비밀번호와 사용자에게 입력받은 비밀번호가 일치하는지 체크
+			if(passwordEncoder.matches(rawPassword, encodedPassword) && user_id.equals(memberVO.getUser_id())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	

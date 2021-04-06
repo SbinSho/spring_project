@@ -2,11 +2,7 @@ package com.goCamping.domain;
 
 import java.sql.Timestamp;
 
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
-
-import com.goCamping.dto.EncryptDTO;
+import com.goCamping.dto.MemberJoinDTO;
 
 
 public class MemberVO {
@@ -22,12 +18,12 @@ public class MemberVO {
 	
 	public MemberVO() {};
 	
-	public MemberVO(EncryptDTO encryptDTO) {
-		this.user_id = encryptDTO.getEn_userID();
-		this.user_name = encryptDTO.getEn_userName();
-		this.user_nickname = encryptDTO.getEn_userNickName();
-		this.user_mail = encryptDTO.getEn_userMail();
-		this.user_pwd = encryptDTO.getEn_userPwd();
+	public MemberVO(MemberJoinDTO MemberJoinDTO) {
+		this.user_id = MemberJoinDTO.getUser_id();
+		this.user_name = MemberJoinDTO.getUser_name();
+		this.user_nickname = MemberJoinDTO.getUser_nickname();
+		this.user_mail = MemberJoinDTO.getUser_mail();
+		this.user_pwd = MemberJoinDTO.getUser_pwd();
 	}
 	
 	public String getUser_id() {

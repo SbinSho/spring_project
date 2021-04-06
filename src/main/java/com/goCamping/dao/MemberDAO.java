@@ -1,6 +1,7 @@
 package com.goCamping.dao;
 
 import com.goCamping.domain.MemberVO;
+import com.goCamping.dto.MemberLoginDTO;
 
 public interface MemberDAO {
 	
@@ -16,4 +17,7 @@ public interface MemberDAO {
 	// 회원가입 처리
 	public int member_create(MemberVO memberVO) throws Exception;
 
+	// 로그인 처리
+	public MemberVO member_login(MemberLoginDTO MemberLoginDTO) throws Exception;
+	
 }

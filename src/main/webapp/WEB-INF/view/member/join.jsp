@@ -39,27 +39,27 @@
 			<p class="hint-text">Create your account. It's free and only
 				takes a minute.</p>
 			<div class="form-group">
-				<label for="user_id">아이디</label>
-				<input type="text" id="user_id" class="form-control" placeholder="아이디" />
+				<label for="id">아이디</label>
+				<input type="text" id="id" class="form-control" placeholder="아이디" />
 			</div>
 			<div class="form-group">
 				<button type="button" id="id_check" class="btn btn-secondary">중복확인</button>
 			</div>
 			<div class="form-group">
-				<label for="user_name">이름</label>
-				<input type="text" id="user_name" class="form-control" placeholder="이름" />
+				<label for="name">이름</label>
+				<input type="text" id="name" class="form-control" placeholder="이름" />
 				<span id="username_check"></span>
 			</div>
 			<div class="form-group">
-				<label for="user_nickname">닉네임</label>
-				<input type="text" id="user_nickname" class="form-control" placeholder="닉네임" />
+				<label for="nickname">닉네임</label>
+				<input type="text" id="nickname" class="form-control" placeholder="닉네임" />
 			</div>
 			<div class="form-group">
 				<button type="button" id="nick_check" class="btn btn-secondary">중복확인</button>
 			</div>
 			<div class="form-group">
-				<label for="user_email">이메일</label>
-				<input type="email" id="user_mail" class="form-control" placeholder="이메일" />
+				<label for="mail">이메일</label>
+				<input type="email" id="mail" class="form-control" placeholder="이메일" />
 			</div>
 			<div class="form-group div_auth" style="display: none;">
 				<label for="auth_code">인증코드</label> <input type="text"
@@ -70,13 +70,13 @@
 				<button type="button" id="mail_check" class="btn btn-secondary">인증하기</button>
 			</div>
 			<div class="form-group">
-				<label for="user_pwd">비밀번호</label>
-				<input type="password" id="user_pwd" class="form-control" placeholder="비밀번호" />
+				<label for="pwd">비밀번호</label>
+				<input type="password" id="pwd" class="form-control" placeholder="비밀번호" />
 				<span id="password_check"></span>
 			</div>
 			<div class="form-group">
-				<label for="user_con_pwd">비밀번호 재확인</label>
-				<input type="password" class="form-control" id="user_con_pwd" placeholder="비밀번호 확인">
+				<label for="con_pwd">비밀번호 재확인</label>
+				<input type="password" class="form-control" id="con_pwd" placeholder="비밀번호 확인">
 				<span id="password_con_check"></span>
 			</div>
 			<div class="form-group">
@@ -89,21 +89,15 @@
 	</div>
 	
 	<form id="JoinForm" method="post">
-		<input type="hidden" id="en_userID" name="en_userID"/>
-		<input type="hidden" id="en_userName" name="en_userName"/>
-		<input type="hidden" id="en_userNickName" name="en_userNickName" />
-		<input type="hidden" id="en_userMail" name="en_userMail"/>
-		<input type="hidden" id="en_userPwd" name="en_userPwd"/>
+		<input type="hidden" id="user_id" name="user_id"/>
+		<input type="hidden" id="user_name" name="user_name"/>
+		<input type="hidden" id="user_nickname" name="user_nickname" />
+		<input type="hidden" id="user_mail" name="user_mail"/>
+		<input type="hidden" id="user_pwd" name="user_pwd"/>
 	</form>
 </body>
 
 <script>
-	
-	var error = '${ error }';
-	
-	if (error == "member_create_error"){
-		alert("회원가입 오류!");
-	}
 	
 	var idFlag = false;
 	var nameFlag = false;
@@ -151,7 +145,7 @@
 	$("#id_check").click(function() {
 		
 		// 아이디 input 태그
-		var input_tag = $("#user_id");
+		var input_tag = $("#id");
 		// 아이디 중복확인 button 태그
 		var button_tag = $("#id_check");
 		// 아이디 정규식
@@ -197,7 +191,7 @@
 	$("#nick_check").click(function() {
 		
 		// 닉네임 input 태그
-		var input_tag = $("#user_nickname");
+		var input_tag = $("#nickname");
 		// 닉네임 중복확인 button 태그
 		var button_tag = $("#nick_check");
 		// 닉네임 정규식
@@ -243,7 +237,7 @@
 	$("#mail_check").click(function() {
 
 		// 메일 input 태그
-		var input_tag = $("#user_mail");
+		var input_tag = $("#mail");
 		// 메일 중복확인 button 태그
 		var button_tag = $("#mail_check");
 		// 정규식
@@ -324,13 +318,13 @@
 	})
 	
 	// 이름 유효성 체크
-	$("#user_name").blur(function(){
+	$("#name").blur(function(){
 		
 		// 한글 또는 영문 사용하기(혼용X)
 		var isName = /^[가-힣]{2,6}$/;
-		var user_name = $("#user_name").val();
+		var name = $("#name").val();
 		
-		if (isName.test(user_name)){
+		if (isName.test(name)){
 			
 			$("#username_check").css("color", "green");
 			$("#username_check").text("멋진 이름이네요!");
@@ -349,13 +343,13 @@
 	})
 	
 	// 비밀번호 유효성 검증
-	$("#user_pwd").blur(function() {
+	$("#pwd").blur(function() {
 		
 		// 영문, 숫자 조합의 8~20자리
 		var isPw = /^[a-zA-Z0-9]{8,20}$/;
-		var user_pwd = $("#user_pwd").val();
+		var pwd = $("#pwd").val();
 		
-		if (isPw.test(user_pwd)){
+		if (isPw.test(pwd)){
 			
 			$("#password_check").css("color", "green");
 			$("#password_check").text("비밀번호 사용 가능!");
@@ -371,12 +365,12 @@
 	})
 	
 	// 비밀번호 확인란 체크
-	$("#user_con_pwd").blur(function(){
+	$("#con_pwd").blur(function(){
 		
-		var user_pwd = $("#user_pwd").val();
-		var user_con_pwd = $("#user_con_pwd").val();
+		var pwd = $("#pwd").val();
+		var con_pwd = $("#con_pwd").val();
 
-		if( user_pwd == user_con_pwd){
+		if( pwd == con_pwd){
 			$("#password_con_check").css("color", "green");
 			$("#password_con_check").html("비밀번호 확인 완료!");
 			pw_con_Flag = true;
@@ -391,61 +385,66 @@
 	// 폼 데이터값 확인
 	function form_check() {
 		
-		var user_id = $("#user_id").val();
-		var user_name = $("#user_name").val();
-		var user_nickname = $("#user_nickname").val();
-		var user_mail = $("#user_mail").val();
-		var user_pwd = $("#user_pwd").val();
+		var id = $("#id").val();
+		var name = $("#name").val();
+		var nickname = $("#nickname").val();
+		var mail = $("#mail").val();
+		var pwd = $("#pwd").val();
 		
 
-// 		if ( user_id == "" || user_name == "" || user_nickname == "" || user_pwd == "") {
+		if ( id == "" || name == "" || nickname == "" || mail == "" || pwd == "") {
 
-// 			alert("입력되지 않은 정보가 존재합니다.");
-// 			return false;
-// 		}		
+			alert("입력되지 않은 정보가 존재합니다.");
+			return false;
+		}		
 			
-// 		if (idFlag && nameFlag && nickFlag && mailFlag && pwFlag && pw_con_Flag) {
+		if (idFlag && nameFlag && nickFlag && mailFlag && pwFlag && pw_con_Flag) {
 			
 			var confirm_check = confirm("현재 입력된 정보로 가입하시겠습니까?");
 			
 			if(confirm_check == true){
 				
-				submitEncryptedForm(user_id, user_name, user_nickname, user_mail, user_pwd);
+				submitEncryptedForm(id, name, nickname, mail, pwd);
 				return false;
 			}
 
-// 		} 
+		} 
 		
-// 		else {
-// 			alert("중복확인 및 메일 인증코드를 다시 확인해주세요!");
-// 			return false;
-// 		}
+		else {
+			alert("중복확인 및 메일 인증코드를 다시 확인해주세요!");
+			return false;
+		}
 		
 	}
 	
-	function submitEncryptedForm(user_id, user_name, user_nickname, user_mail, user_pwd){
+	function submitEncryptedForm(id, name, nickname, mail, pwd){
 		
 		// RSA 암호화 생성
 		var rsa = new RSAKey();
 		rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
 		
-		// 암호화된 비밀번호
-		var en_id = rsa.encrypt(user_id);
-		var en_name = rsa.encrypt(user_name);
-		var en_nickname = rsa.encrypt(user_nickname);
-		var en_mail = rsa.encrypt(user_mail);
-		var en_pwd = rsa.encrypt(user_pwd);
+		// 암호화된 폼 데이터
+		var en_id = rsa.encrypt(id);
+		var en_name = rsa.encrypt(name);
+		var en_nickname = rsa.encrypt(nickname);
+		var en_mail = rsa.encrypt(mail);
+		var en_pwd = rsa.encrypt(pwd);
 		
 		
 		
-		$("#en_userID").val(en_id);
-		$("#en_userName").val(en_name);
-		$("#en_userNickName").val(en_nickname);
-		$("#en_userMail").val(en_mail);
-		$("#en_userPwd").val(en_pwd);
+		$("#user_id").val(en_id);
+		$("#user_name").val(en_name);
+		$("#user_nickname").val(en_nickname);
+		$("#user_mail").val(en_mail);
+		$("#user_pwd").val(en_pwd);
+		
+		console.log(en_id);
+		console.log(en_name);
+		console.log(en_nickname);
+		console.log(en_mail);
+		console.log(en_pwd);
 		
 		$("#JoinForm").submit();
-// 		return false;
 	}
 
 

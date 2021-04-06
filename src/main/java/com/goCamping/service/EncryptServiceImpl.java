@@ -15,8 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.goCamping.dto.EncryptDTO;
-
 @Service
 public class EncryptServiceImpl implements EncryptService {
 
@@ -59,13 +57,7 @@ public class EncryptServiceImpl implements EncryptService {
 	}
 
 	@Override
-	public EncryptDTO decryptRsa(PrivateKey privateKey, EncryptDTO encryptDTO) {
-
-		String[] decryptedValue = new String[5];
-		String[] encryptDTO_Get_array = {
-
-				encryptDTO.getEn_userID(), encryptDTO.getEn_userName(), encryptDTO.getEn_userNickName(),
-				encryptDTO.getEn_userMail(), encryptDTO.getEn_userPwd() };
+	public Boolean decryptRsa(PrivateKey privateKey, String[] encrypt_arry) {
 
 		byte[] encryptedBytes;
 		byte[] decryptedBytes;
@@ -78,31 +70,25 @@ public class EncryptServiceImpl implements EncryptService {
 		try {
 			Cipher cipher = Cipher.getInstance("RSA");
 			cipher.init(Cipher.DECRYPT_MODE, privateKey);
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < encrypt_arry.length; i++) {
 				
-				encryptedBytes = hexToByteArray(encryptDTO_Get_array[i]);
+				encryptedBytes = hexToByteArray(encrypt_arry[i]);
 				
 				decryptedBytes = cipher.doFinal(encryptedBytes);
 
-				decryptedValue[i] = new String(decryptedBytes, "utf-8"); // 문자 인코딩 주의.
+				encrypt_arry[i] = new String(decryptedBytes, "utf-8"); // 문자 인코딩 주의.
 
 			}
 
-			encryptDTO.setEn_userID(decryptedValue[0]);
-			encryptDTO.setEn_userName(decryptedValue[1]);
-			encryptDTO.setEn_userNickName(decryptedValue[2]);
-			encryptDTO.setEn_userMail(decryptedValue[3]);
-			encryptDTO.setEn_userPwd(decryptedValue[4]);
 
 		} catch (Exception e) {
 
 			logger.info("decryptRsa Exception Error");
 			e.printStackTrace();
-			return null;
+			return false;
 		}
 
-		return encryptDTO;
-
+		return true;
 	}
 
 	@Override

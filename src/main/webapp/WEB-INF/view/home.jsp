@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,12 +51,26 @@
 				          <a class="dropdown-item" href="#">캠핑장 공지사항</a>
 				        </div>
 			      </li>
-					<li class="nav-item">
-						<a class="nav-link" href="/member/login">로그인</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/member/join">회원가입</a>
-					</li>								      
+			          <c:choose>
+			          		<c:when test="${ empty loginUser }">
+			          			<li class="nav-item">
+				            		<a class="nav-link" href="<c:url value='/member/login'/>">로그인</a>
+			          			</li>
+						        <li class="nav-item">
+						            <a class="nav-link" href="<c:url value='/member/join'/>">회원가입</a>
+						        </li>
+			          		</c:when>
+			          		<c:otherwise>
+			          			<li class="nav-item">
+						            <a class="nav-link" href="<c:url value='/member/logout'/>">
+				            			<span>로그아웃</span>
+				            		</a>
+						        </li>
+						        <li class="nav-item">
+						            <a class="nav-link" href="<c:url value='/member/edit/${ loginUser.id }'/>">회원정보수정</a>
+						        </li>
+			          		</c:otherwise>
+			          </c:choose>  	
 					<li class="nav-item">
 						<a class="nav-link" href="#">사업장 등록</a>
 					</li>								      
@@ -173,7 +188,14 @@
 		var result = "${result}";
 		if( result == "member_create_success"){
 			alert("회원가입 성공!");
+		} 
+		else if ( result == "logout_success"){
+				alert("로그아웃 성공!");
 		}
+		else if ( result == "error"){
+			alert("오류 발생!");
+		}
+		
 	
 	</script>
 

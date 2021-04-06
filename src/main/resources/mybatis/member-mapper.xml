@@ -28,5 +28,11 @@
 		VALUES
 		(#{user_id}, #{user_name}, #{user_nickname}, #{user_mail}, #{user_pwd})
 	</insert>
+	
+	<select id="member_login" parameterType="memberLoginDTO" resultType="memberVO" >
+		SELECT user_id, user_pwd FROM MEMBER
+		WHERE
+		USER_ID = #{user_id}
+	</select>
 
 </mapper>

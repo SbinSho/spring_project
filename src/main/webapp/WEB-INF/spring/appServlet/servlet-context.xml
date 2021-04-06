@@ -15,6 +15,7 @@
 	<!-- spring mvc 컴포넌트 활성화 RquestMapping 사용 -->
 	<mvc:annotation-driven />
 	
+	
 	<!-- 정적 파일 관리를 위한 설정 -->
 	<mvc:resources location="/static/" mapping="/**"/>
 	
@@ -23,6 +24,16 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 	
-	<context:component-scan base-package="com.goCamping" />
 		
+	<!-- 인터셉터 bean 등록 -->
+	<bean id="loginInterceptor" class="com.goCamping.interceptor.LoginInterceptor" />
+		
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/member/login"/>
+			<ref bean="loginInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<context:component-scan base-package="com.goCamping.controller" />
 </beans>

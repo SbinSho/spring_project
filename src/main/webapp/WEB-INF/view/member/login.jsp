@@ -30,7 +30,12 @@
 	<meta name="msapplication-config" content="/docs/4.5/assets/img/favicons/browserconfig.xml">
 	<meta name="theme-color" content="#563d7c">
 
-
+	<!-- RSA 자바스크립트 라이브러리 -->
+	<script type="text/javascript" src="/js/rsa/jsbn.js"></script>
+	<script type="text/javascript" src="/js/rsa/rsa.js"></script>
+	<script type="text/javascript" src="/js/rsa/prng4.js"></script>
+	<script type="text/javascript" src="/js/rsa/rng.js"></script>
+	
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -52,35 +57,103 @@
   </head>
 <body class="text-center">
 	<form class="form-signin">
+		<input type="hidden" id="RSAModulus" value="${RSAModulus}" /><!-- 서버에서 전달한값을 셋팅한다. -->
+			<input type="hidden" id="RSAExponent" value="${RSAExponent}" /><!-- 서버에서 전달한값을 셋팅한다. -->
 	  	<img class="mb-4" src="./Signin Template Â· Bootstrap_files/bootstrap-solid.svg" alt="" width="72" height="72">
 	  	<div class="form-group">
 	  		<label for="id">아이디</label>
-			<input type="text" id="id" class="form-control"/>
-			<span style="color: red"><form:errors path="id"/></span>
+			<input type="text" id="id" class="form-control" value="${ id }"/>
+			<span style="color: red"></span>
 		</div>
 	    <div class="form-group">
 	        <label for="pwd">비밀번호</label>
 			<input type="password" id="pwd" class="form-control"/>
-			<span style="color: red"><form:errors path="pwd"/></span>
 			<span style="color: red" id="check"></span>
 	    </div>
 		<div class="checkbox mb-3">
-		    <label for="useCookie">
-		      <input type="checkbox" name="useCookie" /> 아이디 기억하기
-		    </label>
+		<c:choose>
+			<c:when  test="${ empty cookie_check }">
+			   <label for="reid">
+			      <input type="checkbox" id="reid" name="reid" /> 아이디 기억하기
+			    </label>
+			</c:when>
+			<c:otherwise>
+				<label for="reid">
+			      <input type="checkbox" id="reid" name="reid" checked="checked"/> 아이디 기억하기
+			    </label>
+			</c:otherwise>
+		</c:choose>
 		</div>
-	  	<button class="btn btn-lg btn-primary btn-block" type="submit">로그인</button>
+	  	<button class="btn btn-lg btn-primary btn-block" type="button" onclick="form_check();">로그인</button>
 	  	<p class="mt-5 mb-3 text-muted">Â© 2017-2020</p>
 	</form>
 	
-	<script type="text/javascript">
-		var result = '${ result }';	
+	<form id="LoginForm" method="post">
+		<input type="hidden" id="user_id" name="user_id" />
+		<input type="hidden" id="user_pwd" name="user_pwd" />
+		<input type="hidden" id="user_reId" name="user_reId" />
+	</form>
+	
+<script>
+
+	var result = "${result}";
+	
+	if(result == "member_login_fail"){
+		alert("아이디 또는 비밀번호를 확인해주세요!");
+	} else if( result == "error"){
+		alert("오류 발생!");
+	}
+	
+	
+	// 폼 데이터 값 확인
+	function form_check() {
+		var id = $("#id").val();
+		var pwd = $("#pwd").val();
+		var reid;
 		
-		if(result == "error"){
-			$("#check").html("아이디 또는 비밀번호를 다시 확인해주세요!");
+		if($("#reid").is(":checked")){
+			reid = "true";
+		} else {
+			reid="false"
 		}
-
-
-	</script>
+		
+		
+		if( id == "" || pwd == ""){
+			alert("입력되지 않은 정보가 존재합니다.");
+		} else {
+			submitEncryptedForm(id, pwd, reid);
+		}
+		
+		return false;
+		
+	}
+	
+	
+	function submitEncryptedForm(id, pwd, reid){
+		
+		// RSA 암호화 생성
+		var rsa = new RSAKey();
+		if( $("#RSAModulus").val() == "" ||  $("#RSAExponent").val() == ""){
+			location.href="/member/login";		
+		} else {
+			
+			rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
+			
+			// 암호화된 폼 데이터
+			var user_id = rsa.encrypt(id);
+			var user_pwd = rsa.encrypt(pwd);
+			var user_reId = rsa.encrypt(reid);
+			
+			$("#user_id").val(user_id);
+			$("#user_pwd").val(user_pwd);
+			$("#user_reId").val(user_reId);
+			
+			
+			$("#LoginForm").submit();
+			
+		}
+	}
+	
+</script>
 </body>
 </html>

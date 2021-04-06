@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.goCamping.domain.MemberVO;
+import com.goCamping.dto.MemberLoginDTO;
 
 @Repository
 public class MemberDAOImpl implements MemberDAO {
@@ -37,6 +38,12 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public int member_create(MemberVO memberVO) throws Exception {
 		return session.insert(NAMESPACE + ".member_create", memberVO);
+	}
+
+	// 로그인 처리
+	@Override
+	public MemberVO member_login(MemberLoginDTO MemberLoginDTO) throws Exception {
+		return session.selectOne(NAMESPACE + ".member_login", MemberLoginDTO);
 	}
 	
 	
