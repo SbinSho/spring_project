@@ -25,9 +25,10 @@
 	</bean>
 	
 		
-	<!-- 인터셉터 bean 등록 -->
+	<!-- 로그인시 사용되는 인터셉터 bean 등록 -->
 	<bean id="loginInterceptor" class="com.goCamping.interceptor.LoginInterceptor" />
-		
+<!-- 	<bean id="authLoginInterceptor" class="com.goCamping.interceptor.AuthLoginInterceptor" /> -->
+	
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/member/login"/>

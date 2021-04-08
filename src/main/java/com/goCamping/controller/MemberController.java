@@ -49,7 +49,7 @@ public class MemberController {
 	
 	// 회원가입 페이지 이동
 	@RequestMapping( value="/join", method = RequestMethod.GET )
-	public String join(HttpServletRequest request, RedirectAttributes rttr) throws Exception {
+	public String join(HttpServletRequest request, RedirectAttributes rttr, Model model) throws Exception {
 		
 		logger.info("join GET 요청");
 		
@@ -65,6 +65,9 @@ public class MemberController {
 			session.setAttribute("_RSA_WEB_KEY_", map.get("_RSA_WEB_KEY_"));
 			request.setAttribute("RSAModulus", map.get("RSAModulus"));
 			request.setAttribute("RSAExponent", map.get("RSAExponent"));
+			request.setAttribute("memberJoinDTO", new MemberJoinDTO());
+			
+			
 			return "/member/join";
 		}
 		
@@ -108,8 +111,12 @@ public class MemberController {
 				// 유효성에 문제가 발생하면 새로운 요청을 통해 회원가입 페이지로 이동
 				if(bindingResult.hasErrors()) {
 					
-					rttr.addFlashAttribute("result", "error");
-					return "redirect:/";
+					logger.info("객체 유효성 검증 실패!");
+					
+//					rttr.addFlashAttribute("result", "error");
+//					return "redirect:/";
+					
+					return "/member/join";
 					
 				}
 				

@@ -22,7 +22,6 @@
 
 <link href="<c:url value='/css/bootstrap/bootstrap.min.css'/>" rel="stylesheet">
 <link href="<c:url value='/css/join.css'/>" rel="stylesheet">
-
 <!-- RSA 자바스크립트 라이브러리 -->
 <script type="text/javascript" src="/js/rsa/jsbn.js"></script>
 <script type="text/javascript" src="/js/rsa/rsa.js"></script>
@@ -143,7 +142,6 @@
 	
 	// 아이디 유효성 검사
 	$("#id_check").click(function() {
-		
 		// 아이디 input 태그
 		var input_tag = $("#id");
 		// 아이디 중복확인 button 태그
@@ -186,10 +184,8 @@
 		}
 	});
 	
-	
 	// 닉네임 유효성 검사 및 중복확인
 	$("#nick_check").click(function() {
-		
 		// 닉네임 input 태그
 		var input_tag = $("#nickname");
 		// 닉네임 중복확인 button 태그
@@ -232,10 +228,9 @@
 		
 		
 	});
-
+	
 	// 메일 유효성 검사 및 중복확인
 	$("#mail_check").click(function() {
-
 		// 메일 input 태그
 		var input_tag = $("#mail");
 		// 메일 중복확인 button 태그
@@ -280,6 +275,7 @@
 	
 	// 메일 인증코드 확인하기
 	$("#auth_check").click(function() {
+		auth_check();
 		var auth_code = $("#auth_code").val();
 		
 		if( auth_code == ""){
@@ -315,11 +311,10 @@
 				
 		});
 			
-	})
+	});
 	
 	// 이름 유효성 체크
 	$("#name").blur(function(){
-		
 		// 한글 또는 영문 사용하기(혼용X)
 		var isName = /^[가-힣]{2,6}$/;
 		var name = $("#name").val();
@@ -340,11 +335,10 @@
 		}		
 		
 		
-	})
+	});
 	
-	// 비밀번호 유효성 검증
+	// 비밀번호 유효성 체크
 	$("#pwd").blur(function() {
-		
 		// 영문, 숫자 조합의 8~20자리
 		var isPw = /^[a-zA-Z0-9]{8,20}$/;
 		var pwd = $("#pwd").val();
@@ -362,11 +356,10 @@
 			pwFlag = false;
 		}
 		
-	})
+	});
 	
 	// 비밀번호 확인란 체크
 	$("#con_pwd").blur(function(){
-		
 		var pwd = $("#pwd").val();
 		var con_pwd = $("#con_pwd").val();
 
@@ -380,7 +373,6 @@
 			pw_con_Flag = false;
 		}
 	});
-	
 	
 	// 폼 데이터값 확인
 	function form_check() {
@@ -396,8 +388,8 @@
 
 			alert("입력되지 않은 정보가 존재합니다.");
 			return false;
-		}		
-			
+		}
+		
 		if (idFlag && nameFlag && nickFlag && mailFlag && pwFlag && pw_con_Flag) {
 			
 			var confirm_check = confirm("현재 입력된 정보로 가입하시겠습니까?");
@@ -430,19 +422,11 @@
 		var en_mail = rsa.encrypt(mail);
 		var en_pwd = rsa.encrypt(pwd);
 		
-		
-		
 		$("#user_id").val(en_id);
 		$("#user_name").val(en_name);
 		$("#user_nickname").val(en_nickname);
 		$("#user_mail").val(en_mail);
 		$("#user_pwd").val(en_pwd);
-		
-		console.log(en_id);
-		console.log(en_name);
-		console.log(en_nickname);
-		console.log(en_mail);
-		console.log(en_pwd);
 		
 		$("#JoinForm").submit();
 	}

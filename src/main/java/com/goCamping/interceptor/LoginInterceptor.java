@@ -64,8 +64,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		
 		MemberLoginDTO memberLoginDTO = (MemberLoginDTO) map.get("memberLoginDTO");
 		
-		// vaild_check 값이 null일 경우 Contorller에서 객체의 유효성 검사는 통과함
-		// db_check 값이 null일 경우 유효성은 통과했으나, DB에서 ID가 조회되지 않을 경우
+		// 개인키가 존재하지 않을 경우
 		if( map.get("private") != null) {
 			
 			logger.info("private 진입");
@@ -75,6 +74,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			out.println("<script>alert('오류 발생!'); location.href='/member/login';</script>");
 			out.flush();
 		}
+		// 객체 유효성 검사 실패 또는 DB에 매칭되는 아이디와 비밀번호가 같지 않을 경우
 		else if (map.get("check") != null) {
 				
 				logger.info("check 진입");
