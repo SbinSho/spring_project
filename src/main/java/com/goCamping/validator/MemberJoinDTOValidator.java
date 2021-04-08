@@ -48,8 +48,8 @@ public class MemberJoinDTOValidator implements Validator {
 		RegExp_Map.put("user_id", isId);
 		RegExp_Map.put("user_name", isName);
 		RegExp_Map.put("user_nickname", isNick);
-		RegExp_Map.put("user_mail", isPw);
-		RegExp_Map.put("user_pwd", isMail);
+		RegExp_Map.put("user_mail", isMail);
+		RegExp_Map.put("user_pwd", isPw);
 		
 		// map에 담긴 데이터 현재 전달 받은 객체 필드를 key로 필드에 저장된 데이터를 value 값으로 가지고 있다.
 		// key ( 객체 필드명 ) : value ( 필드에 담긴 데이터 )
