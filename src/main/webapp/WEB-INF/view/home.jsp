@@ -62,7 +62,7 @@
 			          		</c:when>
 			          		<c:otherwise>
 			          			<li class="nav-item">
-						            <a class="nav-link" href="<c:url value='/member/logout'/>">
+						            <a class="nav-link" href="<c:url value='/member/logout?user_id=${ loginUser.id }'/>">
 				            			<span>로그아웃</span>
 				            		</a>
 						        </li>

@@ -158,7 +158,7 @@
 			
 			$.ajax({
 				type: "POST",
-				url: "/member/idCheck",
+				url: "/member/check/idCheck",
 				data : { user_id : user_id },
 				success: function(data) {
 					
@@ -166,7 +166,7 @@
 						
 						alert("이미 사용중인 아이디 입니다.");
 						
-					} else {
+					} else if( data == 0 ){
 						
 						if(confirm("사용가능한 아이디 입니다. 사용하시겠습니까?")){
 							input_tag.attr("readonly", "true");
@@ -174,6 +174,8 @@
 							button_tag.attr("class", "btn btn-success");
 							idFlag = true;
 						}
+					} else {
+						alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
 					}
 				},
 				error: function(error) {
@@ -202,14 +204,14 @@
 			
 			$.ajax({
 				type: "POST",
-				url: "/member/nickCheck",
+				url: "/member/check/nickCheck",
 				data : { user_nickname : user_nickname },
 				success: function(data) {
 					if(data == 1){
 						
 						alert("이미 사용중인 닉네임 입니다.");
 						
-					} else{
+					} else if(data == 0){
 						
 						if(confirm("사용가능한 닉네임 입니다. 사용하시겠습니까?")){
 							input_tag.attr("readonly", "true");
@@ -217,6 +219,8 @@
 							button_tag.attr("class", "btn btn-success");
 							nickFlag = true;
 						}
+					} else {
+						alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
 					}
 				},
 				error: function(error) {
@@ -247,22 +251,22 @@
 			
 			$.ajax({
 				type: "POST",
-				url: "/member/mailCheck",
+				url: "/member/check/mailCheck",
+				dataType: "json",
 				data : { user_mail : user_mail },
 				success: function(data) {
-					if(data == 1){
+					if(data.result == "KEY_OK"){
 						
-						alert("이미 사용중인 메일입니다.");
-						
-					} else if(data == 0){
-							
 						alert("인증코드가 전송되었습니다.");
-						
 						input_tag.attr("readonly", "true");
 						button_tag.hide();
 						$(".div_auth").show( 1000 );
 						
-					} else {
+					} else if(data.result == "DUP_MAIL"){
+							
+						alert("이미 사용중인 메일입니다.");
+						
+					} else if("result", "MAIL_ERROR"){
 						alert("이메일 보내기 실패, 관리자에게 문의 바랍니다.");
 					}
 				},
@@ -275,7 +279,6 @@
 	
 	// 메일 인증코드 확인하기
 	$("#auth_check").click(function() {
-		auth_check();
 		var auth_code = $("#auth_code").val();
 		
 		if( auth_code == ""){
@@ -285,10 +288,11 @@
 		
 		$.ajax({
 			type:"POST",
-			url: "/member/authCheck",
+			url: "/member/check/authCheck",
 			data: {auth_code : auth_code},
+			dataType : "json",
 			success: function(data){
-				if(data == 1){
+				if(data.result == "KEY_OK"){
 						
 					alert("인증완료!");
 
@@ -301,8 +305,11 @@
 						
 					mailFlag = true;
 						
-				} else {
+				} else if (data.result == "KEY_FAIL"){
 					alert("인증번호가 일치하지 않습니다.");
+					
+				} else if (data.result == "KEY_ERROR"){
+					alert("오류 발생! 관리자에게 문의 바랍니다.");
 				}
 			},
 			error: function(error){
