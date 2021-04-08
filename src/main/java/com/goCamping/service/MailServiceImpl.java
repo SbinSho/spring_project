@@ -88,6 +88,7 @@ public class MailServiceImpl implements MailService {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			return "";
 		}
 		
 		return auth_key;
