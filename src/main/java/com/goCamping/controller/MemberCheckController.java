@@ -8,16 +8,15 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.goCamping.service.MailService;
 import com.goCamping.service.MemberService;
 
-@Controller
+@RestController
 @RequestMapping("/member/check")
 public class MemberCheckController {
 
@@ -31,31 +30,28 @@ public class MemberCheckController {
 
 	// 아이디 중복 확인
 	@RequestMapping(value = "/idCheck", method = RequestMethod.POST)
-	@ResponseBody
-	public int id_Check(String user_id) throws Exception {
+	public int id_Check(String value) throws Exception {
 
 		logger.info("/idCheck 요청");
 
 		// DB에 user_id 컬럼은 현재 기본키로 잡혀있음, 그러므로 아이디 중복 시 반환값은 1 아닐 경우 0
-		return member_service.id_Check(user_id);
+		return member_service.id_Check(value);
 
 	}
 
 	// 닉네임 중복 확인
 	@RequestMapping(value = "/nickCheck", method = RequestMethod.POST)
-	@ResponseBody
-	public int nick_Check(String user_nickname) throws Exception {
+	public int nick_Check(String value) throws Exception {
 
 		logger.info("/nickCheck 요청");
 
 		// DB에 user_nickname은 기본키이다, 그러므로 아이디 중복시 반환값은 1 아닐 경우 0
-		return member_service.nick_Check(user_nickname);
+		return member_service.nick_Check(value);
 	}
 
 	// 메일 중복 확인
 	@RequestMapping(value = "/mailCheck", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, String> mail_Check(String user_mail, HttpSession session) throws Exception {
+	public Map<String, String> mail_Check(String value, HttpSession session) throws Exception {
 
 		logger.info("/mailCheck 요청");
 
@@ -64,13 +60,13 @@ public class MemberCheckController {
 
 		// mail_result가 1인 경우, 중복된 메일이 존재하는 경우
 		// 인증코드 전송 작업을 하지 않고 현재 mail_result 값을 바로 리턴함
-		if (mail_service.mail_Check(user_mail) == 1) {
+		if (mail_service.mail_Check(value) == 1) {
 			mail_result.put("result","DUP_MAIL");
 			return mail_result;
 		}
 
 		// 사용자에게 인증코드 전송하고, 전송된 인증코드를 MailService에서 반환받음
-		String auth_key = mail_service.sendAuthMail(user_mail);
+		String auth_key = mail_service.sendAuthMail(value);
 
 		if (auth_key.isEmpty()) {
 			mail_result.put("result", "MAIL_ERROR");
@@ -85,7 +81,6 @@ public class MemberCheckController {
 
 	// 메일 인증코드 확인 처리
 	@RequestMapping(value = "/authCheck", method = RequestMethod.POST)
-	@ResponseBody
 	public Map<String, String> auth_check(@RequestParam("auth_code") String auth_code, HttpSession session) {
 
 		Map<String, String> auth_result = new HashMap<String, String>();
