@@ -37,7 +37,7 @@ public class MeberServiceImpl implements MemberService {
 
 	// 회원가입 처리
 	@Override
-	public Boolean member_create(MemberJoinDTO MemberJoinDTO) throws Exception {
+	public Boolean member_create(MemberJoinDTO MemberJoinDTO) {
 		
 		// 사용자에게 입력받은 비밀번호 및 메일 추출
 		String Passowrd = MemberJoinDTO.getUser_pwd();
@@ -48,7 +48,7 @@ public class MeberServiceImpl implements MemberService {
 		// DB에 저장하기 위한 VO객체 생성 ( 개인 정보 암호화 객체 )
 		MemberVO memberVO = new MemberVO(MemberJoinDTO);
 		
-		if(mdao.member_create(memberVO) == 1) {
+		if(mdao.member_create(memberVO)) {
 			return true;
 		}
 		

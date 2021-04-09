@@ -15,7 +15,7 @@ public interface MemberService {
 	public int nick_Check(String user_nickname) throws Exception;
 	
 	// 회원가입 처리
-	public Boolean member_create(MemberJoinDTO memberJoinDTO) throws Exception;
+	public Boolean member_create(MemberJoinDTO memberJoinDTO);
 
 	// 로그인 처리
 	public boolean member_login(MemberLoginDTO encryptLoginDTO) throws Exception;
