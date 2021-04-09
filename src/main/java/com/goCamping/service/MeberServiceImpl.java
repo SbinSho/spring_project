@@ -1,5 +1,8 @@
 package com.goCamping.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,12 +40,9 @@ public class MeberServiceImpl implements MemberService {
 	public Boolean member_create(MemberJoinDTO MemberJoinDTO) throws Exception {
 		
 		// 사용자에게 입력받은 비밀번호 및 메일 추출
-		String Mail = MemberJoinDTO.getUser_mail();
 		String Passowrd = MemberJoinDTO.getUser_pwd();
 		
-		
-		// 암호화된 메일 및 비밀번호로 변경
-		MemberJoinDTO.setUser_mail(passwordEncoder.encode(Mail));
+		// 암호화 된  비밀번호로 변경
 		MemberJoinDTO.setUser_pwd(passwordEncoder.encode(Passowrd));
 		
 		// DB에 저장하기 위한 VO객체 생성 ( 개인 정보 암호화 객체 )
@@ -79,7 +79,11 @@ public class MeberServiceImpl implements MemberService {
 		return false;
 	}
 
-	
+	// 회원정보 불러오기
+	@Override
+	public HashMap<String, Object> member_select(String user_id) {
+		return mdao.member_select(user_id);
+	}
 	
 	
 }

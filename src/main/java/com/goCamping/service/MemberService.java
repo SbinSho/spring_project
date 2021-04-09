@@ -1,7 +1,10 @@
 package com.goCamping.service;
 
-import com.goCamping.dto.MemberLoginDTO;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.goCamping.dto.MemberJoinDTO;
+import com.goCamping.dto.MemberLoginDTO;
 
 public interface MemberService {
 
@@ -16,4 +19,7 @@ public interface MemberService {
 
 	// 로그인 처리
 	public boolean member_login(MemberLoginDTO encryptLoginDTO) throws Exception;
+	
+	// 회원정보 불러오기
+	public HashMap<String, Object> member_select(String user_id);
 }
