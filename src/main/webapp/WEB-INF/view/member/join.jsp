@@ -40,9 +40,7 @@
 			<div class="form-group">
 				<label for="id">아이디</label>
 				<input type="text" id="id" class="form-control" placeholder="아이디" />
-			</div>
-			<div class="form-group">
-				<button type="button" id="id_check" class="btn btn-secondary">중복확인</button>
+				<span id="id_check"></span>
 			</div>
 			<div class="form-group">
 				<label for="name">이름</label>
@@ -52,21 +50,22 @@
 			<div class="form-group">
 				<label for="nickname">닉네임</label>
 				<input type="text" id="nickname" class="form-control" placeholder="닉네임" />
-			</div>
-			<div class="form-group">
-				<button type="button" id="nick_check" class="btn btn-secondary">중복확인</button>
+				<span id="nick_check"></span>
 			</div>
 			<div class="form-group">
 				<label for="mail">이메일</label>
 				<input type="email" id="mail" class="form-control" placeholder="이메일" />
 			</div>
 			<div class="form-group div_auth" style="display: none;">
-				<label for="auth_code">인증코드</label> <input type="text"
-					id="auth_code" class="form-control"> <br>
-				<button type="button" id="auth_check" class="btn btn-secondary">확인하기</button>
+				<label for="auth_code">인증코드</label> <input type="text"id="auth_code" class="form-control">
+				<br>
+				<div class="text-right">
+					<button type="button" id="re_auth_check" class="btn btn-secondary" onclick="auth_send();">재전송</button>
+					<button type="button" id="auth_check" class="btn btn-secondary">확인하기</button>
+				</div>
 			</div>
-			<div class="form-group">
-				<button type="button" id="mail_check" class="btn btn-secondary">인증하기</button>
+			<div class="form-group text-right">
+				<button type="button" id="mail_check" class="btn btn-info">인증하기</button>
 			</div>
 			<div class="form-group">
 				<label for="pwd">비밀번호</label>
@@ -114,119 +113,122 @@
 		idFlag = false;
 		nickFlag = false;
 		mainFlag = false;
+		
+		$("#id_check").text("재확인 필요");
+		$("#id_check").css("color", "red");
+		
+		$("#nick_check").text("재확인 필요");
+		$("#nick_check").css("color", "red");
+		
+		$(".div_auth").hide();
+		$("#mail_check").show();
+		$("#mail_check").text("재확인 필요");
+		
 	}
 	
-	var text_check = function (input, button, is, flag, effect_text, result_text, request_text) {
+	var text_check = function (input, is, flag, effect_text, result_text, request, span_check) {
 		
 		// 중복확인 대상이 되는 input 태그
 		var input_value = input.val();
-		// 중복확인 버튼 태그
-		var button_text = button.text();
 		
-		if ( button_text == "다시입력"){
+		flag = false;
+		
+		if(!is.test(input_value)){
 			
-			input.removeAttr("readonly");
-			button.text("중복확인");
-			button.attr("class", "btn btn-danger");
-			flag = false;
+			span_check.text(effect_text);
+			span_check.css('color', 'red');
 			
-			return false;
-			
-		} else if( button_text == "중복확인" || button_text == "인증하기"){
-			
-			if(input_value == ""){
+		} else {
 				
-				alert("공백은 입력할 수 없습니다.");
-				return;		
-			} 
-			
-			if(!is.test(input_value)){
-				
-				alert(effect_text);
-				return;
-			} 
-			else {
-				var input_value = input.val();
-				
-				$.ajax({
-					type: "POST",
-					url:  Path() + "member/check" + request_text,
-					data : { value : input_value },
-					success: function(data) {
-						
-						if(data == 1){
+			$.ajax({
+				type: "POST",
+				async : false,
+				url:  Path() + "member/check" + request,
+				data : { value : input_value },
+				success: function(data) {
+								
+					if(data == 1){
 							
-							alert("이미 사용중인" + result_text + " 입니다.");
+						span_check.text( "중복된 " + result_text + " 입니다.");
+						span_check.css("color", "red");
+									
+					} else if( data == 0 ){
+									
+						span_check.text( "사용가능한 " + result_text + " 입니다.");
+						span_check.css("color", "green");
+						flag = true;
 							
-						} else if( data == 0 ){
-							
-							if(confirm("사용가능한 " + result_text + " 입니다. 사용하시겠습니까?")){
-								input.attr("readonly", "true");
-								button.text("다시입력");
-								button.attr("class", "btn btn-success");
-								flag = true;
-							}
-						} else {
-							alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
-						}
-					},
-					error: function(error) {
-						alert("오류 발생! 관리자에게 문의 바랍니다.");
+					} else {
+						alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
 					}
-				});
-			}
-		} 
-		else {
-			alert("오류발생!");
+				},
+				error: function(error) {
+					alert("오류 발생! 관리자에게 문의 바랍니다.");
+				}
+			});
 		}
-		
 	};
 	
-	// 아이디 유효성 검사
-	$("#id_check").click(function() {
+	$("#id").blur(function() {
 		// 아이디 input 태그
 		var input_tag = $("#id");
-		// 아이디 중복확인 button 태그
-		var button_tag = $("#id_check");
-		
+		// 아이디 중복확인 span 태그
+		var span_tag = $("#id_check");
 		// 아이디 정규식
 		var isID = /^[a-z0-9][a-z0-9_\-]{4,19}$/;
 		var effect_text = "5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다.";
 		
-		var result = text_check(input_tag, button_tag, isID, idFlag, effect_text, "아이디", "/idCheck");
+		text_check(input_tag, isID, idFlag, effect_text, "아이디", "/idCheck", span_tag);
 		
 	});
 	
 	// 닉네임 유효성 검사 및 중복확인
-	$("#nick_check").click(function() {
+	$("#nickname").blur(function() {
 		// 닉네임 input 태그
 		var input_tag = $("#nickname");
-		// 닉네임 중복확인 button 태그
-		var button_tag = $("#nick_check");
+		// 닉네임 중복확인 span 태그
+		var span_tag = $("#nick_check");
 		// 닉네임 정규식
 		var isNICK = /^([a-zA-Z0-9|가-힣]).{1,10}$/;
 		var effect_text = "2~10자의 한글, 영문, 숫자만 사용할 수 있습니다.";
 		
-		var result = text_check(input_tag, button_tag, isNICK, nickFlag, effect_text, "닉네임", "/nickCheck");
+		text_check(input_tag, isNICK, nickFlag, effect_text, "닉네임", "/nickCheck", span_tag);
 		
 	});
 	
 	// 메일 유효성 검사 및 중복확인
 	$("#mail_check").click(function() {
-		// 메일 input 태그
-		var input_tag = $("#mail");
+		// 메일 input
+		var user_mail = $("#mail").val();
 		// 메일 중복확인 button 태그
-		var button_tag = $("#mail_check");
+		var button_text = $("#mail_check").text();
+		
+		if ( button_text == "다시입력" || button_text == "재확인 필요"){
+		
+			$("#mail").removeAttr("readonly");
+			$("#mail_check").text("인증하기");
+			$("#mail_check").attr("class", "btn btn-info");
+		}
+		else {
+			auth_send();
+		}
+		
+	});
+	
+	function auth_send(){
+		var user_mail = $("#user_mail").val();
+		
 		// 정규식
 		var isMAIL = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-		var effect_text = "메일 형식에 맞지 않습니다.";
 		
-		var result = text_check(input_tag, button_tag, isMAIL, mailFlag, effect_text);
-			
-		if(result){
-			
-			var user_mail = input_tag.val();
-			
+		if(user_mail == ""){
+			alert("공백은 입력할 수 없습니다.");
+			return;
+		}
+		
+		if(!isMAIL.test(user_mail)){
+			alert("메일 형식에 맞지 않습니다.");
+		} else {
 			$.ajax({
 				type: "POST",
 				url: Path() + "member/check/mailCheck",
@@ -234,16 +236,16 @@
 				data : { user_mail : user_mail },
 				success: function(data) {
 					if(data.result == "KEY_OK"){
-						
-						alert("인증코드가 전송되었습니다.");
-						input_tag.attr("readonly", "true");
-						button_tag.hide();
-						$(".div_auth").show( 1000 );
-						
-					} else if(data.result == "DUP_MAIL"){
 							
+						alert("인증코드가 전송되었습니다.");
+						$("#mail").attr("readonly", "true");
+						$("#mail_check").hide();
+						$(".div_auth").show( 1000 );
+							
+					} else if(data.result == "DUP_MAIL"){
+								
 						alert("이미 사용중인 메일입니다.");
-						
+							
 					} else if("result", "MAIL_ERROR"){
 						alert("이메일 보내기 실패, 관리자에게 문의 바랍니다.");
 					}
@@ -252,11 +254,12 @@
 					alert("에러 발생! 관리자에게 문의 바랍니다.");
 				}
 			});
-		} 
-	});
+		}
+	}
 	
 	// 메일 인증코드 확인하기
 	$("#auth_check").click(function() {
+		
 		var auth_code = $("#auth_code").val();
 		
 		if( auth_code == ""){
@@ -415,10 +418,6 @@
 			"user_pwd" : en_pwd
 		};
 		
-		for(key in form){
-			console.log('key: ' + key + " , " + "value : " + form[key]);
-		}
-		
 		$.ajax({
 			type:"POST",
 			url: Path() + "member/join",
@@ -427,15 +426,16 @@
 			contentType: "application/json; charset=UTF-8",
 			success: function(data){
 				if(data.result == "OK"){
-					location.href= contextPath();
+					alert("회원가입 완료!");
+					location.href= Path();
 				} 
 				else if (data.result == "DB_ERROR"){
 					alert("중복확인을 다시 해주세요!");
-					
+					DB_ERROR();
 				}
 				else if (data.result == "KEY_ERROR"){
 					alert("에러 발생!");
-					location.href= contextPath() + "/member/join";
+					location.href= Path() + "/member/join";
 				} 
 				
 			},
@@ -444,8 +444,6 @@
 			}
 		});
 		
-// 		$("#JoinForm").submit();
-		return;
 	}
 
 

@@ -66,7 +66,9 @@ public class MemberController {
 	// 회원가입 처리
 	@RequestMapping( value="/join", method = RequestMethod.POST )
 	@ResponseBody
-	public Map<String, String> join(@RequestBody MemberJoinDTO memberJoinDTO, BindingResult bindingResult, HttpServletRequest request, RedirectAttributes rttr) throws Exception{
+	public Map<String, String> join(
+			@RequestBody MemberJoinDTO memberJoinDTO, // 클라이언트는 요청 처리에 대한 값으로 json 객체를 넘겨줌, 넘어온 객체를 @RequestBody을 이용해서 사용
+			BindingResult bindingResult, HttpServletRequest request, RedirectAttributes rttr) throws Exception{
 		
 		logger.info("join POST 요청");
 		
@@ -78,6 +80,7 @@ public class MemberController {
 		// 클라이언트에 반환할 데이터
 		Map<String, String> join_result = new HashMap<String, String>();
 		
+		
 		if(privateKey == null) {
 			
 			join_result.put("result", "KEY_ERROR");
@@ -88,10 +91,6 @@ public class MemberController {
 		String[] memberJoinDTO_Encrypt_Array = {
 				memberJoinDTO.getUser_id(), memberJoinDTO.getUser_name(), memberJoinDTO.getUser_nickname(),
 				memberJoinDTO.getUser_mail(), memberJoinDTO.getUser_pwd() };
-		
-		for (String string : memberJoinDTO_Encrypt_Array) {
-			System.out.println(string);
-		}
 		
 		// 암호화된 객체를 복호화	( 복호화 성공하면 true return )
 		if( encrypt_service.decryptRsa(privateKey, memberJoinDTO_Encrypt_Array) != null) {

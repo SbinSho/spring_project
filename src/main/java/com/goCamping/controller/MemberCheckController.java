@@ -51,7 +51,7 @@ public class MemberCheckController {
 
 	// 메일 중복 확인
 	@RequestMapping(value = "/mailCheck", method = RequestMethod.POST)
-	public Map<String, String> mail_Check(String value, HttpSession session) throws Exception {
+	public Map<String, String> mail_Check(String user_mail, HttpSession session) throws Exception {
 
 		logger.info("/mailCheck 요청");
 
@@ -60,13 +60,13 @@ public class MemberCheckController {
 
 		// mail_result가 1인 경우, 중복된 메일이 존재하는 경우
 		// 인증코드 전송 작업을 하지 않고 현재 mail_result 값을 바로 리턴함
-		if (mail_service.mail_Check(value) == 1) {
+		if (mail_service.mail_Check(user_mail) == 1) {
 			mail_result.put("result","DUP_MAIL");
 			return mail_result;
 		}
 
 		// 사용자에게 인증코드 전송하고, 전송된 인증코드를 MailService에서 반환받음
-		String auth_key = mail_service.sendAuthMail(value);
+		String auth_key = mail_service.sendAuthMail(user_mail);
 
 		if (auth_key.isEmpty()) {
 			mail_result.put("result", "MAIL_ERROR");
