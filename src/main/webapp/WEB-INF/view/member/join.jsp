@@ -105,9 +105,18 @@
 	var pwFlag = false;
 	var pw_con_Flag = false;
 	
-	var contextPath = "${pageContext.request.contextPath}" ;
+	function Path() {
+		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}"; 
+		return contextPath;
+	}
 	
-	var text_check = function (input, button, is, flag, effect_text) {
+	function DB_ERROR() {
+		idFlag = false;
+		nickFlag = false;
+		mainFlag = false;
+	}
+	
+	var text_check = function (input, button, is, flag, effect_text, result_text, request_text) {
 		
 		// 중복확인 대상이 되는 input 태그
 		var input_value = input.val();
@@ -128,16 +137,47 @@
 			if(input_value == ""){
 				
 				alert("공백은 입력할 수 없습니다.");
-				return false;			
+				return;		
 			} 
 			
 			if(!is.test(input_value)){
 				
 				alert(effect_text);
-				return false;
+				return;
+			} 
+			else {
+				var input_value = input.val();
+				
+				$.ajax({
+					type: "POST",
+					url:  Path() + "member/check" + request_text,
+					data : { value : input_value },
+					success: function(data) {
+						
+						if(data == 1){
+							
+							alert("이미 사용중인" + result_text + " 입니다.");
+							
+						} else if( data == 0 ){
+							
+							if(confirm("사용가능한 " + result_text + " 입니다. 사용하시겠습니까?")){
+								input.attr("readonly", "true");
+								button.text("다시입력");
+								button.attr("class", "btn btn-success");
+								flag = true;
+							}
+						} else {
+							alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
+						}
+					},
+					error: function(error) {
+						alert("오류 발생! 관리자에게 문의 바랍니다.");
+					}
+				});
 			}
-			
-			return true;
+		} 
+		else {
+			alert("오류발생!");
 		}
 		
 	};
@@ -148,44 +188,13 @@
 		var input_tag = $("#id");
 		// 아이디 중복확인 button 태그
 		var button_tag = $("#id_check");
+		
 		// 아이디 정규식
 		var isID = /^[a-z0-9][a-z0-9_\-]{4,19}$/;
 		var effect_text = "5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다.";
 		
-		var result = text_check(input_tag, button_tag, isID, idFlag, effect_text);
+		var result = text_check(input_tag, button_tag, isID, idFlag, effect_text, "아이디", "/idCheck");
 		
-		if(result == true){
-			
-			var user_id = input_tag.val();
-			
-			$.ajax({
-				type: "POST",
-				url: contextPath + "/member/check/idCheck",
-				data : { user_id : user_id },
-				success: function(data) {
-					
-					if(data == 1){
-						
-						alert("이미 사용중인 아이디 입니다.");
-						
-					} else if( data == 0 ){
-						
-						if(confirm("사용가능한 아이디 입니다. 사용하시겠습니까?")){
-							input_tag.attr("readonly", "true");
-							button_tag.text("다시입력");
-							button_tag.attr("class", "btn btn-success");
-							idFlag = true;
-						}
-					} else {
-						alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
-					}
-				},
-				error: function(error) {
-					alert("오류 발생! 관리자에게 문의 바랍니다.");
-				}
-			});
-			
-		}
 	});
 	
 	// 닉네임 유효성 검사 및 중복확인
@@ -198,40 +207,7 @@
 		var isNICK = /^([a-zA-Z0-9|가-힣]).{1,10}$/;
 		var effect_text = "2~10자의 한글, 영문, 숫자만 사용할 수 있습니다.";
 		
-		var result = text_check(input_tag, button_tag, isNICK, nickFlag, effect_text);
-		
-		if(result){
-			
-			var user_nickname = input_tag.val();
-			
-			$.ajax({
-				type: "POST",
-				url: "/member/check/nickCheck",
-				data : { user_nickname : user_nickname },
-				success: function(data) {
-					if(data == 1){
-						
-						alert("이미 사용중인 닉네임 입니다.");
-						
-					} else if(data == 0){
-						
-						if(confirm("사용가능한 닉네임 입니다. 사용하시겠습니까?")){
-							input_tag.attr("readonly", "true");
-							button_tag.text("다시입력");
-							button_tag.attr("class", "btn btn-success");
-							nickFlag = true;
-						}
-					} else {
-						alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
-					}
-				},
-				error: function(error) {
-					alert("오류 발생! 관리자에게 문의 바랍니다.");
-				}
-			});
-			
-		}
-		
+		var result = text_check(input_tag, button_tag, isNICK, nickFlag, effect_text, "닉네임", "/nickCheck");
 		
 	});
 	
@@ -253,7 +229,7 @@
 			
 			$.ajax({
 				type: "POST",
-				url: contextPath + "/member/check/mailCheck",
+				url: Path() + "member/check/mailCheck",
 				dataType: "json",
 				data : { user_mail : user_mail },
 				success: function(data) {
@@ -290,7 +266,7 @@
 		
 		$.ajax({
 			type:"POST",
-			url: contextPath + "/member/check/authCheck",
+			url: Path() + "member/check/authCheck",
 			data: {auth_code : auth_code},
 			dataType : "json",
 			success: function(data){
@@ -431,13 +407,45 @@
 		var en_mail = rsa.encrypt(mail);
 		var en_pwd = rsa.encrypt(pwd);
 		
-		$("#user_id").val(en_id);
-		$("#user_name").val(en_name);
-		$("#user_nickname").val(en_nickname);
-		$("#user_mail").val(en_mail);
-		$("#user_pwd").val(en_pwd);
+		var form = {
+			"user_id" : en_id,
+			"user_name" : en_name,
+			"user_nickname" : en_nickname,
+			"user_mail" : en_mail,
+			"user_pwd" : en_pwd
+		};
 		
-		$("#JoinForm").submit();
+		for(key in form){
+			console.log('key: ' + key + " , " + "value : " + form[key]);
+		}
+		
+		$.ajax({
+			type:"POST",
+			url: Path() + "member/join",
+			data: JSON.stringify(form),
+			dataType : "json",
+			contentType: "application/json; charset=UTF-8",
+			success: function(data){
+				if(data.result == "OK"){
+					location.href= contextPath();
+				} 
+				else if (data.result == "DB_ERROR"){
+					alert("중복확인을 다시 해주세요!");
+					
+				}
+				else if (data.result == "KEY_ERROR"){
+					alert("에러 발생!");
+					location.href= contextPath() + "/member/join";
+				} 
+				
+			},
+			error: function(error){
+				alert("관리자에게 문의 바랍니다!");
+			}
+		});
+		
+// 		$("#JoinForm").submit();
+		return;
 	}
 
 

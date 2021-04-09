@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-public class KeySet {
+public class CreateKey {
 	
 	public static void set(HttpServletRequest request, Map<String, Object> map) {
 		
