@@ -107,3 +107,7 @@ body {
 .signup-form form a:hover {
 	text-decoration: underline;
 }
+
+.edit_title {
+	color: white !important;
+}

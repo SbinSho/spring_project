@@ -105,6 +105,8 @@
 	var pwFlag = false;
 	var pw_con_Flag = false;
 	
+	var contextPath = "${pageContext.request.contextPath}" ;
+	
 	var text_check = function (input, button, is, flag, effect_text) {
 		
 		// 중복확인 대상이 되는 input 태그
@@ -158,7 +160,7 @@
 			
 			$.ajax({
 				type: "POST",
-				url: "/member/check/idCheck",
+				url: contextPath + "/member/check/idCheck",
 				data : { user_id : user_id },
 				success: function(data) {
 					
@@ -251,7 +253,7 @@
 			
 			$.ajax({
 				type: "POST",
-				url: "/member/check/mailCheck",
+				url: contextPath + "/member/check/mailCheck",
 				dataType: "json",
 				data : { user_mail : user_mail },
 				success: function(data) {
@@ -288,7 +290,7 @@
 		
 		$.ajax({
 			type:"POST",
-			url: "/member/check/authCheck",
+			url: contextPath + "/member/check/authCheck",
 			data: {auth_code : auth_code},
 			dataType : "json",
 			success: function(data){
