@@ -35,4 +35,15 @@
 		USER_ID = #{user_id}
 	</select>
 
+
+	<select id="member_select" parameterType="string" resultType="hashmap">
+		SELECT 
+		user_id, 
+		user_name, 
+		user_nickname, 
+		user_mail
+		FROM MEMBER
+		WHERE 
+		USER_ID = #{user_id}
+	</select>
 </mapper>
