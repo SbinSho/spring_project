@@ -1,5 +1,8 @@
 package com.goCamping.dao;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberLoginDTO;
 
@@ -20,4 +23,6 @@ public interface MemberDAO {
 	// 로그인 처리
 	public MemberVO member_login(MemberLoginDTO MemberLoginDTO) throws Exception;
 	
+	// 회원정보 불러오기
+	public HashMap<String, Object> member_select(String user_id);
 }

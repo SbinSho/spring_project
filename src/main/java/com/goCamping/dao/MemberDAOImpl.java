@@ -1,5 +1,8 @@
 package com.goCamping.dao;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -44,6 +47,12 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public MemberVO member_login(MemberLoginDTO MemberLoginDTO) throws Exception {
 		return session.selectOne(NAMESPACE + ".member_login", MemberLoginDTO);
+	}
+	
+	// 회원정보 불러오기
+	@Override
+	public HashMap<String, Object> member_select(String user_id) {
+		return session.selectOne(NAMESPACE + ".member_select", user_id);
 	}
 	
 	
