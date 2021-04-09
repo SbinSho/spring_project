@@ -39,7 +39,8 @@
 		</mvc:interceptor>
 		
 		<mvc:interceptor>
-			<mvc:mapping path="/member/logout"/>
+			<mvc:mapping path="/member/edit/**"/>
+			<mvc:mapping path="/member/logout/**"/>
 			<ref bean="authLoginInterceptor"/>
 		</mvc:interceptor>
 		
