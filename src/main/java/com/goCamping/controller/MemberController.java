@@ -17,10 +17,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberJoinDTO;
 import com.goCamping.dto.MemberLoginDTO;
 import com.goCamping.service.EncryptService;
@@ -41,7 +43,6 @@ public class MemberController {
 	@Autowired
 	private EncryptService encrypt_service;
 	
-	
 	// 회원가입 페이지 이동
 	@RequestMapping( value="/join", method = RequestMethod.GET )
 	public String join(HttpServletRequest request, RedirectAttributes rttr, Model model) throws Exception {
@@ -61,16 +62,6 @@ public class MemberController {
 		return "redirect:/";
 	}
 	 
-	
-	public void keySet(HttpServletRequest request, Map<String, Object> map) {
-		
-		HttpSession session = request.getSession();
-		session.setAttribute("_RSA_WEB_KEY_", map.get("_RSA_WEB_KEY_"));
-		request.setAttribute("RSAModulus", map.get("RSAModulus"));
-		request.setAttribute("RSAExponent", map.get("RSAExponent"));
-		
-	}
-	
 	// 회원가입 처리
 	@RequestMapping( value="/join", method = RequestMethod.POST )
 	public String join(MemberJoinDTO memberJoinDTO, BindingResult bindingResult, HttpServletRequest request, RedirectAttributes rttr) throws Exception{
@@ -154,7 +145,7 @@ public class MemberController {
 		// 생성된 개인키 및 공개키가 존재하지 않으면 null
 		if (map != null) {
 			
-			keySet(request, map);
+			KeySet.set(request, map);
 			
 			// 브라우저에 저장된 cookie 체크
 			if(cookie != null) {
@@ -241,9 +232,12 @@ public class MemberController {
 		HttpSession session = request.getSession();
 		session.removeAttribute("loginUser");
 		
+		// contextPath 가져오기
+		String ContextPath = request.getContextPath() != "" ? request.getContextPath() : "/";
+		
 		try {
 			PrintWriter out = response.getWriter();
-			out.println("<script>alert('로그아웃 성공!'); location.href='/';</script>");
+			out.println("<script>alert('로그아웃 성공!'); location.href='"+ ContextPath + "';</script>");
 			out.flush();
 			out.close();
 			
@@ -256,7 +250,11 @@ public class MemberController {
 	
 	// 회원정보 수정 페이지 이동
 	@RequestMapping( value = "/edit", method = RequestMethod.GET)
-	public String edit() {
+	public String edit(String user_id, Model model) {
+		
+		logger.info("/edit GET 진입");
+		
+		model.addAttribute("memberVO", member_service.member_select(user_id));
 		
 		return "/member/edit";
 	}
