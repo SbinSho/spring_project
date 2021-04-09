@@ -1,10 +1,10 @@
 package com.goCamping.dao;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import com.goCamping.domain.MemberVO;
@@ -39,8 +39,19 @@ public class MemberDAOImpl implements MemberDAO {
 
 	// 회원가입 처리
 	@Override
-	public int member_create(MemberVO memberVO) throws Exception {
-		return session.insert(NAMESPACE + ".member_create", memberVO);
+	public Boolean member_create(MemberVO memberVO) {
+		
+		try {
+			if(session.insert(NAMESPACE + ".member_create", memberVO) == 1) {
+				return true;
+			} 
+			else {
+				return false;
+			}
+		} catch (DuplicateKeyException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	// 로그인 처리

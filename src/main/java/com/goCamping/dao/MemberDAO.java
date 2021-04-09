@@ -1,7 +1,8 @@
 package com.goCamping.dao;
 
 import java.util.HashMap;
-import java.util.Map;
+
+import org.springframework.dao.DuplicateKeyException;
 
 import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberLoginDTO;
@@ -18,7 +19,7 @@ public interface MemberDAO {
 	public int mail_Check(String user_mail) throws Exception;
 	
 	// 회원가입 처리
-	public int member_create(MemberVO memberVO) throws Exception;
+	public Boolean member_create(MemberVO memberVO) throws DuplicateKeyException;
 
 	// 로그인 처리
 	public MemberVO member_login(MemberLoginDTO MemberLoginDTO) throws Exception;
