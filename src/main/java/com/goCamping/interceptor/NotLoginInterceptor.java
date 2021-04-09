@@ -27,10 +27,13 @@ public class NotLoginInterceptor extends HandlerInterceptorAdapter{
 		if( session.getAttribute("loginUser") == null) {
 			return true;
 		}
+		
+		// contextPath 가져오기
+		String ContextPath = request.getContextPath() != "" ? request.getContextPath() : "/";
 
 		response.setContentType("text/html; charset=utf-8");
 		PrintWriter out = response.getWriter();
-		out.println("<script>alert('잘못된 접근입니다.'); location.href='" + request.getContextPath() +"/';</script>");
+		out.println("<script>alert('잘못된 접근입니다.'); location.href='" + ContextPath + "';</script>");
 		out.flush();
 		out.close();
 		return false;

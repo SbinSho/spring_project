@@ -35,10 +35,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		if (session.getAttribute("loginUser") == null) {
 			return true;
 		}
+		
+		// contextPath 가져오기
+		String ContextPath = request.getContextPath() != "" ? request.getContextPath() : "/";
 
 		response.setContentType("text/html; charset=utf-8");
 		PrintWriter out = response.getWriter();
-		out.println("<script>alert('잘못된 접근입니다.'); location.href='" + request.getContextPath() +"/';</script>");
+		out.println("<script>alert('잘못된 접근입니다.'); location.href='" + ContextPath + "';</script>");
 		out.flush();
 		out.close();
 		return false;
@@ -69,6 +72,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 		MemberLoginDTO memberLoginDTO = (MemberLoginDTO) map.get("memberLoginDTO");
 
+		// contextPath 가져오기
+		String ContextPath = request.getContextPath() != "" ? request.getContextPath() : "/";
+		
 		// 개인키가 존재하지 않을 경우
 		if (map.get("private") != null) {
 
@@ -76,7 +82,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 			map.remove("private");
 
-			out.println("<script>alert('오류 발생!'); location.href='" + request.getContextPath() + "/member/login';</script>");
+			out.println("<script>alert('오류 발생!'); location.href='" + ContextPath + "/member/login';</script>");
 			out.flush();
 		}
 		// 객체 유효성 검사 실패 또는 DB에 매칭되는 아이디와 비밀번호가 같지 않을 경우
@@ -111,7 +117,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			// 브라우저에 작성한 cookie를 응답함
 			// cookie응답후 메인페이지로 이동
 			response.addCookie(loginCookie);
-			out.println("<script>alert('로그인 완료!'); location.href='"+ request.getContextPath() + "/';</script>");
+			out.println("<script>alert('로그인 완료!'); location.href='"+ ContextPath + "';</script>");
 			out.flush();
 		}
 
