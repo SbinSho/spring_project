@@ -22,6 +22,7 @@
 
 <link href="<c:url value='/css/bootstrap/bootstrap.min.css'/>" rel="stylesheet">
 <link href="<c:url value='/css/join.css'/>" rel="stylesheet">
+
 <!-- RSA 자바스크립트 라이브러리 -->
 <script type="text/javascript" src="/js/rsa/jsbn.js"></script>
 <script type="text/javascript" src="/js/rsa/rsa.js"></script>
@@ -57,10 +58,10 @@
 				<input type="email" id="mail" class="form-control" placeholder="이메일" />
 			</div>
 			<div class="form-group div_auth" style="display: none;">
-				<label for="auth_code">인증코드</label> <input type="text"id="auth_code" class="form-control">
+				<label for="code">인증코드</label> <input type="text" id="code" class="form-control">
 				<br>
 				<div class="text-right">
-					<button type="button" id="re_auth_check" class="btn btn-secondary" onclick="auth_send();">재전송</button>
+					<button type="button" id="re_auth_check" class="btn btn-secondary" onclick="auth_send('재전송')">재전송</button>
 					<button type="button" id="auth_check" class="btn btn-secondary">확인하기</button>
 				</div>
 			</div>
@@ -92,6 +93,7 @@
 		<input type="hidden" id="user_nickname" name="user_nickname" />
 		<input type="hidden" id="user_mail" name="user_mail"/>
 		<input type="hidden" id="user_pwd" name="user_pwd"/>
+		<input type="hidden" id="auth_code" name="auth_code" />
 	</form>
 </body>
 
@@ -104,71 +106,6 @@
 	var pwFlag = false;
 	var pw_con_Flag = false;
 	
-	function Path() {
-		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}"; 
-		return contextPath;
-	}
-	
-	function DB_ERROR() {
-		idFlag = false;
-		nickFlag = false;
-		mainFlag = false;
-		
-		$("#id_check").text("재확인 필요");
-		$("#id_check").css("color", "red");
-		
-		$("#nick_check").text("재확인 필요");
-		$("#nick_check").css("color", "red");
-		
-		$(".div_auth").hide();
-		$("#mail_check").show();
-		$("#mail_check").text("재확인 필요");
-		
-	}
-	
-	var text_check = function (input, is, flag, effect_text, result_text, request, span_check) {
-		
-		// 중복확인 대상이 되는 input 태그
-		var input_value = input.val();
-		
-		flag = false;
-		
-		if(!is.test(input_value)){
-			
-			span_check.text(effect_text);
-			span_check.css('color', 'red');
-			
-		} else {
-				
-			$.ajax({
-				type: "POST",
-				async : false,
-				url:  Path() + "member/check" + request,
-				data : { value : input_value },
-				success: function(data) {
-								
-					if(data == 1){
-							
-						span_check.text( "중복된 " + result_text + " 입니다.");
-						span_check.css("color", "red");
-									
-					} else if( data == 0 ){
-									
-						span_check.text( "사용가능한 " + result_text + " 입니다.");
-						span_check.css("color", "green");
-						flag = true;
-							
-					} else {
-						alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
-					}
-				},
-				error: function(error) {
-					alert("오류 발생! 관리자에게 문의 바랍니다.");
-				}
-			});
-		}
-	};
-	
 	$("#id").blur(function() {
 		// 아이디 input 태그
 		var input_tag = $("#id");
@@ -178,7 +115,7 @@
 		var isID = /^[a-z0-9][a-z0-9_\-]{4,19}$/;
 		var effect_text = "5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다.";
 		
-		text_check(input_tag, isID, idFlag, effect_text, "아이디", "/idCheck", span_tag);
+		idFlag = text_check(input_tag, isID, effect_text, "아이디", "/idCheck", span_tag);
 		
 	});
 	
@@ -192,7 +129,7 @@
 		var isNICK = /^([a-zA-Z0-9|가-힣]).{1,10}$/;
 		var effect_text = "2~10자의 한글, 영문, 숫자만 사용할 수 있습니다.";
 		
-		text_check(input_tag, isNICK, nickFlag, effect_text, "닉네임", "/nickCheck", span_tag);
+		nickFlag = text_check(input_tag, isNICK, effect_text, "닉네임", "/nickCheck", span_tag);
 		
 	});
 	
@@ -210,57 +147,16 @@
 			$("#mail_check").attr("class", "btn btn-info");
 		}
 		else {
-			auth_send();
+			auth_send(button_text);
 		}
 		
 	});
 	
-	function auth_send(){
-		var user_mail = $("#user_mail").val();
-		
-		// 정규식
-		var isMAIL = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-		
-		if(user_mail == ""){
-			alert("공백은 입력할 수 없습니다.");
-			return;
-		}
-		
-		if(!isMAIL.test(user_mail)){
-			alert("메일 형식에 맞지 않습니다.");
-		} else {
-			$.ajax({
-				type: "POST",
-				url: Path() + "member/check/mailCheck",
-				dataType: "json",
-				data : { user_mail : user_mail },
-				success: function(data) {
-					if(data.result == "KEY_OK"){
-							
-						alert("인증코드가 전송되었습니다.");
-						$("#mail").attr("readonly", "true");
-						$("#mail_check").hide();
-						$(".div_auth").show( 1000 );
-							
-					} else if(data.result == "DUP_MAIL"){
-								
-						alert("이미 사용중인 메일입니다.");
-							
-					} else if("result", "MAIL_ERROR"){
-						alert("이메일 보내기 실패, 관리자에게 문의 바랍니다.");
-					}
-				},
-				error: function(error) {
-					alert("에러 발생! 관리자에게 문의 바랍니다.");
-				}
-			});
-		}
-	}
 	
 	// 메일 인증코드 확인하기
 	$("#auth_check").click(function() {
 		
-		var auth_code = $("#auth_code").val();
+		var auth_code = $("#code").val();
 		
 		if( auth_code == ""){
 			alert("인증코드를 입력해주세요!");
@@ -273,23 +169,22 @@
 			data: {auth_code : auth_code},
 			dataType : "json",
 			success: function(data){
-				if(data.result == "KEY_OK"){
+				if(data.result == "CODE_OK"){
 						
 					alert("인증완료!");
 
-					$("#auth_code").val('');
 					$(".div_auth").hide(1000);
-						
+					
 					$("#mail_check").text("다시입력");
 					$("#mail_check").attr("class", "btn btn-success");
 					$("#mail_check").show(); 
 						
 					mailFlag = true;
 						
-				} else if (data.result == "KEY_FAIL"){
+				} else if (data.result == "CODE_FAIL"){
 					alert("인증번호가 일치하지 않습니다.");
 					
-				} else if (data.result == "KEY_ERROR"){
+				} else if (data.result == "CODE_ERROR"){
 					alert("오류 발생! 관리자에게 문의 바랍니다.");
 				}
 			},
@@ -300,6 +195,7 @@
 		});
 			
 	});
+	
 	
 	// 이름 유효성 체크
 	$("#name").blur(function(){
@@ -362,6 +258,105 @@
 		}
 	});
 	
+	// 컨텍스트 경로 반환
+	function Path() {
+		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}"; 
+		return contextPath;
+	}
+	
+	// 유효성 검증 및 중복 체크
+	var text_check = function (input, is, effect_text, result_text, request, span_check) {
+		
+		// 반환값
+		var flag = false;
+		
+		// 중복확인 대상이 되는 input 태그
+		var input_value = input.val();
+		
+		if(!is.test(input_value)){
+			
+			span_check.text(effect_text);
+			span_check.css('color', 'red');
+			
+		} else {
+				
+			$.ajax({
+				type: "POST",
+				async : false,
+				url:  Path() + "member/check" + request,
+				data : { value : input_value },
+				success: function(data) {
+								
+					if(data == 1){
+							
+						span_check.text( "중복된 " + result_text + " 입니다.");
+						span_check.css("color", "red");
+									
+					} else if( data == 0 ){
+									
+						span_check.text( "사용가능한 " + result_text + " 입니다.");
+						span_check.css("color", "green");
+						flag = true;
+						
+					} else {
+						alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
+					}
+				},
+				error: function(error) {
+					alert("오류 발생! 관리자에게 문의 바랍니다.");
+				}
+			});
+		}
+		
+		return flag;
+	};
+	
+	// 메일 인증코드 전송
+	function auth_send(text){
+		var user_mail = $("#mail").val();
+		
+		// 정규식
+		var isMAIL = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+		
+		if(user_mail == ""){
+			alert("공백은 입력할 수 없습니다.");
+			return;
+		}
+		
+		if(!isMAIL.test(user_mail)){
+			alert("메일 형식에 맞지 않습니다.");
+		} else {
+			$.ajax({
+				type: "POST",
+				url: Path() + "member/check/mailCheck",
+				dataType: "json",
+				data : { user_mail : user_mail },
+				success: function(data) {
+					if(data.result == "CODE_OK"){
+							
+						alert("인증코드가 전송되었습니다.");
+						// text 매개변수 사용
+						if(text == "인증하기"){
+							$("#mail").attr("readonly", "true");
+							$("#mail_check").hide();
+							$(".div_auth").show( 1000 );
+						}
+							
+					} else if(data.result == "DUP_MAIL"){
+								
+						alert("이미 사용중인 메일입니다.");
+							
+					} else if("result", "MAIL_ERROR"){
+						alert("이메일 보내기 실패, 관리자에게 문의 바랍니다.");
+					}
+				},
+				error: function(error) {
+					alert("에러 발생! 관리자에게 문의 바랍니다.");
+				}
+			});
+		}
+	}
+	
 	// 폼 데이터값 확인
 	function form_check() {
 		
@@ -370,7 +365,7 @@
 		var nickname = $("#nickname").val();
 		var mail = $("#mail").val();
 		var pwd = $("#pwd").val();
-		
+		var code = $("#code").val();
 
 		if ( id == "" || name == "" || nickname == "" || mail == "" || pwd == "") {
 
@@ -384,7 +379,7 @@
 			
 			if(confirm_check == true){
 				
-				submitEncryptedForm(id, name, nickname, mail, pwd);
+				submitEncryptedForm(id, name, nickname, mail, pwd, code);
 				return false;
 			}
 
@@ -397,7 +392,8 @@
 		
 	}
 	
-	function submitEncryptedForm(id, name, nickname, mail, pwd){
+	// 데이터 암호화 및 서버 전송
+	function submitEncryptedForm(id, name, nickname, mail, pwd, code){
 		
 		// RSA 암호화 생성
 		var rsa = new RSAKey();
@@ -409,13 +405,16 @@
 		var en_nickname = rsa.encrypt(nickname);
 		var en_mail = rsa.encrypt(mail);
 		var en_pwd = rsa.encrypt(pwd);
+		var en_code = rsa.encrypt(code);
 		
+		// json 형태의 객체 전달을 위해 초기화
 		var form = {
 			"user_id" : en_id,
 			"user_name" : en_name,
 			"user_nickname" : en_nickname,
 			"user_mail" : en_mail,
-			"user_pwd" : en_pwd
+			"user_pwd" : en_pwd,
+			"auth_code" : en_code
 		};
 		
 		$.ajax({
@@ -427,16 +426,16 @@
 			success: function(data){
 				if(data.result == "OK"){
 					alert("회원가입 완료!");
-					location.href= Path();
-				} 
+					location.href = Path();
+				}
 				else if (data.result == "DB_ERROR"){
 					alert("중복확인을 다시 해주세요!");
 					DB_ERROR();
-				}
-				else if (data.result == "KEY_ERROR"){
-					alert("에러 발생!");
-					location.href= Path() + "/member/join";
 				} 
+				else if (data.result == "ERROR"){
+					alert("오류 발생!");
+					location.href= Path() + "member/join";
+				}
 				
 			},
 			error: function(error){
@@ -445,8 +444,26 @@
 		});
 		
 	}
-
-
+	
+	// DB 에러 발생
+	function DB_ERROR() {
+		
+		idFlag = false;
+		nickFlag = false;
+		mailFlag = false;
+		
+		$("#id_check").text("재확인 필요");
+		$("#id_check").css("color", "red");
+		
+		$("#nick_check").text("재확인 필요");
+		$("#nick_check").css("color", "red");
+		
+		$(".div_auth").hide();
+		$("#mail_check").show();
+		$("#mail_check").text("재확인 필요");
+		
+	}
+	
 </script>
 
 </html>
