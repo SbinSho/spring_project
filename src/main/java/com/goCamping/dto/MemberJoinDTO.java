@@ -7,7 +7,7 @@ public class MemberJoinDTO {
 	private String user_nickname;
 	private String user_mail;
 	private String user_pwd;
-	
+	private String auth_code;
 	public String getUser_id() {
 		return user_id;
 	}
@@ -38,13 +38,17 @@ public class MemberJoinDTO {
 	public void setUser_pwd(String user_pwd) {
 		this.user_pwd = user_pwd;
 	}
+	public String getAuth_code() {
+		return auth_code;
+	}
+	public void setAuth_code(String auth_code) {
+		this.auth_code = auth_code;
+	}
 	@Override
 	public String toString() {
-		return "MemberDTO [user_id=" + user_id + ", user_name=" + user_name + ", user_nickname=" + user_nickname
-				+ ", user_mail=" + user_mail + ", user_pwd=" + user_pwd + "]";
+		return "MemberJoinDTO [user_id=" + user_id + ", user_name=" + user_name + ", user_nickname=" + user_nickname
+				+ ", user_mail=" + user_mail + ", user_pwd=" + user_pwd + ", auth_code=" + auth_code + "]";
 	}
-	
-	
 	
 
 }
