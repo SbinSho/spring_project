@@ -72,25 +72,29 @@ public class MemberController {
 		
 		logger.info("join POST 요청");
 		
-		// 현재 세션 가져오기
-		HttpSession session = request.getSession();
-		// 세션에 저장된 개인키를 가져오기
-		PrivateKey privateKey = (PrivateKey) session.getAttribute("_RSA_WEB_KEY_");
-		
 		// 클라이언트에 반환할 데이터
 		Map<String, String> join_result = new HashMap<String, String>();
 		
 		
-		if(privateKey == null) {
+		// 현재 세션 가져오기 위한 객체 초기화
+		HttpSession session = request.getSession(false);
+		// 개인키 객체 초기화
+		PrivateKey privateKey = session != null ? (PrivateKey) session.getAttribute("_RSA_WEB_KEY_") : null;
+		// 세션에 저장된 메일 인증코드
+		String seesion_authCode = session != null ? (String) session.getAttribute("auth_code") : null;
+		
+		if ( session == null || privateKey == null || seesion_authCode == null) {
 			
-			join_result.put("result", "KEY_ERROR");
+			logger.info("session 생성 OR privateKey 생성 OR seesion_authCode 에러 발생!");
+			join_result.put("result","ERROR");
 			return join_result;
 			
 		}
 		
+		// 클라이언트에게 전달 받은 객체의 데이터를 이용해 문자열 생성
 		String[] memberJoinDTO_Encrypt_Array = {
 				memberJoinDTO.getUser_id(), memberJoinDTO.getUser_name(), memberJoinDTO.getUser_nickname(),
-				memberJoinDTO.getUser_mail(), memberJoinDTO.getUser_pwd() };
+				memberJoinDTO.getUser_mail(), memberJoinDTO.getUser_pwd(), memberJoinDTO.getAuth_code() };
 		
 		// 암호화된 객체를 복호화	( 복호화 성공하면 true return )
 		if( encrypt_service.decryptRsa(privateKey, memberJoinDTO_Encrypt_Array) != null) {
@@ -101,39 +105,43 @@ public class MemberController {
 			memberJoinDTO.setUser_nickname(memberJoinDTO_Encrypt_Array[2]);
 			memberJoinDTO.setUser_mail(memberJoinDTO_Encrypt_Array[3]);
 			memberJoinDTO.setUser_pwd(memberJoinDTO_Encrypt_Array[4]);
+			memberJoinDTO.setAuth_code(memberJoinDTO_Encrypt_Array[5]);
 			
 			// 복호화된 객체 유효성 체크
 			new MemberJoinDTOValidator().validate(memberJoinDTO, bindingResult);
 			
-			
-			// 유효성에 문제가 발생하면 새로운 요청을 통해 회원가입 페이지로 이동
-			if(bindingResult.hasErrors()) {
+			// 유효성 검사 OR 현재 세션에 저장된 인증코드와 클라이언트에 받은 인증코드 일치 여부 확인
+			if(bindingResult.hasErrors() || !seesion_authCode.equals(memberJoinDTO.getAuth_code())) {
 				
 				logger.info("객체 유효성 검증 실패!");
-				logger.info(bindingResult.getAllErrors());
-				rttr.addFlashAttribute("result", "error");
-				join_result.put("result", "error");
+				session.invalidate();
+				join_result.put("result", "ERROR");
+				return join_result;
 				
-			}
+			} 
 			
-			// 복호화된 객체를 이용하여 회원가입 처리
-			Boolean DB_result = member_service.member_create(memberJoinDTO);
-			
-			// 회원가입 완료 체크
-			if(DB_result) {
+			// 복호화된 객체를 이용하여 회원가입 처리 ( 처리 불가시 false 반환함 )
+			if(member_service.member_create(memberJoinDTO)) {
 				logger.info("회원가입 처리 완료!");
+				// 세션에 저장된 개인키 및 메일 인증코드 삭제
 				join_result.put("result","OK");
-			} else {
+				// 현재 생성된 세션 제거
+				session.invalidate();
 				
+			} else {
 				// 현재 DB에서 중복체크 모두 완료 후, 데이터 입력이 되지 않고 오류가 발생할 경우
+				// 다른 이용자가 먼저 중복체크 후 가입한 상황 OR 클라이언트에서 데이터를 조작해 중복된 값이 넘어오면 안되는데 넘어왔을 경우
 				logger.info("회원가입 오류 발생!");
 				join_result.put("result", "DB_ERROR");
 			}
+			
 		} 
 		else {
 			// 암호문 복호화 실패
 			logger.info("암호문 복호화 실패!");
 			join_result.put("result", "KEY_ERROR");
+			// 현재 생성된 세션 제거
+			session.invalidate();
 		}
 		
 		return join_result;
@@ -206,10 +214,8 @@ public class MemberController {
 					
 				}
 				
-				boolean DB_result = member_service.member_login(memberLoginDTO);
-				
 				// DB 아이디 조회 후 클라이언트 요청 아이디와 비밀번호가 일치 할 경우 true
-				if(DB_result) {
+				if(member_service.member_login(memberLoginDTO)) {
 					return;
 				}
 				// DB 아이디 비밀번호 매칭 실패
