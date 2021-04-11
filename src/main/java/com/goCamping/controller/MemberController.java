@@ -114,7 +114,6 @@ public class MemberController {
 			if(bindingResult.hasErrors() || !seesion_authCode.equals(memberJoinDTO.getAuth_code())) {
 				
 				logger.info("객체 유효성 검증 실패!");
-				session.invalidate();
 				join_result.put("result", "ERROR");
 				return join_result;
 				
@@ -139,9 +138,7 @@ public class MemberController {
 		else {
 			// 암호문 복호화 실패
 			logger.info("암호문 복호화 실패!");
-			join_result.put("result", "KEY_ERROR");
-			// 현재 생성된 세션 제거
-			session.invalidate();
+			join_result.put("result", "ERROR");
 		}
 		
 		return join_result;

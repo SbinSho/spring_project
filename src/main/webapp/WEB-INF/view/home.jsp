@@ -186,13 +186,7 @@
 
 	<script>
 		var result = "${result}";
-		if( result == "member_create_success"){
-			alert("회원가입 성공!");
-		} 
-		else if ( result == "logout_success"){
-				alert("로그아웃 성공!");
-		}
-		else if ( result == "error"){
+		if ( result == "error"){
 			alert("오류 발생!");
 		}
 		
