@@ -3,6 +3,7 @@ package com.goCamping.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
@@ -51,31 +52,38 @@ public class MemberCheckController {
 
 	// 메일 중복 확인
 	@RequestMapping(value = "/mailCheck", method = RequestMethod.POST)
-	public Map<String, String> mail_Check(String user_mail, HttpSession session) throws Exception {
+	public Map<String, String> mail_Check(String user_mail, HttpServletRequest request) throws Exception {
 
 		logger.info("/mailCheck 요청");
 
 		Map<String, String> mail_result = new HashMap<String, String>();
-
 
 		// mail_result가 1인 경우, 중복된 메일이 존재하는 경우
 		// 인증코드 전송 작업을 하지 않고 현재 mail_result 값을 바로 리턴함
 		if (mail_service.mail_Check(user_mail) == 1) {
 			mail_result.put("result","DUP_MAIL");
 			return mail_result;
+			
 		}
 
-		// 사용자에게 인증코드 전송하고, 전송된 인증코드를 MailService에서 반환받음
-		String auth_key = mail_service.sendAuthMail(user_mail);
+		HttpSession session = request.getSession();
+		
+		// 세션 유지 시간 180초(3분) 설정
+		session.setMaxInactiveInterval(180);
 
-		if (auth_key.isEmpty()) {
+		// 사용자에게 인증코드 전송하고, 전송된 인증코드를 MailService에서 반환받음
+		String auth_code = mail_service.sendAuthMail(user_mail);
+
+		if (auth_code.isEmpty()) {
 			mail_result.put("result", "MAIL_ERROR");
 			return mail_result;
 		}
 
 		// 반환받은 인증코드를 세션에 저장함
-		session.setAttribute("auth_key", auth_key);
-		mail_result.put("result", "KEY_OK");
+		session.setAttribute("auth_code", auth_code);
+		mail_result.put("result", "CODE_OK");
+		
+		logger.info("auth_code : " + auth_code);
 		return mail_result;
 	}
 
@@ -86,24 +94,22 @@ public class MemberCheckController {
 		Map<String, String> auth_result = new HashMap<String, String>();
 
 		// 현재 세션에 저장된 인증코드를 가져온다
-		String ses_key = (String) session.getAttribute("auth_key");
+		String ses_key = (String) session.getAttribute("auth_code");
 
 		if (ses_key != null) {
 			// 세션에 저장된 인증코드와 사용자에게 입력된 인증코드를 비교한다.
 			if (ses_key.equals(auth_code)) {
 
-				// 인증코드가 같으면 현재 세션에 저장되어있는 인증코드를 제거한다.
-				session.removeAttribute("auth_key");
-				auth_result.put("result", "KEY_OK");
+				auth_result.put("result", "CODE_OK");
 
 			} else {
-				auth_result.put("result", "KEY_FAIL");
+				auth_result.put("result", "CODE_FAIL");
 			}
 			
 			return auth_result;
 		} 
 		
-		auth_result.put("result", "KEY_ERROR");
+		auth_result.put("result", "CODE_ERROR");
 		return auth_result;
 	}
 
