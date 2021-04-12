@@ -76,11 +76,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		String ContextPath = request.getContextPath() != "" ? request.getContextPath() : "/";
 		
 		// 개인키가 존재하지 않을 경우
-		if (map.get("private") != null) {
+		if (map.get("error") != null) {
 
 			logger.info("private 진입");
 
-			map.remove("private");
+			map.remove("error");
 
 			out.println("<script>alert('오류 발생!'); location.href='" + ContextPath + "/member/login';</script>");
 			out.flush();

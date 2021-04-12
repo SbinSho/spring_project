@@ -28,7 +28,7 @@
 	<!-- 로그인시 사용되는 인터셉터 bean 등록 -->
 	<bean id="loginInterceptor" class="com.goCamping.interceptor.LoginInterceptor" />
 	<!-- 로그인 하지 않은 경우 또는 세션에 저장된 유저가 현재 요청받은 유저와 일치한지 체크하여 권한이 필요한 작업에 사용할 인터셉터 -->
-	<bean id="authLoginInterceptor" class="com.goCamping.interceptor.AuthLoginInterceptor" />
+	<bean id="authLoginInterceptor" class="com.goCamping.interceptor.AuthInterceptor" />
 	<!-- 로그인 하지 않은 경우,  -->
 	<bean id="notLoginInterceptor" class="com.goCamping.interceptor.NotLoginInterceptor" />
 	
@@ -44,10 +44,10 @@
 			<ref bean="authLoginInterceptor"/>
 		</mvc:interceptor>
 		
-		<mvc:interceptor>
-			<mvc:mapping path="/member/check/**"/>
-			<ref bean="notLoginInterceptor" />
-		</mvc:interceptor>
+<!-- 		<mvc:interceptor> -->
+<!-- 			<mvc:mapping path="/member/check/**"/> -->
+<!-- 			<ref bean="notLoginInterceptor" /> -->
+<!-- 		</mvc:interceptor> -->
 		
 	</mvc:interceptors>
 	

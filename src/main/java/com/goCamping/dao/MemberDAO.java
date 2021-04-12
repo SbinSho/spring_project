@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.springframework.dao.DuplicateKeyException;
 
 import com.goCamping.domain.MemberVO;
+import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberLoginDTO;
 
 public interface MemberDAO {
@@ -26,4 +27,8 @@ public interface MemberDAO {
 	
 	// 회원정보 불러오기
 	public HashMap<String, Object> member_select(String user_id);
+
+	// 아이디 수정
+	public Boolean member_chid(MemberChIdDTO memberChIdDTO);
+	
 }

@@ -67,7 +67,7 @@
 				            		</a>
 						        </li>
 						        <li class="nav-item">
-						            <a class="nav-link" href="<c:url value='/member/edit?user_id=${ loginUser.id }'/>">회원정보수정</a>
+						            <a class="nav-link" href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a>
 						        </li>
 			          		</c:otherwise>
 			          </c:choose>  	

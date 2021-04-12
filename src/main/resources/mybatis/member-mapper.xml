@@ -46,4 +46,11 @@
 		WHERE 
 		USER_ID = #{user_id}
 	</select>
+	
+	
+	<update id="member_chid" parameterType="memberChIdDTO">
+		UPDATE MEMBER
+		SET user_id = #{ ch_id }
+		WHERE user_id = #{ user_id }
+	</update>
 </mapper>

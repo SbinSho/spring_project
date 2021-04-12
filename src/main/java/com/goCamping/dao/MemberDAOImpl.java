@@ -8,6 +8,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import com.goCamping.domain.MemberVO;
+import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberLoginDTO;
 
 @Repository
@@ -64,6 +65,20 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public HashMap<String, Object> member_select(String user_id) {
 		return session.selectOne(NAMESPACE + ".member_select", user_id);
+	}
+
+	
+	
+	@Override
+	public Boolean member_chid(MemberChIdDTO MemberChIdDTO) {
+		
+		int result = session.update(NAMESPACE + ".member_chid", MemberChIdDTO);
+		
+		if( result == 1) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	

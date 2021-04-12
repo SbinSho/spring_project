@@ -17,13 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberJoinDTO;
 import com.goCamping.dto.MemberLoginDTO;
 import com.goCamping.service.EncryptService;
@@ -46,7 +50,7 @@ public class MemberController {
 	
 	// 회원가입 페이지 이동
 	@RequestMapping( value="/join", method = RequestMethod.GET )
-	public String join(HttpServletRequest request, RedirectAttributes rttr, Model model) throws Exception {
+	public String join(HttpServletRequest request, RedirectAttributes rttr) throws Exception {
 		
 		logger.info("join GET 요청");
 		
@@ -68,7 +72,9 @@ public class MemberController {
 	@ResponseBody
 	public Map<String, String> join(
 			@RequestBody MemberJoinDTO memberJoinDTO, // 클라이언트는 요청 처리에 대한 값으로 json 객체를 넘겨줌, 넘어온 객체를 @RequestBody을 이용해서 사용
-			BindingResult bindingResult, HttpServletRequest request, RedirectAttributes rttr) throws Exception{
+			BindingResult bindingResult, 
+			HttpServletRequest request, 
+			RedirectAttributes rttr) throws Exception{
 		
 		logger.info("join POST 요청");
 		
@@ -164,7 +170,7 @@ public class MemberController {
 			if(cookie != null) {
 				// 브라우저에 저장된 cookie가 존재하면 cookie의 내용을 가져와서 loginDTO id값으로 지정
 				request.setAttribute("id", cookie.getValue());
-				// 쿠키값을 유지
+				// 뷰페이지 체크박스 체크를 위해 값 저장
 				request.setAttribute("cookie_check", "checked");
 			}
 			
@@ -181,10 +187,10 @@ public class MemberController {
 		
 		logger.info("login POST 요청");
 		
-		// 현재 세션 가져오기
-		HttpSession session = request.getSession();
-		// 세션에 저장된 개인키를 가져오기
-		PrivateKey privateKey = (PrivateKey) session.getAttribute("_RSA_WEB_KEY_");
+		// 현재 세션 가져오기 위한 객체 초기화
+		HttpSession session = request.getSession(false);
+		// 개인키 객체 초기화
+		PrivateKey privateKey = session != null ? (PrivateKey) session.getAttribute("_RSA_WEB_KEY_") : null;
 		
 		// 개인키가 존재하는지 체크
 		if(privateKey != null) {
@@ -240,7 +246,7 @@ public class MemberController {
 		logger.info("/logout 진입!");
 		
 		response.setContentType("text/html; charset=utf-8");
-		HttpSession session = request.getSession();
+		HttpSession session = request.getSession(false);
 		session.removeAttribute("loginUser");
 		
 		// contextPath 가져오기
@@ -259,15 +265,6 @@ public class MemberController {
 		
 	}
 	
-	// 회원정보 수정 페이지 이동
-	@RequestMapping( value = "/edit", method = RequestMethod.GET)
-	public String edit(String user_id, Model model) {
-		
-		logger.info("/edit GET 진입");
-		
-		model.addAttribute("memberVO", member_service.member_select(user_id));
-		
-		return "/member/edit";
-	}
 	
 }
+	

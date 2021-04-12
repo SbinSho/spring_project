@@ -36,10 +36,10 @@
 			<input id="user_id" class="form-control" value="${ memberVO.user_mail }" readonly/>
         </div>
 		<div class="form-group">
-            <button type="button" onclick="location.href='<c:url value='/member/edit/chid/${ memberVO.userid }'/>'" class="btn btn-primary btn-lg btn-block">아이디 변경</button>
+            <button type="button" onclick="location.href='<c:url value='/member/edit/chid?user_id=${ memberVO.user_id }'/>'" class="btn btn-primary btn-lg btn-block">아이디 변경</button>
         </div>
 		<div class="form-group">
-            <button type="button" onclick="location.href='<c:url value='/member/edit/chpass/${ memberVO.userid }'/>'" class="btn btn-primary btn-lg btn-block">비밀번호 변경</button>
+            <button type="button" onclick="location.href='<c:url value='/member/edit/chpass?user_id=${ memberVO.userid }'/>'" class="btn btn-primary btn-lg btn-block">비밀번호 변경</button>
         </div>
 		<div class="form-group">
             <button type="button" onclick="location.href='<c:url value='/'/>'" class="btn btn-danger btn-lg btn-block">수정취소</button>

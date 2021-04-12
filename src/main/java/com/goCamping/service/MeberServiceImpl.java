@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.goCamping.dao.MemberDAO;
 import com.goCamping.domain.MemberVO;
+import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberJoinDTO;
 import com.goCamping.dto.MemberLoginDTO;
 
@@ -83,6 +84,11 @@ public class MeberServiceImpl implements MemberService {
 	@Override
 	public HashMap<String, Object> member_select(String user_id) {
 		return mdao.member_select(user_id);
+	}
+
+	@Override
+	public Boolean member_chid(MemberChIdDTO memberChIdDTO) {
+		return mdao.member_chid(memberChIdDTO);
 	}
 	
 	

@@ -43,8 +43,6 @@ public class MemberCheckController {
 
 		logger.info("/idCheck 요청");
 		
-		System.out.println("user_id ( controller ) : " + value);
-		
 		// 유효성 검증
 		new MemberIdCheckValidator().validate(value, bindingResult);
 		
@@ -77,7 +75,9 @@ public class MemberCheckController {
 
 	// 메일 중복 확인
 	@RequestMapping(value = "/mailCheck", method = RequestMethod.POST)
-	public Map<String, String> mail_Check(@ModelAttribute("user_mail") String user_mail, Errors errors, HttpServletRequest request) throws Exception {
+	public Map<String, String> mail_Check(
+			@ModelAttribute("user_mail") String user_mail, Errors errors, 
+			HttpServletRequest request) throws Exception {
 
 		logger.info("/mailCheck 요청");
 
@@ -100,10 +100,12 @@ public class MemberCheckController {
 			
 		}
 
-		HttpSession session = request.getSession();
+		HttpSession session = request.getSession(false);
 		
-		// 세션 유지 시간 180초(3분) 설정
-		session.setMaxInactiveInterval(180);
+		if(session == null) {
+			mail_result.put("result", "ERROR");
+			return mail_result;
+		}
 
 		// 사용자에게 인증코드 전송하고, 전송된 인증코드를 MailService에서 반환받음
 		String auth_code = mail_service.sendAuthMail(user_mail);
@@ -117,7 +119,6 @@ public class MemberCheckController {
 		session.setAttribute("auth_code", auth_code);
 		mail_result.put("result", "CODE_OK");
 		
-		logger.info("auth_code : " + auth_code);
 		return mail_result;
 	}
 
