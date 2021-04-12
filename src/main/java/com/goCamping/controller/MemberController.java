@@ -141,6 +141,7 @@ public class MemberController {
 			join_result.put("result", "ERROR");
 		}
 		
+		
 		return join_result;
 	}
 	

@@ -184,8 +184,9 @@
 				} else if (data.result == "CODE_FAIL"){
 					alert("인증번호가 일치하지 않습니다.");
 					
-				} else if (data.result == "CODE_ERROR"){
-					alert("오류 발생! 관리자에게 문의 바랍니다.");
+				} else if (data.result == "ERROR"){
+					alert("오류 발생!");
+					location.href= Path() + "member/join";
 				}
 			},
 			error: function(error){
@@ -273,6 +274,7 @@
 		// 중복확인 대상이 되는 input 태그
 		var input_value = input.val();
 		
+		// 유효성 검사
 		if(!is.test(input_value)){
 			
 			span_check.text(effect_text);
@@ -298,7 +300,10 @@
 						span_check.css("color", "green");
 						flag = true;
 						
-					} else {
+					} else if( data == -1){
+						alert("오류 발생! 관리자에게 문의 바랍니다.");
+						location.href= Path() + "member/join";
+					} else{
 						alert("중복 확인 실패! 관리자에게 문의 바랍니다.");
 					}
 				},
@@ -343,11 +348,12 @@
 						}
 							
 					} else if(data.result == "DUP_MAIL"){
-								
 						alert("이미 사용중인 메일입니다.");
-							
-					} else if("result", "MAIL_ERROR"){
+					} else if(data.result == "MAIL_ERROR"){
 						alert("이메일 보내기 실패, 관리자에게 문의 바랍니다.");
+					} else if(data.result == "ERROR"){
+						alert("오류 발생!");
+						location.href = Path() + "member/join";
 					}
 				},
 				error: function(error) {
