@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 
 import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberChIdDTO;
+import com.goCamping.dto.MemberChPassDTO;
 import com.goCamping.dto.MemberLoginDTO;
 
 public interface MemberDAO {
@@ -31,4 +32,9 @@ public interface MemberDAO {
 	// 아이디 수정
 	public Boolean member_chid(MemberChIdDTO memberChIdDTO);
 	
+	// 비밀번호 확인
+	public String member_chpassCheck(String user_id);
+	
+	// 비밀번호 수정
+	public Boolean member_chpass(MemberChPassDTO memberChPassDTO);
 }

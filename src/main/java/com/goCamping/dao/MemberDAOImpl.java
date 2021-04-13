@@ -1,6 +1,7 @@
 package com.goCamping.dao;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberChIdDTO;
+import com.goCamping.dto.MemberChPassDTO;
 import com.goCamping.dto.MemberLoginDTO;
 
 @Repository
@@ -66,22 +68,36 @@ public class MemberDAOImpl implements MemberDAO {
 	public HashMap<String, Object> member_select(String user_id) {
 		return session.selectOne(NAMESPACE + ".member_select", user_id);
 	}
-
-	
-	
+	// 회원 아이디 수정
 	@Override
 	public Boolean member_chid(MemberChIdDTO MemberChIdDTO) {
 		
 		int result = session.update(NAMESPACE + ".member_chid", MemberChIdDTO);
-		
+			
 		if( result == 1) {
 			return true;
 		}
 		
 		return false;
 	}
+	// 회원 비밀번호 확인
+	@Override
+	public String member_chpassCheck(String user_id) {
+		
+		return session.selectOne(NAMESPACE + ".member_chpassCheck", user_id);
+	}
 	
 	
+	// 회원 비밀번호 수정 
+	@Override
+	public Boolean member_chpass(MemberChPassDTO memberChPassDTO) {
+		
+		if( session.update(NAMESPACE + ".member_chpass", memberChPassDTO) == 1) {
+			return true;
+		}
+		
+		return false;
+	}
 	
 	
 	

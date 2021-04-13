@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.goCamping.dto.MemberChIdDTO;
+import com.goCamping.dto.MemberChPassDTO;
 import com.goCamping.service.EncryptService;
 import com.goCamping.service.MemberService;
 import com.goCamping.util.AuthInfo;
 import com.goCamping.util.CreateKey;
 import com.goCamping.validator.MemberChIdCheckValidator;
+import com.goCamping.validator.MemberChPassCheckValidator;
 
 @Controller
 @RequestMapping("/member/edit")
@@ -55,12 +57,9 @@ public class MemberEditController {
 		
 		logger.info("/chid GET 진입");
 		
-		// 개인키 공개키 생성
-		Map<String, Object> map = encrypt_service.createKey();
-		
-		
-		if(map != null) {
-			CreateKey.set(request, map);
+		if(encrypt_service.createKey() != null) {
+			// 개인키 공개키 생성
+			CreateKey.set(request, encrypt_service.createKey());
 			model.addAttribute("user_id", user_id);
 			return "/member/chid";
 		}
@@ -79,7 +78,7 @@ public class MemberEditController {
 		
 		Map<String, String> chid_result = new HashMap<String, String>();
 		
-		String[] chIdDTO_array = { memberChIdDTO.getUser_id(), memberChIdDTO.getCh_id() };
+		String[] chIdDTO_array = { memberChIdDTO.getCh_id() };
 		
 		// 현재 세션 가져오기 위한 객체 초기화
 		HttpSession session = request.getSession(false);
@@ -92,8 +91,10 @@ public class MemberEditController {
 		}
 		
 		if(encrypt_service.decryptRsa(privateKey, chIdDTO_array)) {
+			// 세션에 저장된 아이디 불러오기
+			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
 			
-			memberChIdDTO.setUser_id(chIdDTO_array[0]);
+			memberChIdDTO.setUser_id(authInfo.getId());
 			memberChIdDTO.setCh_id(chIdDTO_array[1]);
 			
 			new MemberChIdCheckValidator().validate(memberChIdDTO, errors);
@@ -107,7 +108,7 @@ public class MemberEditController {
 			
 			if(member_service.member_chid(memberChIdDTO)) {
 				chid_result.put("result", "OK");
-				AuthInfo authInfo = new AuthInfo();
+				// 세션에 저장된 값 변경
 				authInfo.setId(memberChIdDTO.getCh_id());
 				session.setAttribute("loginUser", authInfo);
 			} 
@@ -124,13 +125,76 @@ public class MemberEditController {
 		return chid_result;
 	}
 	
-	// 비밀번호 수정
+	// 비밀번호 수정 페이지 이동
 	@RequestMapping(value = "/chpass", method = RequestMethod.GET)
-	public String chpass(String user_id) {
+	public String chpass(String user_id, HttpServletRequest request, Model model) {
 		
+		logger.info("/chpass GET 진입");
 		
+		if(encrypt_service.createKey() != null) {
+			// 개인키 공개키 생성
+			CreateKey.set(request, encrypt_service.createKey());
+			model.addAttribute("user_id", user_id);
+			return "/member/chpass";
+		}
 		
 		return "redirect:/";
+		
+	}
+	
+	// 비밀번호 수정
+	@RequestMapping(value = "/chpass", method = RequestMethod.POST)
+	public Map<String, String> chpass(@RequestBody MemberChPassDTO memberChPassDTO, Errors errors
+			, HttpServletRequest request, Model model) throws Exception {
+		
+		logger.info("/chpass POST 진입");
+		
+		Map<String, String> chpass_result = new HashMap<String, String>();
+		
+		String[] chPssDTO_array = { memberChPassDTO.getUser_pwd(), memberChPassDTO.getCh_user_pwd() };
+		
+		// 현재 세션 가져오기 위한 객체 초기화
+		HttpSession session = request.getSession(false);
+		// 개인키 객체 초기화
+		PrivateKey privateKey = session != null ? (PrivateKey) session.getAttribute("_RSA_WEB_KEY_") : null;
+		
+		if(session == null || privateKey == null) {
+			chpass_result.put("result", "ERROR");
+			return chpass_result;
+		}
+		
+		if(encrypt_service.decryptRsa(privateKey, chPssDTO_array)) {
+			
+			// 세션에 저장된 아이디 불러오기
+			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
+			
+			memberChPassDTO.setUser_id(authInfo.getId());
+			memberChPassDTO.setUser_pwd(chPssDTO_array[1]);
+			memberChPassDTO.setCh_user_pwd(chPssDTO_array[2]);
+			
+			new MemberChPassCheckValidator().validate(memberChPassDTO, errors);
+			
+			if(errors.hasErrors()) {
+				
+				chpass_result.put("result", "ERROR");
+				return chpass_result;
+				
+			}
+			
+			if(member_service.member_chpass(memberChPassDTO)) {
+				chpass_result.put("result", "OK");
+			} 
+			else {
+				chpass_result.put("result", "DB_ERROR");
+			}
+			
+		} 
+		
+		else {
+			chpass_result.put("result", "ERROR");
+		}
+		
+		return chpass_result;
 		
 	}
 }

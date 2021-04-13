@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.goCamping.dao.MemberDAO;
 import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberChIdDTO;
+import com.goCamping.dto.MemberChPassDTO;
 import com.goCamping.dto.MemberJoinDTO;
 import com.goCamping.dto.MemberLoginDTO;
 
@@ -85,10 +86,37 @@ public class MeberServiceImpl implements MemberService {
 	public HashMap<String, Object> member_select(String user_id) {
 		return mdao.member_select(user_id);
 	}
-
+	// 아이디 수정
 	@Override
 	public Boolean member_chid(MemberChIdDTO memberChIdDTO) {
 		return mdao.member_chid(memberChIdDTO);
+	}
+	
+	// 비밀번호 수정
+	@Override
+	public boolean member_chpass(MemberChPassDTO memberChPassDTO) {
+		
+		String user_id = memberChPassDTO.getUser_id();
+		
+		String DBuser_pwd = mdao.member_chpassCheck(user_id);
+		
+		
+		if(DBuser_pwd != null) {
+			// 사용자에게 입력받은 비밀번호
+			String rawPassword = memberChPassDTO.getCh_user_pwd();
+			
+			// 사용자에게 입력받은 비밀번호와 DB에 저장된 비밀번호 체크
+			if(passwordEncoder.matches(rawPassword, DBuser_pwd)) {
+				
+				memberChPassDTO.setCh_user_pwd(passwordEncoder.encode(rawPassword));
+				
+				return mdao.member_chpass(memberChPassDTO);
+			}
+			
+		} 
+		
+		return false;
+	
 	}
 	
 	
