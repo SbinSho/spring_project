@@ -94,87 +94,45 @@
 			</div>
 		</div>
 	</header>
-
-	<!-- Page Content -->
 	<div class="container">
-
-		<div class="row">
-			<div class="col-md-8 mb-5">
-				<h2>What We Do</h2>
-				<hr>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
-					deserunt neque tempore recusandae animi soluta quasi? Asperiores
-					rem dolore eaque vel, porro, soluta unde debitis aliquam
-					laboriosam. Repellat explicabo, maiores!</p>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-					Omnis optio neque consectetur consequatur magni in nisi, natus
-					beatae quidem quam odit commodi ducimus totam eum, alias, adipisci
-					nesciunt voluptate. Voluptatum.</p>
-				<a class="btn btn-primary btn-lg" href="#">Call to Action&raquo;</a>
-			</div>
-			<div class="col-md-4 mb-5">
-				<h2>Contact Us</h2>
-				<hr>
-				<address>
-					<strong>Start Bootstrap</strong> <br>3481 Melrose Place <br>Beverly
-					Hills, CA 90210 <br>
-				</address>
-				<address>
-					<abbr title="Phone">P:</abbr> (123) 456-7890 <br> <abbr
-						title="Email">E:</abbr> <a href="mailto:#">name@example.com</a>
-				</address>
-			</div>
-		</div>
-		<!-- /.row -->
-
-		<div class="row">
-			<div class="col-md-4 mb-5">
-				<div class="card h-100">
-					<img class="card-img-top" src="https://placehold.it/300x200" alt="">
-					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur
-							adipisicing elit. Sapiente esse necessitatibus neque sequi
-							doloribus.</p>
-					</div>
-					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4 mb-5">
-				<div class="card h-100">
-					<img class="card-img-top" src="https://placehold.it/300x200" alt="">
-					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur
-							adipisicing elit. Sapiente esse necessitatibus neque sequi
-							doloribus totam ut praesentium aut.</p>
-					</div>
-					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4 mb-5">
-				<div class="card h-100">
-					<img class="card-img-top" src="https://placehold.it/300x200" alt="">
-					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur
-							adipisicing elit. Sapiente esse necessitatibus neque.</p>
-					</div>
-					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /.row -->
-
+		<table class="table">
+		  <thead>
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">First</th>
+		      <th scope="col">Last</th>
+		      <th scope="col">Handle</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <th scope="row">1</th>
+		      <td>Mark</td>
+		      <td>Otto</td>
+		      <td>@mdo</td>
+		    </tr>
+		    <tr>
+		      <th scope="row">2</th>
+		      <td>Jacob</td>
+		      <td>Thornton</td>
+		      <td>@fat</td>
+		    </tr>
+		    <tr>
+		      <th scope="row">3</th>
+		      <td>Larry</td>
+		      <td>the Bird</td>
+		      <td>@twitter</td>
+		    </tr>
+		  </tbody>
+		</table>
 	</div>
-	<!-- /.container -->
-
+	<div class="container text-center">
+		<div class="btn-group" role="group" aria-label="Basic example">
+			<button type="button" class="btn btn-secondary">Left</button>
+			<button type="button" class="btn btn-secondary">Middle</button>
+			<button type="button" class="btn btn-secondary">Right</button>
+		</div>
+	</div>
 	<!-- Footer -->
 	<footer class="py-5 bg-dark">
 		<div class="container">
