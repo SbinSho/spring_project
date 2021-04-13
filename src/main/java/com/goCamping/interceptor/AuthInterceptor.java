@@ -51,7 +51,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter{
 		String request_userID = request.getParameter("user_id") != null ? request.getParameter("user_id") : null;
 
 		
-		
 		// 현재 세션에 저장되어있는 loginUser가 존재하지 않으면
 		// 로그인이 되어있지 않는 상태임으로 메인 홈페이지로 이동
 		if( session_userID == null || request_userID == null || !(request_userID.equals(session_userID))) {

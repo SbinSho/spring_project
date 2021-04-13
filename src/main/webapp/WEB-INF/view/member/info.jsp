@@ -14,6 +14,7 @@
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	
 </head>
 <body>
 <div class="signup-form">
@@ -39,7 +40,7 @@
             <button type="button" onclick="location.href='<c:url value='/member/edit/chid?user_id=${ memberVO.user_id }'/>'" class="btn btn-primary btn-lg btn-block">아이디 변경</button>
         </div>
 		<div class="form-group">
-            <button type="button" onclick="location.href='<c:url value='/member/edit/chpass?user_id=${ memberVO.userid }'/>'" class="btn btn-primary btn-lg btn-block">비밀번호 변경</button>
+            <button type="button" onclick="location.href='<c:url value='/member/edit/chpass?user_id=${ memberVO.user_id }'/>'" class="btn btn-primary btn-lg btn-block">비밀번호 변경</button>
         </div>
 		<div class="form-group">
             <button type="button" onclick="location.href='<c:url value='/'/>'" class="btn btn-danger btn-lg btn-block">수정취소</button>

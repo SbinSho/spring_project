@@ -111,6 +111,8 @@
 
 	// 폼 데이터값 확인
 	function form_check() {
+		
+		var id = $("#id").val();
 		var ch_id = $("#ch_id").val();
 		
 		if ( ch_id == "") {
@@ -122,7 +124,7 @@
 			
 			var confirm_check = confirm("아이디를 변경하시겠습니까?");
 			if(confirm_check == true){
-				submitEncryptedForm(ch_id);
+				submitEncryptedForm(id, ch_id);
 				return false;
 			}
 		} 
@@ -135,18 +137,15 @@
 	}
 	
 	// 데이터 암호화 및 서버 전송
-	function submitEncryptedForm(id){
+	function submitEncryptedForm(user_id, ch_user_id){
 		
 		// RSA 암호화 생성
 		var rsa = new RSAKey();
 		rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
 		
-		var user_id = $("#id").val();
-		var ch_id = $("#ch_id").val();
-		
 		// 암호화된 폼 데이터
 		var en_id = rsa.encrypt(user_id);
-		var en_chid = rsa.encrypt(ch_id);
+		var en_chid = rsa.encrypt(ch_user_id);
 		
 		var form = {
 				'user_id' : en_id,

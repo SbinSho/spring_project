@@ -8,6 +8,7 @@
 		<typeAlias alias="memberVO" type="com.goCamping.domain.MemberVO" />
 		<typeAlias alias="memberLoginDTO" type="com.goCamping.dto.MemberLoginDTO"/>
 		<typeAlias alias="memberChIdDTO" type="com.goCamping.dto.MemberChIdDTO"/>
+		<typeAlias alias="memberChPassDTO" type="com.goCamping.dto.MemberChPassDTO"/>
 	
 	</typeAliases>
 
