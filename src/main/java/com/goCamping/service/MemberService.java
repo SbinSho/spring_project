@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberChPassDTO;
+import com.goCamping.dto.MemberDeleteDTO;
 import com.goCamping.dto.MemberJoinDTO;
 import com.goCamping.dto.MemberLoginDTO;
 
@@ -30,4 +31,7 @@ public interface MemberService {
 	
 	// 회원 비밀번호 수정
 	public boolean member_chpass(MemberChPassDTO memberChPassDTO);
+	
+	// 회원탈퇴
+	public boolean member_delete(MemberDeleteDTO memberDeleteDTO);
 }

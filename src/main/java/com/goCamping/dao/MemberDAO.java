@@ -37,4 +37,7 @@ public interface MemberDAO {
 	
 	// 비밀번호 수정
 	public Boolean member_chpass(MemberChPassDTO memberChPassDTO);
+	
+	// 회원 탈퇴
+	public Boolean member_delete(String user_id);
 }

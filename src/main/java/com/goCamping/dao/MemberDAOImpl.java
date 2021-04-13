@@ -98,6 +98,25 @@ public class MemberDAOImpl implements MemberDAO {
 		
 		return false;
 	}
+
+	// 회원탈퇴
+	@Override
+	public Boolean member_delete(String user_id) {
+		
+		try {
+			
+			if(session.delete(NAMESPACE + ".member_delete", user_id) == 1) {
+				return true;
+			};
+			
+			return false;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 	
 	
 	

@@ -11,6 +11,7 @@ import com.goCamping.dao.MemberDAO;
 import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberChPassDTO;
+import com.goCamping.dto.MemberDeleteDTO;
 import com.goCamping.dto.MemberJoinDTO;
 import com.goCamping.dto.MemberLoginDTO;
 
@@ -115,6 +116,27 @@ public class MeberServiceImpl implements MemberService {
 		
 		return false;
 	
+	}
+
+	// 회원 탈퇴
+	@Override
+	public boolean member_delete(MemberDeleteDTO memberDeleteDTO) {
+		
+		// DB에 저장된 비밀번호
+		String DBuser_pwd = mdao.member_chpassCheck(memberDeleteDTO.getUser_id());
+		
+		if(DBuser_pwd != null) {
+			// 사용자에게 입력받은 비밀번호
+			String rawPassword = memberDeleteDTO.getUser_pwd();
+			
+			// 사용자에게 입력받은 비밀번호와 DB에 저장된 비밀번호 체크
+			if(passwordEncoder.matches(rawPassword, DBuser_pwd)) {
+				// 회원탈퇴
+				return mdao.member_delete(memberDeleteDTO.getUser_id());
+			}
+			
+		} 
+		return false;
 	}
 	
 	

@@ -21,12 +21,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberChPassDTO;
+import com.goCamping.dto.MemberDeleteDTO;
 import com.goCamping.service.EncryptService;
 import com.goCamping.service.MemberService;
 import com.goCamping.util.AuthInfo;
 import com.goCamping.util.CreateKey;
-import com.goCamping.validator.MemberChIdCheckValidator;
-import com.goCamping.validator.MemberChPassCheckValidator;
+import com.goCamping.validator.MemberChIdDTOValidator;
+import com.goCamping.validator.MemberChPassDTOValidator;
+import com.goCamping.validator.MemberDeleteDTOValidator;
 
 @Controller
 @RequestMapping("/member/edit")
@@ -97,7 +99,7 @@ public class MemberEditController {
 			memberChIdDTO.setUser_id(authInfo.getId());
 			memberChIdDTO.setCh_id(chIdDTO_array[1]);
 			
-			new MemberChIdCheckValidator().validate(memberChIdDTO, errors);
+			new MemberChIdDTOValidator().validate(memberChIdDTO, errors);
 			
 			if(errors.hasErrors()) {
 				
@@ -174,7 +176,7 @@ public class MemberEditController {
 			memberChPassDTO.setUser_pwd(chPssDTO_array[0]);
 			memberChPassDTO.setCh_user_pwd(chPssDTO_array[1]);
 			
-			new MemberChPassCheckValidator().validate(memberChPassDTO, errors);
+			new MemberChPassDTOValidator().validate(memberChPassDTO, errors);
 			
 			if(errors.hasErrors()) {
 				logger.info("객체 유효성 검증 실패!");
@@ -223,6 +225,72 @@ public class MemberEditController {
 		return "redirect:/";
 		
 	}
+	
+	// 회원탈퇴 
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> delete(
+			@RequestBody MemberDeleteDTO memberDeleteDTO, Errors errors
+			, HttpServletRequest request, Model model) throws Exception {
 		
+		logger.info("/chpass POST 진입");
+		
+		Map<String, String> chpass_result = new HashMap<String, String>();
+		
+		String[] DelteDTO_array = { memberDeleteDTO.getUser_pwd() };
+		
+		// 현재 세션 가져오기 위한 객체 초기화
+		HttpSession session = request.getSession(false);
+		// 개인키 객체 초기화
+		PrivateKey privateKey = session != null ? (PrivateKey) session.getAttribute("_RSA_WEB_KEY_") : null;
+		
+		if(session == null || privateKey == null) {
+			chpass_result.put("result", "ERROR");
+			return chpass_result;
+		}
+		
+		
+		if(encrypt_service.decryptRsa(privateKey, DelteDTO_array)) {
+			
+			// 세션에 저장된 아이디 불러오기
+			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
+			
+			memberDeleteDTO.setUser_id(authInfo.getId());
+			memberDeleteDTO.setUser_pwd(DelteDTO_array[0]);
+			
+			new MemberDeleteDTOValidator().validate(memberDeleteDTO, errors);
+			
+			if(errors.hasErrors()) {
+				logger.info("객체 유효성 검증 실패!");
+				chpass_result.put("result", "ERROR");
+				return chpass_result;
+				
+			}
+			
+			if(member_service.member_delete(memberDeleteDTO)) {
+				
+				logger.info("회원 탈퇴 변경 완료!");
+				session.invalidate();
+				chpass_result.put("result", "OK");
+				
+			} 
+			else {
+				
+				logger.info("비밀번호 변경 실패!");
+				chpass_result.put("result", "DB_ERROR");
+				
+			}
+			
+		} 
+		
+		else {
+			logger.info("암호문 복호와 실패!");
+			chpass_result.put("result", "ERROR");
+		}
+		
+		return chpass_result;
+		
+	}
+
 }
 	

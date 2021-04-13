@@ -74,4 +74,10 @@
 		WHERE user_id = #{ user_id }
 		
 	</select>
+	
+	<delete id="member_delete" parameterType="string">
+		DELETE FROM MEMBER
+		WHERE user_id = #{user_id}
+	
+	</delete>
 </mapper>

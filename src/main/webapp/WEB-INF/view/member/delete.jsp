@@ -23,9 +23,11 @@
 <body>
 <div class="signup-form">
 		<h2 class="edit_title">회원탈퇴</h2>
+		<input type="hidden" id="RSAModulus" value="${RSAModulus}" /><!-- 서버에서 전달한값을 셋팅한다. -->
+		<input type="hidden" id="RSAExponent" value="${RSAExponent}" /><!-- 서버에서 전달한값을 셋팅한다. -->
         <div class="form-group">
         	<label for="user_pwd">비밀번호 입력</label>
-			<input id="user_pwd" type="text" class="form-control"/>
+			<input id="user_pwd" type="password" class="form-control"/>
         </div>
 		<div class="form-group">
             <button type="button" onclick="form_check()" class="btn btn-danger btn-lg btn-block">회원탈퇴</button>
@@ -84,8 +86,8 @@
 			contentType: "application/json; charset=UTF-8",
 			success: function(data){
 				if(data.result == "OK"){
-					alert("비밀번호 변경 완료!");
-					location.href = Path() + "member/edit/info?user_id=" + user_id;
+					alert("회원탈퇴 완료!");
+					location.href = Path();
 				}
 				else if (data.result == "DB_ERROR"){
 					alert("오류 발생!");

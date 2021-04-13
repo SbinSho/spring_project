@@ -8,7 +8,7 @@ import org.springframework.validation.ValidationUtils;
 
 import com.goCamping.dto.MemberChIdDTO;
 
-public class MemberChIdCheckValidator extends MemberValidator {
+public class MemberChIdDTOValidator extends MemberValidator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
