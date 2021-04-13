@@ -203,9 +203,26 @@ public class MemberEditController {
 			chpass_result.put("result", "ERROR");
 		}
 		
-		
 		return chpass_result;
 		
 	}
+	
+	// 회원탈퇴 페이지 이동
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	public String delete(String user_id, HttpServletRequest request, Model model) throws Exception {
+		
+		logger.info("/chpass GET 진입");
+		
+		if(encrypt_service.createKey() != null) {
+			// 개인키 공개키 생성
+			CreateKey.set(request, encrypt_service.createKey());
+			model.addAttribute("user_id", user_id);
+			return "/member/delete";
+		}
+		
+		return "redirect:/";
+		
+	}
+		
 }
 	

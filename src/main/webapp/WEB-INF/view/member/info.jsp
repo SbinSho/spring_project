@@ -43,7 +43,10 @@
             <button type="button" onclick="location.href='<c:url value='/member/edit/chpass?user_id=${ memberVO.user_id }'/>'" class="btn btn-primary btn-lg btn-block">비밀번호 변경</button>
         </div>
 		<div class="form-group">
-            <button type="button" onclick="location.href='<c:url value='/'/>'" class="btn btn-danger btn-lg btn-block">수정취소</button>
+            <button type="button" onclick="location.href='<c:url value='/member/edit/delete?user_id=${ memberVO.user_id }'/>'" class="btn btn-danger btn-lg btn-block">회원탈퇴</button>
+        </div>
+		<div class="form-group">
+            <button type="button" onclick="location.href='<c:url value='/'/>'" class="btn btn-secondary btn-lg btn-block">수정취소</button>
         </div>
 </div>
 
