@@ -144,6 +144,7 @@ public class MemberEditController {
 	
 	// 비밀번호 수정
 	@RequestMapping(value = "/chpass", method = RequestMethod.POST)
+	@ResponseBody
 	public Map<String, String> chpass(@RequestBody MemberChPassDTO memberChPassDTO, Errors errors
 			, HttpServletRequest request, Model model) throws Exception {
 		
@@ -163,36 +164,45 @@ public class MemberEditController {
 			return chpass_result;
 		}
 		
+		
 		if(encrypt_service.decryptRsa(privateKey, chPssDTO_array)) {
 			
 			// 세션에 저장된 아이디 불러오기
 			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
 			
 			memberChPassDTO.setUser_id(authInfo.getId());
-			memberChPassDTO.setUser_pwd(chPssDTO_array[1]);
-			memberChPassDTO.setCh_user_pwd(chPssDTO_array[2]);
+			memberChPassDTO.setUser_pwd(chPssDTO_array[0]);
+			memberChPassDTO.setCh_user_pwd(chPssDTO_array[1]);
 			
 			new MemberChPassCheckValidator().validate(memberChPassDTO, errors);
 			
 			if(errors.hasErrors()) {
-				
+				logger.info("객체 유효성 검증 실패!");
 				chpass_result.put("result", "ERROR");
 				return chpass_result;
 				
 			}
 			
 			if(member_service.member_chpass(memberChPassDTO)) {
+				
+				logger.info("비밀번호 변경 완료!");
 				chpass_result.put("result", "OK");
+				
 			} 
 			else {
+				
+				logger.info("비밀번호 변경 실패!");
 				chpass_result.put("result", "DB_ERROR");
+				
 			}
 			
 		} 
 		
 		else {
+			logger.info("암호문 복호와 실패!");
 			chpass_result.put("result", "ERROR");
 		}
+		
 		
 		return chpass_result;
 		

@@ -95,21 +95,19 @@ public class MeberServiceImpl implements MemberService {
 	// 비밀번호 수정
 	@Override
 	public boolean member_chpass(MemberChPassDTO memberChPassDTO) {
-		
+		// 비밀번호 변경 할 아이디
 		String user_id = memberChPassDTO.getUser_id();
-		
+		// DB에 저장된 비밀번호
 		String DBuser_pwd = mdao.member_chpassCheck(user_id);
-		
 		
 		if(DBuser_pwd != null) {
 			// 사용자에게 입력받은 비밀번호
-			String rawPassword = memberChPassDTO.getCh_user_pwd();
+			String rawPassword = memberChPassDTO.getUser_pwd();
 			
 			// 사용자에게 입력받은 비밀번호와 DB에 저장된 비밀번호 체크
 			if(passwordEncoder.matches(rawPassword, DBuser_pwd)) {
-				
-				memberChPassDTO.setCh_user_pwd(passwordEncoder.encode(rawPassword));
-				
+				// 사용자에게 입력 받은 비밀번호 암호화
+				memberChPassDTO.setCh_user_pwd(passwordEncoder.encode(memberChPassDTO.getCh_user_pwd()));
 				return mdao.member_chpass(memberChPassDTO);
 			}
 			

@@ -68,10 +68,10 @@
 		
 	</update>
 	<!-- 회원 비밀번호 확인 -->
-	<update id="member_chpassCheck" parameterType="string">
+	<select id="member_chpassCheck" parameterType="string" resultType="string">
 		
 		SELECT USER_PWD FROM MEMBER
 		WHERE user_id = #{ user_id }
 		
-	</update>
+	</select>
 </mapper>

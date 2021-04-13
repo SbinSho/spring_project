@@ -24,6 +24,8 @@
 <body>
 <div class="signup-form">
     <form>
+    	<input type="hidden" id="RSAModulus" value="${RSAModulus}" /><!-- 서버에서 전달한값을 셋팅한다. -->
+		<input type="hidden" id="RSAExponent" value="${RSAExponent}" /><!-- 서버에서 전달한값을 셋팅한다. -->
         <div class="form-group">
         	<label for="user_pwd">현재 비밀번호</label>
         	<input type="password" id="user_pwd" class="form-control" />
@@ -40,7 +42,7 @@
         	<span id="password_con_check"></span>
         </div>
 		<div class="form-group">
-            <button type="button" class="btn btn-primary btn-lg btn-block" onclick="form_check()">수정하기</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block" onclick="form_check();">수정하기</button>
         </div>
 		<div class="form-group">
             <button type="button" onclick="history.back();" class="btn btn-danger btn-lg btn-block">뒤로가기</button>
@@ -70,7 +72,7 @@
 			
 			$("#password_check").css("color", "green");
 			$("#password_check").text("비밀번호 사용 가능!");
-			chFlag = false;
+			chFlag = true;
 		}
 		else {
 			
@@ -102,11 +104,12 @@
 	})
 	
 	function form_check() {
+		
 		var user_pwd = $("#user_pwd").val();
 		var ch_user_pwd = $("#ch_user_pwd").val();
 		var ch_user_pwd_confirm = $("#ch_user_pwd_confirm").val();
 		
-		if(user_pwd == "" || ch_user_pwd == "" || ch_user_pwd_confrim == ""){
+		if(user_pwd == "" || ch_user_pwd == "" || ch_user_pwd_confirm == ""){
 			alert("공백은 입력 할 수 없습니다.");
 			return false;
 		}
@@ -115,10 +118,12 @@
 			
 			var confirm_check = confirm("비밀번호를 변경하시겠습니까?");
 			
-			if(confirm_check == true){
-				submitEncryptedForm(user_pwd, ch_user_pwd, ch_user_pwd_confirm);
-				return false;
+			if(confirm_check){
+				submitEncryptedForm(user_pwd, ch_user_pwd);
 			}			
+		} 
+		else {
+			alert("비밀번호를 다시 확인 해주세요.");
 		}
 	}
 	
@@ -129,7 +134,7 @@
 		var rsa = new RSAKey();
 		rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
 		
-		var user_id = $("#id").val();
+		var user_id = "${ user_id }";
 		
 		// 암호화된 폼 데이터
 		var en_pwd = rsa.encrypt(user_pwd);
@@ -137,7 +142,7 @@
 		
 		var form = {
 				'user_pwd' : en_pwd,
-				'user_chPwd' : en_chpwd
+				'ch_user_pwd' : en_chpwd
 		}
 		
 		$.ajax({
@@ -148,12 +153,12 @@
 			contentType: "application/json; charset=UTF-8",
 			success: function(data){
 				if(data.result == "OK"){
-					alert("아이디 변경 완료!");
+					alert("비밀번호 변경 완료!");
 					location.href = Path() + "member/edit/info?user_id=" + user_id;
 				}
 				else if (data.result == "DB_ERROR"){
 					alert("오류 발생!");
-					DB_ERROR();
+					location.href= Path() + "member/edit/chpass?user_id=" + user_id;
 				}
 				else if (data.result == "ERROR"){
 					alert("오류 발생!");

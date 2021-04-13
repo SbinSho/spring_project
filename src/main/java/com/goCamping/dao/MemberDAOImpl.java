@@ -83,7 +83,7 @@ public class MemberDAOImpl implements MemberDAO {
 	// 회원 비밀번호 확인
 	@Override
 	public String member_chpassCheck(String user_id) {
-		
+
 		return session.selectOne(NAMESPACE + ".member_chpassCheck", user_id);
 	}
 	
