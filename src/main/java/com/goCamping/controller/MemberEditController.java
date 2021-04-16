@@ -22,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberChPassDTO;
 import com.goCamping.dto.MemberDeleteDTO;
-import com.goCamping.service.EncryptService;
 import com.goCamping.service.MemberService;
 import com.goCamping.util.AuthInfo;
 import com.goCamping.util.CreateKey;

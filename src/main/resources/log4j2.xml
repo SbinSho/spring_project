@@ -22,6 +22,8 @@
 
 		<Logger name="com.goCamping.controller" level="info" />
 		
+		<Logger name="com.goCamping.util" level="info" />
+		
 		<Logger name="com.goCamping.interceptor" level="info" />
 
 		<!-- 3rdparty Loggers -->

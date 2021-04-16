@@ -15,11 +15,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.goCamping.service.EncryptServiceImpl;
-
 @Component
 public class Encrypt {
-	private static final Logger logger = LogManager.getLogger(EncryptServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger(Encrypt.class);
 
 	public Map<String, Object> createKey() {
 
