@@ -47,46 +47,22 @@
 			<label for="user_id">작성자</label>
 			<input type="text"	class="form-control" name="user_id" id="user_id" value="${ user_id }" readonly>
 		</div>
-		<div class="mb-3">
-			<p>첨부파일</p>
-			<input type="file" name="file1" id="file1">
-			<br>
-			<input type="file" name="file2" id="file2">
-		</div>
+<!-- 		<div class="mb-3"> -->
+<!-- 			<p>첨부파일</p> -->
+<!-- 			<input type="file" name="file1" id="file1"> -->
+<!-- 			<br> -->
+<!-- 			<input type="file" name="file2" id="file2"> -->
+<!-- 		</div> -->
 		<div class="mb-3">
 			<label for="unregistered_content">내용</label>
 			<textarea class="form-control" rows="5" name="unregistered_content" id="unregistered_content" placeholder="내용을 입력해 주세요"></textarea>
 		</div>
 		<div class="text-right">
 			<button type="button" class="btn btn-sm btn-primary" id="write" onclick="form_check()">글쓰기</button>
-			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="location.href='/unregistered/write?user_id=${user_id}'">목록</button>
+			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="location.href='/board/write?user_id=${user_id}'">목록</button>
 		</div>
 	</form>
 </div>
 
 
-<script>
-
-	function form_check() {
-		
-		var unregistered_title = $("#unregistered_title").val();
-		var unregistered_public = $(":input:radio[name=unregistered_public]:checked").val();
-		var user_id = $("#user_id").val();
-		var file1 = $("#file1").val();
-		var file2 = $("#file2").val();
-		var unregistered_filename = file1 + ", " + file2;
-		var unregistered_content = $("unregistered_content").val();
-		
-		
-		
-
-		
-		
-		
-	}
-
-
-
-</script>
-
-<%@ include file="../inc/footer.jsp"%>
+ <%@ include file="../inc/footer.jsp"%>

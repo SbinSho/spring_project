@@ -15,18 +15,22 @@
 					<li class="nav-item">
 						<a class="nav-link" href="#">캠핑 GO</a>
 					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" 
-						href="#" id="navbarDropdown" role="button" 
-						data-toggle="dropdown" aria-haspopup="true" 
-						aria-expanded="false">고객센터</a>
-				        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						  <a class="dropdown-item" href="#">공지사항</a>
-				          <a class="dropdown-item" href="#">캠핑장 정보 수정요청</a>
-				          <a class="dropdown-item" href="<c:url value='/unregistered/question'/>">미등록야영장 불법영업문의</a>
-				          <a class="dropdown-item" href="#">캠핑장 공지사항</a>
-				        </div>
-			      	</li>
+					<li class="nav-item">
+						<a class="nav-link" href="<c:url value='/board/list'/>" >게시판</a>
+					</li>
+						<!-- 기본적인 게시판 처리 부터 하고 나서 사용할 예정 -->					
+<!-- 					<li class="nav-item dropdown"> -->
+<!-- 						<a class="nav-link dropdown-toggle"  -->
+<!-- 						href="#" id="navbarDropdown" role="button"  -->
+<!-- 						data-toggle="dropdown" aria-haspopup="true"  -->
+<!-- 						aria-expanded="false">고객센터</a> -->
+<!-- 				        <div class="dropdown-menu" aria-labelledby="navbarDropdown"> -->
+<!-- 						  <a class="dropdown-item" href="#">공지사항</a> -->
+<!-- 				          <a class="dropdown-item" href="#">캠핑장 정보 수정요청</a> -->
+<%-- 				          <a class="dropdown-item" href="<c:url value='/unregistered/question'/>">미등록야영장 불법영업문의</a> --%>
+<!-- 				          <a class="dropdown-item" href="#">캠핑장 공지사항</a> -->
+<!-- 				        </div> -->
+<!-- 			      	</li> -->
 			          <c:choose>
 			          		<c:when test="${ empty loginUser }">
 			          			<li class="nav-item">
