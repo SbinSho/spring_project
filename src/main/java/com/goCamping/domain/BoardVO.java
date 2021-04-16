@@ -2,7 +2,7 @@ package com.goCamping.domain;
 
 import java.sql.Timestamp;
 
-public class UnregisteredVO {
+public class BoardVO {
 
 	private String 	user_id;
 	private String 	unregistered_title;

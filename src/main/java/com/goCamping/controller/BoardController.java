@@ -7,20 +7,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.goCamping.domain.UnregisteredVO;
+import com.goCamping.domain.BoardVO;
 
 @Controller
-@RequestMapping("/unregistered")
-public class UnregisteredController {
+@RequestMapping("/board")
+public class BoardController {
 	
-	private static final Logger logger = LogManager.getLogger(UnregisteredController.class);
+	private static final Logger logger = LogManager.getLogger(BoardController.class);
 
-	@RequestMapping(value = "/question", method = RequestMethod.GET)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String notice() {
 		
 		logger.info("/question GET 호출");
 		
-		return "/unregistered/question";
+		return "/board/list";
 	}
 	
 	@RequestMapping(value = "/write", method = RequestMethod.GET)
@@ -31,12 +31,12 @@ public class UnregisteredController {
 		
 		model.addAttribute("user_id", user_id);
 		
-		return "/unregistered/write";
+		return "/board/write";
 		
 	}
 	
 	@RequestMapping(value = "/write", method = RequestMethod.POST)
-	public String write(UnregisteredVO unregisteredVO) {
+	public String write(BoardVO unregisteredVO) {
 		
 		logger.info("/write POST 진입");
 		
