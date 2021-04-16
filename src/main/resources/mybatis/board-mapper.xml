@@ -3,8 +3,20 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="com.goCamping.mapper.barodMapper">
+<mapper namespace="com.goCamping.mapper.boardMapper">
 
-
-
+	<select id="board_count" resultType="int">
+		SELECT COUNT(*) FROM BOARD
+	</select>
+	
+	<select id="board_list" resultType="boardVO" parameterType="com.goCamping.domain.Criteria">
+	    <![CDATA[
+	        SELECT
+	            *
+	        FROM
+	            BOARD
+	        ORDER BY bno DESC
+	        LIMIT #{pageStart}, #{perPageNum}
+	    ]]>
+	</select>
 </mapper>

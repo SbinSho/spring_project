@@ -15,26 +15,32 @@
 	</Appenders>
 
 	<Loggers>
-	
+
 		<Root level="warn">
 			<AppenderRef ref="Console_Appender" />
 		</Root>
 
 		<Logger name="com.goCamping.controller" level="info" />
-		
+
 		<Logger name="com.goCamping.util" level="info" />
-		
+
 		<Logger name="com.goCamping.interceptor" level="info" />
 
 		<!-- 3rdparty Loggers -->
-		<Logger name="org.springframework.core" level="info"/>
+		<Logger name="org.springframework.core" level="info" />
 
-		<Logger name="org.springframework.beans" level="info"/>
-		
+		<Logger name="org.springframework.beans" level="info" />
+
 		<Logger name="org.springframework.context" level="info" />
-		
+
 		<Logger name="org.springframework.web" level="info" />
 		
+		<!-- mybatis log -->
+		<Logger name="jdbc.audit" level="debug" />
+		
+		<Logger name="jdbc.resultset" level="debug" />
+		
+		<Logger name="jdbc.connection" level="debug" />
 	</Loggers>
 </Configuration>
 

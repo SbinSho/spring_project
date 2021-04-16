@@ -24,76 +24,7 @@
 
 </head>
 
-<body>
-	<!-- Navigation -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="#">Start Bootstrap</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse"
-				data-target="#navbarResponsive" aria-controls="navbarResponsive"
-				aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarResponsive">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item">
-						<a class="nav-link" href="#">캠핑 GO</a>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" 
-						href="#" id="navbarDropdown" role="button" 
-						data-toggle="dropdown" aria-haspopup="true" 
-						aria-expanded="false">고객센터</a>
-				        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						  <a class="dropdown-item" href="#">공지사항</a>
-				          <a class="dropdown-item" href="#">캠핑장 정보 수정요청</a>
-				          <a class="dropdown-item" href="<c:url value='/unregistered/question'/>">미등록야영장 불법영업문의</a>
-				          <a class="dropdown-item" href="#">캠핑장 공지사항</a>
-				        </div>
-			      </li>
-			          <c:choose>
-			          		<c:when test="${ empty loginUser }">
-			          			<li class="nav-item">
-				            		<a class="nav-link" href="<c:url value='/member/login'/>">로그인</a>
-			          			</li>
-						        <li class="nav-item">
-						            <a class="nav-link" href="<c:url value='/member/join'/>">회원가입</a>
-						        </li>
-			          		</c:when>
-			          		<c:otherwise>
-			          			<li class="nav-item">
-						            <a class="nav-link" href="<c:url value='/member/logout?user_id=${ loginUser.id }'/>">
-				            			<span>로그아웃</span>
-				            		</a>
-						        </li>
-						        <li class="nav-item">
-						            <a class="nav-link" href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a>
-						        </li>
-			          		</c:otherwise>
-			          </c:choose>  	
-					<li class="nav-item">
-						<a class="nav-link" href="#">사업장 등록</a>
-					</li>								      
-				</ul>
-			</div>
-		</div>
-	</nav>
-
-	<!-- Header -->
-	<header class="bg-primary py-5 mb-5">
-		<div class="container h-100">
-			<div class="row h-100 align-items-center">
-				<div class="col-lg-12">
-					<h1 class="display-4 text-white mt-5 mb-2">Business Name or
-						Tagline</h1>
-					<p class="lead mb-5 text-white-50">Lorem ipsum dolor sit amet,
-						consectetur adipisicing elit. Non possimus ab labore provident
-						mollitia. Id assumenda voluptate earum corporis facere quibusdam
-						quisquam iste ipsa cumque unde nisi, totam quas ipsam.</p>
-				</div>
-			</div>
-		</div>
-	</header>
+	<%@ include file="../inc/top.jsp" %>
 	<div class="container">
 		<table class="table table-striped">
 		  <thead>
@@ -105,24 +36,25 @@
 		    </tr>
 		  </thead>
 		  <tbody>
-		    <tr>
-		      <th scope="row">1</th>
-		      <td>Mark</td>
-		      <td>Otto</td>
-		      <td>@mdo</td>
-		    </tr>
-		    <tr>
-		      <th scope="row">2</th>
-		      <td>Jacob</td>
-		      <td>Thornton</td>
-		      <td>@fat</td>
-		    </tr>
-		    <tr>
-		      <th scope="row">3</th>
-		      <td>Larry</td>
-		      <td>the Bird</td>
-		      <td>@twitter</td>
-		    </tr>
+		  <c:choose>
+		  	<c:when test="${ pageMaker.totalCount == 0}">
+		  		<tr>
+		  			<td>게시글이 존재하지 않습니다.</td>
+		  		</tr>
+		  	
+		  	</c:when>
+		  	<c:otherwise>
+		  		<c:forEach items="${ list }" var="boardVO">
+				    <tr class="tr">
+				      <th scope="row">${ boardVO.bno }</th>
+				      <td>${ boardVO.title }</td>
+				      <td>${ boardVO.writer }</td>
+				      <td>${ boardVO.regdate }</td>
+				    </tr>		  			
+		  		</c:forEach>
+		  	</c:otherwise>
+		  
+		  </c:choose>
 		  </tbody>
 		</table>
 	</div>
@@ -139,11 +71,18 @@
 			</div>
 		</c:otherwise>
 	</c:choose>
-	<div class="container text-center mt-5">
-		<div class="btn-group" role="group" aria-label="Basic example">
-			<button type="button" class="btn btn-secondary">Left</button>
-			<button type="button" class="btn btn-secondary">Middle</button>
-			<button type="button" class="btn btn-secondary">Right</button>
+	<div class="btn-toolbar" role="toolbar"
+		aria-label="Toolbar with button groups">
+		<div class="btn-group m-auto" role="group" aria-label="First group">
+		<c:if test = "${ pageMaker.prev }">
+			<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/board/list?page=${ pageMaker.startPage-1 }"/>'">이전</button>
+		</c:if>
+		<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="pageNum">
+			<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/board/list?page=${ pageNum }"/>'">${ pageNum }</button>
+		</c:forEach>
+		<c:if test="${ pageMaker.next && pageMaker.endPage > 0 }">
+			<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/board/list?page=${ pageMaker.endPage + 1}"/>'">다음</button>
+		</c:if>
 		</div>
 	</div>
 	<br>

@@ -33,10 +33,18 @@ public class BoardController {
 		pageMaker.setCri(cri);
 		pageMaker.setTotalCount(board_service.BoardCount());
 		
-		List<BoardVO> list = board_service.selectBoardList(cri);
+		List<BoardVO> list = board_service.board_list(cri);
+		
+		if(list == null) {
+			System.out.println("list null");
+		}
+		
+		System.out.println(list.size());
 		
 		model.addAttribute("list", list);
 		model.addAttribute("pageMaker", pageMaker);
+		
+		logger.info("총 게시글 수 : " + board_service.BoardCount());
 		
 		return "/board/list";
 	}
@@ -58,7 +66,6 @@ public class BoardController {
 		
 		logger.info("/write POST 진입");
 		
-		logger.info("unregistered_public : " + unregisteredVO.getUnregistered_public());
 		
 		return "redirect:/unregistered/question";
 		
