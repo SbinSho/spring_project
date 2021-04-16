@@ -35,12 +35,5 @@
 
 		<Logger name="org.springframework.web" level="info" />
 		
-		<!-- mybatis log -->
-		<Logger name="jdbc.audit" level="debug" />
-		
-		<Logger name="jdbc.resultset" level="debug" />
-		
-		<Logger name="jdbc.connection" level="debug" />
 	</Loggers>
 </Configuration>
-
