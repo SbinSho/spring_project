@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
@@ -45,9 +45,9 @@
 						data-toggle="dropdown" aria-haspopup="true" 
 						aria-expanded="false">고객센터</a>
 				        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						  <a class="dropdown-item" href="<c:url value='/board/notice'/>">공지사항</a>
+						  <a class="dropdown-item" href="#">공지사항</a>
 				          <a class="dropdown-item" href="#">캠핑장 정보 수정요청</a>
-				          <a class="dropdown-item" href="#">미등록야영장 불법영업문의</a>
+				          <a class="dropdown-item" href="<c:url value='/unregistered/question'/>">미등록야영장 불법영업문의</a>
 				          <a class="dropdown-item" href="#">캠핑장 공지사항</a>
 				        </div>
 			      </li>
@@ -95,7 +95,7 @@
 		</div>
 	</header>
 	<div class="container">
-		<table class="table">
+		<table class="table table-striped">
 		  <thead>
 		    <tr>
 		      <th scope="col">#</th>
@@ -126,13 +126,27 @@
 		  </tbody>
 		</table>
 	</div>
-	<div class="container text-center">
+	<br>
+	<c:choose>
+		<c:when test="${ empty loginUser }">
+			<div class="container text-right">
+				<button type="button" class="btn btn-primary" onclick="login();">글쓰기</button>
+			</div>
+		</c:when>
+		<c:otherwise>
+			<div class="container text-right">
+				<button type="button" class="btn btn-primary" onclick="location.href='/unregistered/write?user_id=${ loginUser.id }'">글쓰기</button>
+			</div>
+		</c:otherwise>
+	</c:choose>
+	<div class="container text-center mt-5">
 		<div class="btn-group" role="group" aria-label="Basic example">
 			<button type="button" class="btn btn-secondary">Left</button>
 			<button type="button" class="btn btn-secondary">Middle</button>
 			<button type="button" class="btn btn-secondary">Right</button>
 		</div>
 	</div>
+	<br>
 	<!-- Footer -->
 	<footer class="py-5 bg-dark">
 		<div class="container">
@@ -143,11 +157,13 @@
 	</footer>
 
 	<script>
-		var result = "${result}";
-		if ( result == "error"){
-			alert("오류 발생!");
-		}
 		
+		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}";
+
+		function login() {
+			alert("로그인 후 이용가능 합니다.");
+			location.href= contextPath + "member/login";
+		}
 	
 	</script>
 
@@ -156,5 +172,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
 </body>
-
 </html>

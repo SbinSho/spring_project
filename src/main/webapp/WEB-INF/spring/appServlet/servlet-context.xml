@@ -18,6 +18,7 @@
 	
 	<!-- 정적 파일 관리를 위한 설정 -->
 	<mvc:resources location="/static/" mapping="/**"/>
+	<mvc:resources location="/smarteditor/" mapping="/smarteditor/**"/>
 	
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/view/"/>
@@ -41,6 +42,7 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/member/edit/**"/>
 			<mvc:mapping path="/member/logout/**"/>
+			<mvc:mapping path="/unregistered/write/**"/>
 			<ref bean="authLoginInterceptor"/>
 		</mvc:interceptor>
 		
@@ -52,4 +54,5 @@
 	</mvc:interceptors>
 	
 	<context:component-scan base-package="com.goCamping.controller" />
+	<context:component-scan base-package="com.goCamping.util" />
 </beans>

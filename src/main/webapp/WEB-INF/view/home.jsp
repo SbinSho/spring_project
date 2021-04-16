@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
@@ -28,7 +28,7 @@
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="#">Start Bootstrap</a>
+			<a class="navbar-brand" href="<c:url value='/'/>">GoCamping</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarResponsive" aria-controls="navbarResponsive"
 				aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,9 @@
 						data-toggle="dropdown" aria-haspopup="true" 
 						aria-expanded="false">고객센터</a>
 				        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						  <a class="dropdown-item" href="<c:url value='/board/notice'/>">공지사항</a>
+						  <a class="dropdown-item" href="#">공지사항</a>
 				          <a class="dropdown-item" href="#">캠핑장 정보 수정요청</a>
-				          <a class="dropdown-item" href="#">미등록야영장 불법영업문의</a>
+				          <a class="dropdown-item" href="<c:url value='/unregistered/question'/>">미등록야영장 불법영업문의</a>
 				          <a class="dropdown-item" href="#">캠핑장 공지사항</a>
 				        </div>
 			      </li>

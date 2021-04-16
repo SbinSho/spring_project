@@ -26,6 +26,7 @@ import com.goCamping.service.EncryptService;
 import com.goCamping.service.MemberService;
 import com.goCamping.util.AuthInfo;
 import com.goCamping.util.CreateKey;
+import com.goCamping.util.Encrypt;
 import com.goCamping.validator.MemberChIdDTOValidator;
 import com.goCamping.validator.MemberChPassDTOValidator;
 import com.goCamping.validator.MemberDeleteDTOValidator;
@@ -40,7 +41,7 @@ public class MemberEditController {
 	private MemberService member_service;
 	
 	@Autowired
-	private EncryptService encrypt_service;
+	private Encrypt encrypt;
 	
 	// 회원정보 수정 페이지 이동
 	@RequestMapping( value = "/info", method = RequestMethod.GET)
@@ -59,9 +60,9 @@ public class MemberEditController {
 		
 		logger.info("/chid GET 진입");
 		
-		if(encrypt_service.createKey() != null) {
+		if(encrypt.createKey() != null) {
 			// 개인키 공개키 생성
-			CreateKey.set(request, encrypt_service.createKey());
+			CreateKey.set(request, encrypt.createKey());
 			model.addAttribute("user_id", user_id);
 			return "/member/chid";
 		}
@@ -92,7 +93,7 @@ public class MemberEditController {
 			return chid_result;
 		}
 		
-		if(encrypt_service.decryptRsa(privateKey, chIdDTO_array)) {
+		if(encrypt.decryptRsa(privateKey, chIdDTO_array)) {
 			// 세션에 저장된 아이디 불러오기
 			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
 			
@@ -133,9 +134,9 @@ public class MemberEditController {
 		
 		logger.info("/chpass GET 진입");
 		
-		if(encrypt_service.createKey() != null) {
+		if(encrypt.createKey() != null) {
 			// 개인키 공개키 생성
-			CreateKey.set(request, encrypt_service.createKey());
+			CreateKey.set(request, encrypt.createKey());
 			model.addAttribute("user_id", user_id);
 			return "/member/chpass";
 		}
@@ -167,7 +168,7 @@ public class MemberEditController {
 		}
 		
 		
-		if(encrypt_service.decryptRsa(privateKey, chPssDTO_array)) {
+		if(encrypt.decryptRsa(privateKey, chPssDTO_array)) {
 			
 			// 세션에 저장된 아이디 불러오기
 			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
@@ -215,9 +216,9 @@ public class MemberEditController {
 		
 		logger.info("/chpass GET 진입");
 		
-		if(encrypt_service.createKey() != null) {
+		if(encrypt.createKey() != null) {
 			// 개인키 공개키 생성
-			CreateKey.set(request, encrypt_service.createKey());
+			CreateKey.set(request, encrypt.createKey());
 			model.addAttribute("user_id", user_id);
 			return "/member/delete";
 		}
@@ -250,7 +251,7 @@ public class MemberEditController {
 		}
 		
 		
-		if(encrypt_service.decryptRsa(privateKey, DelteDTO_array)) {
+		if(encrypt.decryptRsa(privateKey, DelteDTO_array)) {
 			
 			// 세션에 저장된 아이디 불러오기
 			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");

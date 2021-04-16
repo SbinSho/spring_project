@@ -17,22 +17,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberJoinDTO;
 import com.goCamping.dto.MemberLoginDTO;
-import com.goCamping.service.EncryptService;
 import com.goCamping.service.MemberService;
 import com.goCamping.util.CreateKey;
+import com.goCamping.util.Encrypt;
 import com.goCamping.validator.MemberJoinDTOValidator;
 import com.goCamping.validator.MemberLoginValidator;
 
@@ -46,7 +42,7 @@ public class MemberController {
 	private MemberService member_service;
 	
 	@Autowired
-	private EncryptService encrypt_service;
+	private Encrypt encrypt;
 	
 	// 회원가입 페이지 이동
 	@RequestMapping( value="/join", method = RequestMethod.GET )
@@ -55,7 +51,7 @@ public class MemberController {
 		logger.info("join GET 요청");
 		
 		// 개인키 공개키 생성
-		Map<String, Object> map = encrypt_service.createKey();
+		Map<String, Object> map = encrypt.createKey();
 		
 		
 		if(map != null) {
@@ -103,7 +99,7 @@ public class MemberController {
 				memberJoinDTO.getUser_mail(), memberJoinDTO.getUser_pwd(), memberJoinDTO.getAuth_code() };
 		
 		// 암호화된 객체를 복호화	( 복호화 성공하면 true return )
-		if( encrypt_service.decryptRsa(privateKey, memberJoinDTO_Encrypt_Array) != null) {
+		if( encrypt.decryptRsa(privateKey, memberJoinDTO_Encrypt_Array) != null) {
 			
 			// 복호화된 평문을 다시 객체에 입력 
 			memberJoinDTO.setUser_id(memberJoinDTO_Encrypt_Array[0]);
@@ -159,7 +155,7 @@ public class MemberController {
 		logger.info("login GET 요청");
 		
 		// 개인키 공개키 생성
-		Map<String, Object> map = encrypt_service.createKey();
+		Map<String, Object> map = encrypt.createKey();
 		
 		// 생성된 개인키 및 공개키가 존재하지 않으면 null
 		if (map != null) {
@@ -199,7 +195,7 @@ public class MemberController {
 					memberLoginDTO.getUser_id(), memberLoginDTO.getUser_pwd(), memberLoginDTO.getUser_reId() };
 			
 			// 암호화된 객체를 복호화	( 복호화 성공시 true를 반환한다 )
-			if(encrypt_service.decryptRsa(privateKey, memberLoginDTO_Encrypt_Array)) {
+			if(encrypt.decryptRsa(privateKey, memberLoginDTO_Encrypt_Array)) {
 				
 				// 복호화된 평문을 다시 객체에 입력
 				memberLoginDTO.setUser_id(memberLoginDTO_Encrypt_Array[0]);

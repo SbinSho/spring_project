@@ -1,4 +1,4 @@
-package com.goCamping.service;
+package com.goCamping.util;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -13,14 +13,14 @@ import javax.crypto.Cipher;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class EncryptServiceImpl implements EncryptService {
+import com.goCamping.service.EncryptServiceImpl;
 
+@Component
+public class Encrypt {
 	private static final Logger logger = LogManager.getLogger(EncryptServiceImpl.class);
 
-	@Override
 	public Map<String, Object> createKey() {
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -56,7 +56,6 @@ public class EncryptServiceImpl implements EncryptService {
 		return map;
 	}
 
-	@Override
 	public Boolean decryptRsa(PrivateKey privateKey, String[] encrypt_arry) {
 
 		byte[] encryptedBytes;
@@ -91,7 +90,6 @@ public class EncryptServiceImpl implements EncryptService {
 		return true;
 	}
 
-	@Override
 	public byte[] hexToByteArray(String hex) {
 
 		if (hex == null || hex.length() % 2 != 0) {
@@ -106,5 +104,4 @@ public class EncryptServiceImpl implements EncryptService {
 		return bytes;
 
 	}
-
 }
