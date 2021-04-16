@@ -5,7 +5,11 @@
 <configuration> 
 	<typeAliases>
 	
+		<!-- domain -->
 		<typeAlias alias="memberVO" type="com.goCamping.domain.MemberVO" />
+		<typeAlias alias="boardVO" type="com.goCamping.domain.BoardVO"/>
+		
+		<!-- dto -->
 		<typeAlias alias="memberLoginDTO" type="com.goCamping.dto.MemberLoginDTO"/>
 		<typeAlias alias="memberChIdDTO" type="com.goCamping.dto.MemberChIdDTO"/>
 		<typeAlias alias="memberChPassDTO" type="com.goCamping.dto.MemberChPassDTO"/>
