@@ -39,12 +39,8 @@ public class BoardController {
 			System.out.println("list null");
 		}
 		
-		System.out.println(list.size());
-		
 		model.addAttribute("list", list);
 		model.addAttribute("pageMaker", pageMaker);
-		
-		logger.info("총 게시글 수 : " + board_service.BoardCount());
 		
 		return "/board/list";
 	}
