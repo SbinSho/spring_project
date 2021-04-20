@@ -32,7 +32,7 @@
 
 
 <div class="container">
-	<h2>불법영업 문의</h2>
+	<h2>게시판 글쓰기</h2>
 	<form action="/unregistered/write" method="post">
 		<div class="mb-3">
 			<label for="unregistered_title">제목</label> <input type="text" class="form-control"

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -65,6 +66,21 @@ public class BoardController {
 		
 		return "redirect:/unregistered/question";
 		
+	}
+	
+	@RequestMapping(value= "/read/{bno}", method = RequestMethod.GET)
+	public String read(@PathVariable("bno") int bno, Model model) {
+		
+		
+		BoardVO boardVO = board_service.board_read(bno);
+		
+		if( boardVO == null) {
+			return "redirect:/";
+		}
+		
+		model.addAttribute("boardVO", boardVO);
+		
+		return "/board/read";
 	}
 	
 }

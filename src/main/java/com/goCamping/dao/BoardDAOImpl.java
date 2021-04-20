@@ -22,10 +22,23 @@ public class BoardDAOImpl implements BoardDAO {
 	public int BoardCount() {
 		return session.selectOne(NAMESPACE + ".board_count");
 	}
-	// 게시글 조회
+	// 게시글 리스트 조회
 	@Override
 	public List<BoardVO> board_list(Criteria cri) {
 		return session.selectList(NAMESPACE + ".board_list", cri);
+	}
+	// 게시글 조회
+	@Override
+	public BoardVO board_read(int bno) {
+		return session.selectOne(NAMESPACE + ".board_read", bno);
+	}
+	@Override
+	public Boolean board_view(int bno) {
+		
+		if (session.update(NAMESPACE + ".board_view", bno) == 1) {
+			return true;
+		}
+		return false;
 	}
 	
 	

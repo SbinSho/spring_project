@@ -21,7 +21,13 @@
 	
 	<!-- Custom styles for this template -->
 	<link href="/css/business-frontpage.css" rel="stylesheet">
-
+	
+	<style>
+		.tr:hover {
+			cursor: pointer;
+			border-bottom: 2px solid black;
+		}
+	</style>
 </head>
 
 	<%@ include file="../inc/top.jsp" %>
@@ -29,10 +35,11 @@
 		<table class="table table-striped">
 		  <thead>
 		    <tr>
-		      <th scope="col">#</th>
-		      <th scope="col">First</th>
-		      <th scope="col">Last</th>
-		      <th scope="col">Handle</th>
+		      <th scope="col">번호</th>
+		      <th scope="col">제목</th>
+		      <th scope="col">작성자</th>
+		      <th scope="col">작성일</th>
+		      <th scope="col">조회수</th>
 		    </tr>
 		  </thead>
 		  <tbody>
@@ -45,11 +52,12 @@
 		  	</c:when>
 		  	<c:otherwise>
 		  		<c:forEach items="${ list }" var="boardVO">
-				    <tr class="tr">
+				    <tr class="tr" onclick="location.href='<c:url value='/board/read/${ boardVO.bno }'/>'">
 				      <th scope="row">${ boardVO.bno }</th>
 				      <td>${ boardVO.title }</td>
 				      <td>${ boardVO.writer }</td>
 				      <td>${ boardVO.regdate }</td>
+				      <td>${ boardVO.view_cnt }</td>
 				    </tr>		  			
 		  		</c:forEach>
 		  	</c:otherwise>

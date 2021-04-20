@@ -4,19 +4,32 @@
 
 
 <mapper namespace="com.goCamping.mapper.boardMapper">
-
+	<!-- 게시글 수 조회 -->
 	<select id="board_count" resultType="int">
 		SELECT COUNT(*) FROM BOARD
 	</select>
-	
-	<select id="board_list" resultType="boardVO" parameterType="com.goCamping.domain.Criteria">
-	    <![CDATA[
+	<!-- 전체 게시글 리스트 조회 -->
+	<select id="board_list" parameterType="com.goCamping.domain.Criteria" resultType="boardVO">
 	        SELECT
 	            *
 	        FROM
 	            BOARD
+	       	WHERE del_chk = 'n'
 	        ORDER BY bno DESC
 	        LIMIT #{pageStart}, #{perPageNum}
-	    ]]>
 	</select>
+	<!-- 게시글 조회 -->
+	<select id="board_read" parameterType="int" resultType="boardVO">
+		SELECT * FROM BOARD
+		WHERE
+			DEL_CHK = 'n' AND bno = #{ bno } 
+	</select>
+	<!-- 게시글 조회수 올리기 -->
+	<update id="board_view" parameterType="int">
+	<![CDATA[
+		UPDATE BOARD
+		SET view_cnt = view_cnt + 1
+		WHERE bno = #{ bno }
+	]]>
+	</update>
 </mapper>

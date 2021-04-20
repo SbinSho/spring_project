@@ -16,16 +16,27 @@ public class BoardServiceImpl  implements BoardService{
 	@Autowired
 	private BoardDAO bDao;
 	
-	// 총 게시글 조회
+	// 총 게시글 수 조회
 	@Override
 	public int BoardCount() {
 		return bDao.BoardCount();
 	}
 
-	// 게시글 조회
+	// 게시글 리스트 조회
 	@Override
 	public List<BoardVO> board_list(Criteria cri) {
 		return bDao.board_list(cri);
+	}
+	// 게시글 조회
+	@Override
+	public BoardVO board_read(int bno) {
+		
+		if(bDao.board_view(bno)) {
+			return bDao.board_read(bno);
+			
+		}
+		
+		return null;
 	}
 
 	
