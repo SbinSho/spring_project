@@ -16,7 +16,7 @@
 	</Appenders>
 	<Loggers>
 
-		<Root level="info">
+		<Root level="warn">
 			<AppenderRef ref="console" />
 		</Root>
 		
@@ -40,12 +40,12 @@
 		<Logger name="org.springframework.web" level="info" />
 
         <!--  SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보(milliseconds)를 포함한다. 필요시 open -->
-        <Logger name="jdbc.sqltiming" level="ERROR">
+        <Logger name="jdbc.sqltiming" level="info">
             <AppenderRef ref="console" />
         </Logger>
         <!--  SQL 결과 조회된 데이터의 table을 로그로 남긴다.(빼도됨) -->
         <Logger name="jdbc.resultsettable" additivity="false"> 
-	        <level value="WARN"/> 
+	        <level value="info"/> 
 	        <appender-ref ref="console"/> 
         </Logger>
         <!-- ResultSet을 제외한 모든 JDBC 호출 정보를 로그로 남긴다. 많은 양의 로그가 생성되므로 특별히 JDBC 문제를 추적해야 할 필요가 있는 경우를 제외하고는 사용을 권장하지 않는다.--> 

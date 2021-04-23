@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 
@@ -33,36 +34,27 @@
 
 <div class="container">
 	<h2>게시판 글쓰기</h2>
-	<form action="/unregistered/write" method="post">
+	<form:form commandName="boardWriteDTO" >
 		<div class="mb-3">
-			<label for="unregistered_title">제목</label> <input type="text" class="form-control"
-				name="unregistered_title" id="unregistered_title" placeholder="제목을 입력해 주세요">
+			<label for="title">제목</label> 
+			<form:input path="title" class="form-control" value="${ title }" placeholder="제목을 입력해 주세요" />
+			<form:errors path="title"/>
 		</div>
 		<div class="mb-3">
-			<p>공개여부</p>
-			<input type="radio" id="unregistered_public" name="unregistered_public" value="true">&nbsp;공개
-			<input type="radio" id="unregistered_public" name="unregistered_public" value="false" checked="checked" class="ml-5">&nbsp;비공개
+			<label for="writer">작성자</label>
+			<form:input path="writer" class="form-control" value="${ writer }" readonly="true" />
+			<form:errors path="writer" />
 		</div>
 		<div class="mb-3">
-			<label for="user_id">작성자</label>
-			<input type="text"	class="form-control" name="user_id" id="user_id" value="${ user_id }" readonly>
-		</div>
-<!-- 		<div class="mb-3"> -->
-<!-- 			<p>첨부파일</p> -->
-<!-- 			<input type="file" name="file1" id="file1"> -->
-<!-- 			<br> -->
-<!-- 			<input type="file" name="file2" id="file2"> -->
-<!-- 		</div> -->
-		<div class="mb-3">
-			<label for="unregistered_content">내용</label>
-			<textarea class="form-control" rows="5" name="unregistered_content" id="unregistered_content" placeholder="내용을 입력해 주세요"></textarea>
+			<label for="content">내용</label>
+			<form:textarea path="content" class="form-control" rows="5" value="${ content }" placeholder="내용을 입력해 주세요"></form:textarea>
+			<form:errors path="content"/>
 		</div>
 		<div class="text-right">
-			<button type="button" class="btn btn-sm btn-primary" id="write" onclick="form_check()">글쓰기</button>
-			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="location.href='/board/write?user_id=${user_id}'">목록</button>
+			<button type="submit" class="btn btn-sm btn-primary" id="write">글쓰기</button>
+			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="history.back();">목록</button>
 		</div>
-	</form>
+	</form:form>
 </div>
-
 
  <%@ include file="../inc/footer.jsp"%>

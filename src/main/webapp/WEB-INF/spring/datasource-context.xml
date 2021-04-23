@@ -30,13 +30,16 @@
 	</bean>
 
 	<!-- sqlSessionFactory 생성 -->
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean">
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation"
 			value="classpath:mybatis/config/mybatis-config.xml" />
-		<property name="mapperLocations"
-			value="classpath:mybatis/**-mapper.xml" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:mybatis/board-mapper.xml</value>
+				<value>classpath:mybatis/member-mapper.xml</value>
+			</list>
+		</property>
 	</bean>
 
 	<!-- sqlSessionTemplate 생성 -->

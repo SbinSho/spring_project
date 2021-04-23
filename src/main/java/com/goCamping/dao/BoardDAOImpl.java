@@ -1,5 +1,6 @@
 package com.goCamping.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.goCamping.domain.BoardVO;
 import com.goCamping.domain.Criteria;
+import com.goCamping.dto.BoardEditDTO;
+import com.goCamping.dto.BoardWriteDTO;
 
 @Repository
 public class BoardDAOImpl implements BoardDAO {
@@ -40,8 +43,41 @@ public class BoardDAOImpl implements BoardDAO {
 		}
 		return false;
 	}
-	
-	
+	// 게시글 작성
+	@Override
+	public Boolean board_write(BoardWriteDTO boardWriteDTO) {
+		
+		try {
+			if(session.insert(NAMESPACE + ".board_write", boardWriteDTO) == 1) {
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	// 게시글 수정
+	@Override
+	public Boolean board_edit(BoardEditDTO boardEditDTO) {
+		
+		if(session.update(NAMESPACE + ".board_edit", boardEditDTO) == 1) {
+			return true;
+		}
+		
+		return false;
+	}
+	// 게시글 삭제
+	@Override
+	public Boolean board_delete(HashMap<String, Object> del) {
+		
+		if(session.delete(NAMESPACE + ".board_delete", del) == 1) {
+			return true;
+		}
+		
+		return false;
+	}
 	
 
 }

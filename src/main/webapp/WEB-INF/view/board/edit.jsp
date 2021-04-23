@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 
@@ -32,38 +33,28 @@
 
 
 <div class="container">
-	<h2>게시판</h2>
-	<div class="mb-3">
-		<label for="title">제목</label>
-		<span class="form-control" id="title">${ boardVO.title }</span>
-	</div>
-	<div class="mb-3">
-		<label for="writer">작성자</label>
-		<span class="form-control" id="writer">${ boardVO.writer }</span>
-	</div>
-	<div class="mb-3">
-		<label for="content">내용</label>
-		<span class="form-control" id="content">${ boardVO.content }</span>
-	</div>
-	<div class="text-right">
-		<c:if test="${ loginUser.id eq boardVO.writer }">
-			<button type="button" class="btn btn-sm btn-primary" id="button_edit" onclick="location.href='/board/edit/${ boardVO.bno }?user_id=${ loginUser.id }'">수정</button>
-			<button type="button" class="btn btn-sm btn-primary" id="button_delete" onclick="delete_cehck()">삭제</button>
-		</c:if>
-		<button type="button" class="btn btn-sm btn-primary" id="list" onclick="history.back()">목록</button>
-	</div>
+	<h2>게시판 수정</h2>
+	<form:form commandName="boardVO" >
+		<div class="mb-3">
+			<label for="title">제목</label> 
+			<form:input path="title" class="form-control" value="${ title }" placeholder="제목을 입력해 주세요" />
+			<form:errors path="title"/>
+		</div>
+		<div class="mb-3">
+			<label for="writer">작성자</label>
+			<form:input path="writer" class="form-control" value="${ writer }" readonly="true" />
+			<form:errors path="writer" />
+		</div>
+		<div class="mb-3">
+			<label for="content">내용</label>
+			<form:textarea path="content" class="form-control" rows="5" value="${ content }" placeholder="내용을 입력해 주세요"></form:textarea>
+			<form:errors path="content"/>
+		</div>
+		<div class="text-right">
+			<button type="submit" class="btn btn-sm btn-primary" id="edit">수정하기</button>
+			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="history.back();">수정취소</button>
+		</div>
+	</form:form>
 </div>
-
-<script>
-	function delete_cehck() {
-		if(confirm("정말로 삭제 하시겠습니까?")){
-			location.href='/board/delete/${boardVO.bno}?user_id=${ loginUser.id }';
-		} else {
-			return false;
-		}
-	}
-
-
-</script>
 
  <%@ include file="../inc/footer.jsp"%>

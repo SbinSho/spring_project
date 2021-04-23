@@ -32,4 +32,28 @@
 		WHERE bno = #{ bno }
 	]]>
 	</update>
+	
+	<!-- 게시글 작성 -->
+	<insert id="board_write" parameterType="boardWriteDTO">
+		INSERT INTO BOARD ( TITLE, WRITER, CONTENT)
+		VALUES (#{title}, #{writer}, #{content})
+	
+	</insert>
+	
+	<!-- 게시글 수정 -->
+	<update id="board_edit" parameterType="boardWriteDTO">
+		UPDATE BOARD
+		SET 
+			TITLE = #{ title },
+			CONTENT = #{ content }
+		WHERE
+			BNO = #{ bno } AND WRITER = #{ writer } 	
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="board_delete" parameterType="map">
+		DELETE FROM BOARD
+		WHERE 
+			BNO = #{ bno } AND WRITER = #{ writer }
+	</delete>	
 </mapper>

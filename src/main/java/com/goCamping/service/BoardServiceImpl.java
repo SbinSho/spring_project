@@ -1,5 +1,6 @@
 package com.goCamping.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.goCamping.dao.BoardDAO;
 import com.goCamping.domain.BoardVO;
 import com.goCamping.domain.Criteria;
+import com.goCamping.dto.BoardEditDTO;
+import com.goCamping.dto.BoardWriteDTO;
 
 @Service
 public class BoardServiceImpl  implements BoardService{
@@ -37,6 +40,21 @@ public class BoardServiceImpl  implements BoardService{
 		}
 		
 		return null;
+	}
+
+	@Override
+	public Boolean board_write(BoardWriteDTO boardWriteDTO) {
+		return bDao.board_write(boardWriteDTO);
+	}
+
+	@Override
+	public Boolean board_edit(BoardEditDTO boardEditDTO) {
+		return bDao.board_edit(boardEditDTO);
+	}
+	
+	@Override
+	public Boolean board_delete(HashMap<String, Object> del) {
+		return bDao.board_delete(del);
 	}
 
 	
