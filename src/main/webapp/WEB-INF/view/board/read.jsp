@@ -41,9 +41,10 @@
 		<label for="writer">작성자</label>
 		<span class="form-control" id="writer">${ boardVO.writer }</span>
 	</div>
-	<div class="mb-3">
-		<label for="content">내용</label>
-		<span class="form-control" id="content">${ boardVO.content }</span>
+	<div class="mb-3" style="word-break:break-all; ">
+		<p>내용</p>
+		<hr>
+		<span id="content">${ boardVO.content }</span>
 	</div>
 	<div class="text-right">
 		<c:if test="${ loginUser.id eq boardVO.writer }">

@@ -51,9 +51,11 @@
 	</update>
 	
 	<!-- 게시글 삭제 -->
-	<delete id="board_delete" parameterType="map">
-		DELETE FROM BOARD
+	<update id="board_delete" parameterType="map">
+		UPDATE BOARD
+		SET
+			DEL_CHK = 'y'
 		WHERE 
 			BNO = #{ bno } AND WRITER = #{ writer }
-	</delete>	
+	</update>	
 </mapper>

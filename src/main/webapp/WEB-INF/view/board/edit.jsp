@@ -23,10 +23,8 @@
 	<!-- Custom styles for this template -->
 	<link href="/css/business-frontpage.css" rel="stylesheet">
 	
-	<script type="text/javascript" src="/js/rsa/jsbn.js"></script>
-	<script type="text/javascript" src="/js/rsa/rsa.js"></script>
-	<script type="text/javascript" src="/js/rsa/prng4.js"></script>
-	<script type="text/javascript" src="/js/rsa/rng.js"></script>
+	<script src="<c:url value='/jquery/jquery.min.js'/>"></script>
+	<script type="text/javascript" src="<c:url value='/smarteditor/js/service/HuskyEZCreator.js'/>" charset="utf-8"></script>
 </head>  
 
 <%@ include file="../inc/top.jsp" %>
@@ -34,7 +32,7 @@
 
 <div class="container">
 	<h2>게시판 수정</h2>
-	<form:form commandName="boardVO" >
+	<form:form commandName="boardVO" id="frm">
 		<div class="mb-3">
 			<label for="title">제목</label> 
 			<form:input path="title" class="form-control" value="${ title }" placeholder="제목을 입력해 주세요" />
@@ -51,10 +49,32 @@
 			<form:errors path="content"/>
 		</div>
 		<div class="text-right">
-			<button type="submit" class="btn btn-sm btn-primary" id="edit">수정하기</button>
+			<button type="button" class="btn btn-sm btn-primary" id="edit">수정하기</button>
 			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="history.back();">수정취소</button>
 		</div>
 	</form:form>
 </div>
-
+	<script>
+	// 컨텍스트 경로 반환
+	function Path() {
+		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}"; 
+		return contextPath;
+	}
+	
+		var oEditors = [];
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef: oEditors,
+			elPlaceHolder: "content",
+			sSkinURI: Path() + "smarteditor/SmartEditor2Skin.html",
+			fCreator: "createSEditor2"
+		});
+		
+	    //전송버튼
+	    $("#edit").click(function(){
+	        //id가 smarteditor인 textarea에 에디터에서 대입
+	        oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+	        //폼 submit
+	        $("#frm").submit();
+	    })
+	</script>
  <%@ include file="../inc/footer.jsp"%>

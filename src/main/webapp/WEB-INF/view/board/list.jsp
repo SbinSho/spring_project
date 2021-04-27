@@ -32,6 +32,8 @@
 
 	<%@ include file="../inc/top.jsp" %>
 	<div class="container">
+		<h2>게시판</h2>
+		<hr>
 		<table class="table table-striped">
 		  <thead>
 		    <tr>
@@ -48,7 +50,6 @@
 		  		<tr>
 		  			<td>게시글이 존재하지 않습니다.</td>
 		  		</tr>
-		  	
 		  	</c:when>
 		  	<c:otherwise>
 		  		<c:forEach items="${ list }" var="boardVO">
@@ -75,7 +76,7 @@
 		</c:when>
 		<c:otherwise>
 			<div class="container text-right">
-				<button type="button" class="btn btn-primary" onclick="location.href='/board/write'">글쓰기</button>
+				<button type="button" class="btn btn-primary" onclick="location.href='/board/write?user_id=${ loginUser.id }'">글쓰기</button>
 			</div>
 		</c:otherwise>
 	</c:choose>

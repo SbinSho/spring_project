@@ -72,7 +72,7 @@ public class BoardDAOImpl implements BoardDAO {
 	@Override
 	public Boolean board_delete(HashMap<String, Object> del) {
 		
-		if(session.delete(NAMESPACE + ".board_delete", del) == 1) {
+		if(session.update(NAMESPACE + ".board_delete", del) == 1) {
 			return true;
 		}
 		
