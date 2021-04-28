@@ -44,7 +44,7 @@
 	<div class="mb-3">
 		<p>첨부 파일</p>
 		<c:forEach var="file" items="${ board_fileList }">
-			<a href="#" onclick="fn_fileDown('${file.FILE_NO}'); return false;">${file.ORG_FILE_NAME}</a>&nbsp;&nbsp;(${file.FILE_SIZE}kb)<br>
+			<a href="<c:url value='/board/fileDownload/${ file.FILE_NO }'/>">${file.ORG_FILE_NAME}</a>&nbsp;&nbsp;(${file.FILE_SIZE} kb)<br>
 		</c:forEach>
 	</div>
 	<div class="mb-3" style="word-break:break-all; ">
@@ -62,6 +62,7 @@
 </div>
 
 <script>
+	var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}";
 	function delete_cehck() {
 		if(confirm("정말로 삭제 하시겠습니까?")){
 			location.href='/board/delete/${boardVO.bno}?user_id=${ loginUser.id }';
@@ -69,7 +70,6 @@
 			return false;
 		}
 	}
-
 
 </script>
 

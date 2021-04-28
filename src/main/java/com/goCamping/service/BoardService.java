@@ -33,4 +33,7 @@ public interface BoardService {
 
 	// 업로드 파일 조회
 	public List<Map<String, Object>> board_fileList(int bno) throws Exception;
+	
+	// 업로드 파일 다운로드
+	public Map<String, Object> board_fileInfo(int file_no) throws Exception;
 }

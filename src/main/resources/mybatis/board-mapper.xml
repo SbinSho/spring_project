@@ -58,6 +58,15 @@
 			AND
 			DEL_CHK = 'n'
 	</select>
+	<!-- 업로드 파일 다운로드 -->
+	<select id="board_fileInfo" parameterType="int" resultType="hashMap">
+		SELECT
+			STORED_FILE_NAME,
+			ORG_FILE_NAME
+		FROM
+			BOARD_FILE
+		WHERE FILE_NO = #{abc}
+	</select>
 	<!-- 게시글 작성(board table) 후 마지막 auto_increment 값 가져오기 -->
 	<select id="board_getLastBno" resultType="int">
 		select last_insert_id();

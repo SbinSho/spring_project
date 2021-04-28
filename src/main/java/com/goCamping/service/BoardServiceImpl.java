@@ -91,6 +91,12 @@ public class BoardServiceImpl implements BoardService {
 	public List<Map<String, Object>> board_fileList(int bno) throws Exception {
 		return bDao.board_fileList(bno);
 	}
+	// 업로드 파일 다운로드
 
+	@Override
+	public Map<String, Object> board_fileInfo(int file_no) throws Exception {
+		return bDao.board_fileInfo(file_no);
+	}
+	
 	
 }

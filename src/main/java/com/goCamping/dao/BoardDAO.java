@@ -27,6 +27,8 @@ public interface BoardDAO {
 	public Boolean board_fileUpload(Map<String, Object> map);
 	// 업로드 파일 조회
 	public List<Map<String, Object>> board_fileList(int bno) throws Exception;
+	// 업로드 파일 다운로드
+	public Map<String, Object> board_fileInfo(int file_no) throws Exception;
 	// 게시글 작성 후 마지막 번호 가져오기
 	public int board_getLastBno();
 	// 게시글 수정

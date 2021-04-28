@@ -1,10 +1,13 @@
 package com.goCamping.controller;
 
+import java.io.File;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -17,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -121,7 +125,7 @@ public class BoardController {
 //	}
 	// 게시글 수정 페이지 이동
 	@RequestMapping(value = "/edit/{bno}", method = RequestMethod.GET)
-	public String edit(@PathVariable("bno") int bno, String user_id, Model model, RedirectAttributes rttr) {
+	public String edit(@PathVariable("bno") int bno, String user_id, Model model, RedirectAttributes rttr) throws Exception {
 		
 		logger.info("/edit GET 진입");
 		
@@ -132,7 +136,10 @@ public class BoardController {
 			return "redirect:/";
 		}
 		
+		List<Map<String, Object>> board_fileList = board_service.board_fileList(boardVO.getBno());
+		
 		model.addAttribute("boardVO", boardVO);
+		model.addAttribute("board_fileList", board_fileList);
 		
 		return "/board/edit";
 	}
@@ -168,15 +175,31 @@ public class BoardController {
 		
 		List<Map<String, Object>> board_fileList = board_service.board_fileList(boardVO.getBno());
 		
-		
-		for (Map<String, Object> map : board_fileList) {
-			System.out.println(map);
-		}
-		
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("board_fileList", board_fileList);
 		
 		return "/board/read";
+	}
+	
+	// 업로드 파일 다운로드
+	@RequestMapping(value="/fileDownload/{file_no}", method = RequestMethod.GET)
+	public void board_fileDownload(@PathVariable int file_no, HttpServletResponse response) throws Exception{
+		Map<String, Object> resultMap = board_service.board_fileInfo(file_no);
+		
+		
+		String storedFileName = (String) resultMap.get("STORED_FILE_NAME");
+		String originalFileName = (String) resultMap.get("ORG_FILE_NAME");
+		
+		// 첨부파일을 읽어 byte[]로 변환처리
+		byte fileByte[] = org.apache.commons.io.FileUtils.readFileToByteArray(new File("c:\\spring_project\\upload\\" + storedFileName));
+		
+		response.setContentType("application/octet-stream");
+		response.setContentLength(fileByte.length);
+		response.setHeader("Content-Disposition",  "attachment; fileName=\"" + URLEncoder.encode(originalFileName, "UTF-8") + "\";");
+		response.getOutputStream().write(fileByte);
+		response.getOutputStream().flush();
+		response.getOutputStream().close();
+		
 	}
 	
 	// 게시글 삭제
