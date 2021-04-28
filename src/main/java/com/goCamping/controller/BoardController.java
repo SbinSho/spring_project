@@ -101,28 +101,6 @@ public class BoardController {
 		
 		return "redirect:/board/list";
 	}
-//	// 게시글 작성
-//	@RequestMapping(value = "/write", method = RequestMethod.POST)
-//	public String write(@Valid BoardWriteDTO boardWriteDTO, BindingResult bindingResult) {
-//		
-//		logger.info("/write POST 진입");
-//		
-//		if( bindingResult.hasErrors()) {
-//			
-//			logger.info("객체 유효성 검증 실패!");
-//			return "/board/write";
-//			
-//		}
-//		
-//		if(!board_service.board_write(boardWriteDTO)) {
-//			logger.info("게시글 작성 실패!");
-//			return "/board/write";
-//		}
-//		
-//		logger.info("게시글 작성 성공!");
-//		return "redirect:/board/list";
-//		
-//	}
 	// 게시글 수정 페이지 이동
 	@RequestMapping(value = "/edit/{bno}", method = RequestMethod.GET)
 	public String edit(@PathVariable("bno") int bno, String user_id, Model model, RedirectAttributes rttr) throws Exception {
@@ -151,7 +129,7 @@ public class BoardController {
 		
 		boardEditDTO.setBno(bno);
 		
-		if(!board_service.board_edit(boardEditDTO)) {
+		if(!board_service.board_edit(boardEditDTO, null, null, null)) {
 			logger.info("게시글 수정 실패!");
 			return "redirect:/board/edit/" + bno +"?user_id=" + boardEditDTO.getWriter();
 		}

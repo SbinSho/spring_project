@@ -26,7 +26,7 @@ public interface BoardService {
 	public Boolean board_write(BoardWriteDTO boardWriteDTO, MultipartHttpServletRequest multipartHttpServletRequest);
 	
 	// 게시글 수정
-	public Boolean board_edit(BoardEditDTO boardEditDTO);
+	public Boolean board_edit(BoardEditDTO boardEditDTO, String[] files, String[] fileNames, MultipartHttpServletRequest multipartHttpServletRequest);
 	
 	// 게시글 삭제
 	public Boolean board_delete(HashMap<String, Object> del);
@@ -36,4 +36,8 @@ public interface BoardService {
 	
 	// 업로드 파일 다운로드
 	public Map<String, Object> board_fileInfo(int file_no) throws Exception;
+	
+	// 업로드 파일 수정
+	public void board_editFile(Map<String, Object> map) throws Exception;
+	
 }

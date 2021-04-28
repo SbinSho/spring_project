@@ -38,6 +38,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	// 게시글 조회
+	@Transactional
 	@Override
 	public BoardVO board_read(int bno) {
 
@@ -48,7 +49,7 @@ public class BoardServiceImpl implements BoardService {
 
 		return null;
 	}
-
+	// 게시글 작성
 	@Transactional
 	@Override
 	public Boolean board_write(BoardWriteDTO boardWriteDTO, MultipartHttpServletRequest multipartHttpServletRequest) {
@@ -68,35 +69,67 @@ public class BoardServiceImpl implements BoardService {
 			}
 
 			result = true;
-
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-
-		return result;
-	}
-
-	@Override
-	public Boolean board_edit(BoardEditDTO boardEditDTO) {
-		return bDao.board_edit(boardEditDTO);
+		
 	}
 	
+	// 게시글 수정
+	@Override
+	public Boolean board_edit(BoardEditDTO boardEditDTO, String[] files, String[] fileNames, MultipartHttpServletRequest multipartHttpServletRequest) {
+		
+		try {
+			bDao.board_edit(boardEditDTO);
+			
+			List<Map<String, Object>> list = fileUtils.parseInsertFileInfo(multipartHttpServletRequest);
+			Map<String, Object> tempMap = null;
+			
+			for (Map<String, Object> map : list) {
+				
+				tempMap = map;
+				
+				if(tempMap.get("IS_NEW").equals('y')) {
+					bDao.board_fileUpload(tempMap);
+				} else {
+					bDao.board_editFile(tempMap);
+				}
+			}
+			
+			return true;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	// 게시글 삭제
 	@Override
 	public Boolean board_delete(HashMap<String, Object> del) {
 		return bDao.board_delete(del);
 	}
+	
 	// 업로드 파일 조회
 	@Override
 	public List<Map<String, Object>> board_fileList(int bno) throws Exception {
 		return bDao.board_fileList(bno);
 	}
+	
 	// 업로드 파일 다운로드
-
 	@Override
 	public Map<String, Object> board_fileInfo(int file_no) throws Exception {
 		return bDao.board_fileInfo(file_no);
 	}
+	
+	// 업로드 파일 수정
+	@Override
+	public void board_editFile(Map<String, Object> map) throws Exception {
+		bDao.board_editFile(map);
+	}
+	
 	
 	
 }

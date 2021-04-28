@@ -57,6 +57,7 @@
 			BNO = #{ bno }
 			AND
 			DEL_CHK = 'n'
+		ORDER BY FILE_NO ASC
 	</select>
 	<!-- 업로드 파일 다운로드 -->
 	<select id="board_fileInfo" parameterType="int" resultType="hashMap">
@@ -67,6 +68,14 @@
 			BOARD_FILE
 		WHERE FILE_NO = #{abc}
 	</select>
+	<!-- 업로드 파일 수정 -->
+	<update id="board_editFile" parameterType="hashMap">
+		UPDATE BOARD_FILE
+		SET
+			DEL_CHK = 'y'
+		WHERE
+			FILE_NO = #{FILE_NO}
+	</update>
 	<!-- 게시글 작성(board table) 후 마지막 auto_increment 값 가져오기 -->
 	<select id="board_getLastBno" resultType="int">
 		select last_insert_id();

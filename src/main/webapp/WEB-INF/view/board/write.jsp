@@ -44,12 +44,13 @@
 			<form:errors path="writer" />
 		</div>
 		<div class="mb-3">
-			<label for="file">첨부파일</label>
-			<br>
-			<input type="file" name="uploadfile" />
+			<label for="file">첨부파일</label>&nbsp;<button type="button" class="btn btn-sm btn-success ml-3" onclick="file_button_add();">추가</button><button type="button" class="btn btn-sm btn-danger ml-3" onclick="file_button_del();">삭제</button>
+			<hr>
+			<span id="uploadfile1"><input type="file" name="uploadfile1"/><button type='button' class='btn btn-sm btn-danger' onclick='file_cancel(1);'>취소</button></span>
 		</div>
 		<div class="mb-3">
 			<label for="content">내용</label>
+			<hr>
 			<form:textarea path="content" class="form-control" rows="5" value="${ content }" placeholder="내용을 입력해 주세요"></form:textarea>
 			<form:errors path="content"/>
 		</div>
@@ -61,6 +62,39 @@
 </div>
 
 	<script>
+	// 첨부 파일 버튼 갯수
+	var file_button_count = 1;
+	// 첨부 파일 버튼 추가
+	function file_button_add() {
+		
+		if(file_button_count >= 6){
+			alert("첨부파일은 최대 6개 까지 가능합니다.");
+			return false;
+		}
+		
+		if(file_button_count == 3){
+			$("#uploadfile" + file_button_count).after("<span id='uploadfile" + (++file_button_count) +"'><input type='file' name='uploadfile" + file_button_count + "'/><button type='button' class='btn btn-sm btn-danger'>취소</button></span>");
+		} else {
+			$("#uploadfile" + file_button_count).after("<span id='uploadfile" + (++file_button_count) +"' class='ml-3'><input type='file' name='uploadfile" + file_button_count + "'/><button type='button' class='btn btn-sm btn-danger' onclick='file_cancel("+file_button_count+");'>취소</button></span>");
+		}
+		
+	}
+	// 첨부 파일 버튼 삭제
+	function file_button_del() {
+		
+		if(file_button_count <= 1) {
+			return false;
+		}
+	
+		$("#uploadfile" + file_button_count).remove();
+		file_button_count--;
+		
+	}
+	// 첨부파일 취소
+	function file_cancel(cancel_num) {
+		$("input[name=uploadfile"+ cancel_num +"]").val('');
+	}
+	
 	// 컨텍스트 경로 반환
 	function Path() {
 		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}"; 

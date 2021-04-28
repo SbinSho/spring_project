@@ -85,6 +85,11 @@ public class BoardDAOImpl implements BoardDAO {
 	public Map<String, Object> board_fileInfo(int file_no) throws Exception {
 		return session.selectOne(NAMESPACE + ".board_fileInfo", file_no);
 	}
+	// 업로드 파일 수정
+	@Override
+	public void board_editFile(Map<String, Object> map) throws Exception {
+		session.update(NAMESPACE + ".board_editFile", map);
+	}
 	// 게시글 수정
 	@Override
 	public Boolean board_edit(BoardEditDTO boardEditDTO) {

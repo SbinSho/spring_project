@@ -12,15 +12,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.goCamping.domain.BoardVO;
-
 @Component
 public class FileUtils {
 
 	// 파일이 저장 될 위치
 	private static final String filePath = "C:\\spring_project\\upload\\";
 	
-	public List<Map<String, Object>> parseInsertFileInfo(/*BoardVO boardVO,*/ MultipartHttpServletRequest multipartHttpServletRequest) throws Exception{
+	public List<Map<String, Object>> parseInsertFileInfo(
+			MultipartHttpServletRequest multipartHttpServletRequest /*,String[] files, String[] fileNames*/) throws Exception{
 		// 클라이언트에서 받은 파일 목록을 이용해 Iterator 생성
 		Iterator<String> iterator = multipartHttpServletRequest.getFileNames();
 		// 업로드 파일 정보를 담기 위한 객체
@@ -67,6 +66,15 @@ public class FileUtils {
 				
 			}
 		}
+		
+//		if(files != null && fileNames!= null) {
+//			for(int i = 0; i < fileNames.length; i++) {
+//				listMap = new HashMap<String, Object>();
+//				listMap.put("IS_NEW", "n");
+//				listMap.put("FILE_NO", files[i]);
+//				list.add(listMap);
+//			}
+//		}
 		
 		return list;
 	}
