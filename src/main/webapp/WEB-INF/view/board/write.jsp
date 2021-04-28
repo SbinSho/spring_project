@@ -32,7 +32,7 @@
 
 <div class="container">
 	<h2>게시판 글쓰기</h2>
-	<form:form commandName="boardWriteDTO" id="frm">
+	<form:form commandName="boardWriteDTO" id="frm" enctype="multipart/form-data">
 		<div class="mb-3">
 			<label for="title">제목</label> 
 			<form:input path="title" class="form-control" value="${ title }" placeholder="제목을 입력해 주세요" />
@@ -42,6 +42,11 @@
 			<label for="writer">작성자</label>
 			<form:input path="writer" class="form-control" value="${ writer }" readonly="true" />
 			<form:errors path="writer" />
+		</div>
+		<div class="mb-3">
+			<label for="file">첨부파일</label>
+			<br>
+			<input type="file" name="uploadfile" />
 		</div>
 		<div class="mb-3">
 			<label for="content">내용</label>

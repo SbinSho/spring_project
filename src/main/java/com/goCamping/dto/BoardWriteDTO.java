@@ -1,5 +1,7 @@
 package com.goCamping.dto;
 
+import java.io.File;
+
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -34,6 +36,10 @@ public class BoardWriteDTO {
 	}
 	public void setContent(String content) {
 		this.content = content;
+	}
+	@Override
+	public String toString() {
+		return "BoardWriteDTO [title=" + title + ", writer=" + writer + ", content=" + content + "]";
 	}
 	
 	

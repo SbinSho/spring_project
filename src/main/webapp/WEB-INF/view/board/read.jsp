@@ -41,6 +41,12 @@
 		<label for="writer">작성자</label>
 		<span class="form-control" id="writer">${ boardVO.writer }</span>
 	</div>
+	<div class="mb-3">
+		<p>첨부 파일</p>
+		<c:forEach var="file" items="${ board_fileList }">
+			<a href="#" onclick="fn_fileDown('${file.FILE_NO}'); return false;">${file.ORG_FILE_NAME}</a>&nbsp;&nbsp;(${file.FILE_SIZE}kb)<br>
+		</c:forEach>
+	</div>
 	<div class="mb-3" style="word-break:break-all; ">
 		<p>내용</p>
 		<hr>

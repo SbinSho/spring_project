@@ -2,6 +2,7 @@ package com.goCamping.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.goCamping.domain.BoardVO;
@@ -78,26 +80,45 @@ public class BoardController {
 	}
 	// 게시글 작성
 	@RequestMapping(value = "/write", method = RequestMethod.POST)
-	public String write(@Valid BoardWriteDTO boardWriteDTO, BindingResult bindingResult) {
+	public String write(@Valid BoardWriteDTO boardWriteDTO, BindingResult bindingResult, MultipartHttpServletRequest multipartHttpServletRequest) {
 		
 		logger.info("/write POST 진입");
+		if( bindingResult.hasErrors() ) {
 		
-		if( bindingResult.hasErrors()) {
-			
 			logger.info("객체 유효성 검증 실패!");
 			return "/board/write";
-			
+		
 		}
 		
-		if(!board_service.board_write(boardWriteDTO)) {
+		if(!board_service.board_write(boardWriteDTO, multipartHttpServletRequest)) {
 			logger.info("게시글 작성 실패!");
 			return "/board/write";
 		}
 		
-		logger.info("게시글 작성 성공!");
 		return "redirect:/board/list";
-		
 	}
+//	// 게시글 작성
+//	@RequestMapping(value = "/write", method = RequestMethod.POST)
+//	public String write(@Valid BoardWriteDTO boardWriteDTO, BindingResult bindingResult) {
+//		
+//		logger.info("/write POST 진입");
+//		
+//		if( bindingResult.hasErrors()) {
+//			
+//			logger.info("객체 유효성 검증 실패!");
+//			return "/board/write";
+//			
+//		}
+//		
+//		if(!board_service.board_write(boardWriteDTO)) {
+//			logger.info("게시글 작성 실패!");
+//			return "/board/write";
+//		}
+//		
+//		logger.info("게시글 작성 성공!");
+//		return "redirect:/board/list";
+//		
+//	}
 	// 게시글 수정 페이지 이동
 	@RequestMapping(value = "/edit/{bno}", method = RequestMethod.GET)
 	public String edit(@PathVariable("bno") int bno, String user_id, Model model, RedirectAttributes rttr) {
@@ -133,7 +154,7 @@ public class BoardController {
 	
 	// 게시글 읽기
 	@RequestMapping(value= "/read/{bno}", method = RequestMethod.GET)
-	public String read(@PathVariable("bno") int bno, Model model, RedirectAttributes rttr) {
+	public String read(@PathVariable("bno") int bno, Model model, RedirectAttributes rttr) throws Exception {
 		
 		logger.info("/read GET 진입");
 
@@ -145,7 +166,15 @@ public class BoardController {
 			return "redirect:/";
 		}
 		
+		List<Map<String, Object>> board_fileList = board_service.board_fileList(boardVO.getBno());
+		
+		
+		for (Map<String, Object> map : board_fileList) {
+			System.out.println(map);
+		}
+		
 		model.addAttribute("boardVO", boardVO);
+		model.addAttribute("board_fileList", board_fileList);
 		
 		return "/board/read";
 	}

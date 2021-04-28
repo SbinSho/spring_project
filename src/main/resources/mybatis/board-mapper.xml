@@ -39,7 +39,29 @@
 		VALUES (#{title}, #{writer}, #{content})
 	
 	</insert>
+	<!-- 파일 업로드 -->
+	<insert id="board_fileUpload">
+		INSERT INTO BOARD_FILE
+		(BNO, ORG_FILE_NAME, STORED_FILE_NAME, FILE_SIZE)
+		VALUES
+		( #{ bno }, #{org_file_name}, #{ stored_file_name }, #{ file_size })
 	
+	</insert>
+	<!-- 업로드 파일 조회 -->
+	<select id="board_fileList" resultType="hashMap">
+		SELECT 
+			FILE_NO, ORG_FILE_NAME, ROUND(FILE_SIZE/1024,1) AS FILE_SIZE
+		FROM
+			BOARD_FILE
+		WHERE 
+			BNO = #{ bno }
+			AND
+			DEL_CHK = 'n'
+	</select>
+	<!-- 게시글 작성(board table) 후 마지막 auto_increment 값 가져오기 -->
+	<select id="board_getLastBno" resultType="int">
+		select last_insert_id();
+	</select>
 	<!-- 게시글 수정 -->
 	<update id="board_edit" parameterType="boardWriteDTO">
 		UPDATE BOARD
