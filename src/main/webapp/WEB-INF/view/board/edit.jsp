@@ -38,7 +38,7 @@
 
 <div class="container">
 	<h2>게시판 수정</h2>
-	<form:form commandName="boardVO" id="frm" enctype="multipart/form-data" method="post">
+	<form:form commandName="boardEditDTO" id="frm" enctype="multipart/form-data" method="post">
 		<input type="hidden" id="array_fileDel" name="array_fileDel[]" />
 		<div class="mb-3">
 			<label for="title">제목</label>
@@ -63,8 +63,8 @@
 		</div>
 		<div class="mb-3">
 			<label for="content">내용</label>
-			<form:textarea path="content" class="form-control" rows="5"
-				value="${ content }" placeholder="내용을 입력해 주세요"></form:textarea>
+			<hr>
+			<form:textarea path="content" class="form-control" rows="5"	value="${ content }"></form:textarea>
 			<form:errors path="content" />
 		</div>
 		<div class="text-right">
@@ -75,6 +75,13 @@
 	</form:form>
 </div>
 <script>
+
+	var result = "${result}";
+	
+	if(result == "error"){
+		alert("올바르지 않은값을 입력했는지 다시 확인해주세요!");
+	}
+
 	// 컨텍스트 경로 반환
 	function Path() {
 		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}"; 
@@ -90,7 +97,7 @@
 	// 첨부 파일 버튼 추가
 	function file_button_add() {
 		
-		if(file_button_count >= 6){
+		if(file_button_count >= 8){
 			alert("첨부파일은 최대 6개 까지 가능합니다.");
 			return false;
 		}

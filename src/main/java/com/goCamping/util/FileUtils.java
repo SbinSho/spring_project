@@ -20,7 +20,7 @@ public class FileUtils {
 	
 	public List<Map<String, Object>> parseInsertFileInfo(
 			MultipartHttpServletRequest multipartHttpServletRequest /*,String[] files, String[] fileNames*/) throws Exception{
-		// 클라이언트에서 받은 파일 목록을 이용해 Iterator 생성
+		// 업로드 된 파일들의 이름 목록을 제공하는 Iterator를 구한다. ( 파일들의 이름은 input 태그의 name 값이다. )
 		Iterator<String> iterator = multipartHttpServletRequest.getFileNames();
 		// 업로드 파일 정보를 담기 위한 객체
 		MultipartFile multipartFile = null;
@@ -39,7 +39,6 @@ public class FileUtils {
 		File file = new File(filePath);
 		if(file.exists() == false) {
 			file.mkdirs();
-			System.out.println("폴더 생성!");
 		}
 		
 		while(iterator.hasNext()) {

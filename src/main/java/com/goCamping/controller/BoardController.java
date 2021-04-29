@@ -17,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -86,7 +88,8 @@ public class BoardController {
 	}
 	// 게시글 작성
 	@RequestMapping(value = "/write", method = RequestMethod.POST)
-	public String write(@Valid BoardWriteDTO boardWriteDTO, BindingResult bindingResult, MultipartHttpServletRequest multipartHttpServletRequest) {
+	public String write(@Valid BoardWriteDTO boardWriteDTO, Errors errors,
+			MultipartHttpServletRequest multipartHttpServletRequest, RedirectAttributes rttr) {
 		
 		logger.info("/write POST 진입");
 		
@@ -94,19 +97,36 @@ public class BoardController {
 		// user_id가 일치하는지 인터셉터에서 확인
 		
 		// 객체 유효성 검증
-		if( bindingResult.hasErrors() ) {
+		if( errors.hasErrors() ) {
 		
 			logger.info("객체 유효성 검증 실패!");
 			return "/board/write";
 		
 		}
 		
-		// 첨부파일이 6개 초과해서 들어왔는지 아닌지 체크 필요
+		
+		// 첨부파일이 갯수가 6개 초과해서 들어왔는지 아닌지 체크 ( 파일 유효성 검사 ) start 
+		Boolean file_CountChk_result = false;
+		
+		Map<String, MultipartFile> map = multipartHttpServletRequest.getFileMap();
+		
+		if(map.size() > 6) {
+			file_CountChk_result = true;
+		}
+		
+		if( file_CountChk_result ) {
+			logger.info("파일 유효성 검증 실패!");
+			rttr.addFlashAttribute("result", "error");
+			return "redirect:/";
+		}
+		// 파일 유효성 검사 end
+		
+		
 		
 		// 게시글 작성 처리
 		if(!board_service.board_write(boardWriteDTO, multipartHttpServletRequest)) {
 			logger.info("게시글 작성 실패!");
-			return "/board/write";
+			return "redirect:/board/write";
 		}
 		
 		return "redirect:/board/list";
@@ -137,7 +157,14 @@ public class BoardController {
 			return "redirect:/";
 		}
 		
-		model.addAttribute("boardVO", boardVO);
+		BoardEditDTO boardEditDTO = new BoardEditDTO();
+		
+		boardEditDTO.setBno(boardVO.getBno());
+		boardEditDTO.setTitle(boardVO.getTitle());
+		boardEditDTO.setWriter(boardVO.getWriter());
+		boardEditDTO.setContent(boardVO.getContent());
+		
+		model.addAttribute("boardEditDTO", boardEditDTO);
 		model.addAttribute("board_fileList", board_fileList);
 		model.addAttribute("board_FileListCount", board_fileList.size());
 		
@@ -146,15 +173,42 @@ public class BoardController {
 	// 게시글 수정
 	@RequestMapping(value = "/edit/{bno}", method = RequestMethod.POST)
 	public String edit(
-			@PathVariable("bno") int bno, 
-			@Valid BoardEditDTO boardEditDTO,
+			@PathVariable("bno") int bno,
+			@RequestParam("user_id") String user_id,
+			@Valid BoardEditDTO boardEditDTO, BindingResult bindingResult,
 			@RequestParam("array_fileDel[]") String[] del_files,
-			MultipartHttpServletRequest multipartHttpServletRequest) {
+			MultipartHttpServletRequest multipartHttpServletRequest,
+			RedirectAttributes rttr) {
 		
 		logger.info("/edit POST 진입");
 		
 		// POST 요청으로 들어온 user_id 와 session에 저장된 
 		// user_id가 일치하는지 인터셉터에서 확인
+		
+		// 객체 유효성 검증
+		if( bindingResult.hasErrors() ) {
+		
+			logger.info("객체 유효성 검증 실패!");
+			rttr.addFlashAttribute("result", "error");
+			return "redirect:/board/edit/" + bno + "?user_id=" + user_id;
+		
+		}
+		
+		// 첨부파일이 갯수가 6개 초과해서 들어왔는지 아닌지 체크 ( 파일 유효성 검사 ) start 
+		Boolean file_CountChk_result = false;
+		
+		Map<String, MultipartFile> map = multipartHttpServletRequest.getFileMap();
+		
+		if(map.size() > 6) {
+			file_CountChk_result = true;
+		}
+		
+		if( file_CountChk_result ) {
+			logger.info("파일 유효성 검증 실패!");
+			rttr.addFlashAttribute("result", "error");
+			return "redirect:/";
+		}
+		// 파일 유효성 검사 end
 		
 		// 요청 받은 게시글 번호 입력
 		boardEditDTO.setBno(bno);

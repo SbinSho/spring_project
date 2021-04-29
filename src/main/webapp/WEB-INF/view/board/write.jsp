@@ -51,7 +51,7 @@
 		<div class="mb-3">
 			<label for="content">내용</label>
 			<hr>
-			<form:textarea path="content" class="form-control" rows="5" value="${ content }" placeholder="내용을 입력해 주세요"></form:textarea>
+			<form:textarea path="content" class="form-control" rows="5" value="${ content }"></form:textarea>
 			<form:errors path="content"/>
 		</div>
 		<div class="text-right">
@@ -67,7 +67,7 @@
 	// 첨부 파일 버튼 추가
 	function file_button_add() {
 		
-		if(file_button_count >= 6){
+		if(file_button_count >= 8){
 			alert("첨부파일은 최대 6개 까지 가능합니다.");
 			return false;
 		}
