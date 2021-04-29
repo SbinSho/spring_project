@@ -77,9 +77,11 @@ public class MemberEditController {
 			@RequestBody MemberChIdDTO memberChIdDTO, Errors errors, HttpServletRequest request ) throws Exception {
 		
 		logger.info("/chid POST 진입");
-		
+
+		// 클라이언트에 요청에 대한 처리를 위한 Map
 		Map<String, String> chid_result = new HashMap<String, String>();
 		
+		// 암호문 복호화를 위해 string 배열 선언
 		String[] chIdDTO_array = { memberChIdDTO.getCh_id() };
 		
 		// 현재 세션 가져오기 위한 객체 초기화
@@ -92,15 +94,18 @@ public class MemberEditController {
 			return chid_result;
 		}
 		
+		// 복호화
 		if(encrypt.decryptRsa(privateKey, chIdDTO_array)) {
+			
 			// 세션에 저장된 아이디 불러오기
 			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
 			
+			// 복호화 된 평문을 다시 객체에 입력
 			memberChIdDTO.setUser_id(authInfo.getId());
 			memberChIdDTO.setCh_id(chIdDTO_array[1]);
 			
+			// 유효성 검증
 			new MemberChIdDTOValidator().validate(memberChIdDTO, errors);
-			
 			if(errors.hasErrors()) {
 				
 				chid_result.put("result", "ERROR");
@@ -151,9 +156,10 @@ public class MemberEditController {
 			, HttpServletRequest request, Model model) throws Exception {
 		
 		logger.info("/chpass POST 진입");
-		
+		// 클라이언트에 요청에 대한 처리를 위한 Map
 		Map<String, String> chpass_result = new HashMap<String, String>();
 		
+		// 암호문 복호화를 위해 string 배열 선언
 		String[] chPssDTO_array = { memberChPassDTO.getUser_pwd(), memberChPassDTO.getCh_user_pwd() };
 		
 		// 현재 세션 가져오기 위한 객체 초기화
@@ -166,18 +172,17 @@ public class MemberEditController {
 			return chpass_result;
 		}
 		
-		
+		// 복호화
 		if(encrypt.decryptRsa(privateKey, chPssDTO_array)) {
 			
 			// 세션에 저장된 아이디 불러오기
 			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
-			
+			// 복호화된 평문을 다시 객체에 입력
 			memberChPassDTO.setUser_id(authInfo.getId());
 			memberChPassDTO.setUser_pwd(chPssDTO_array[0]);
 			memberChPassDTO.setCh_user_pwd(chPssDTO_array[1]);
-			
+			// 유효성 검증
 			new MemberChPassDTOValidator().validate(memberChPassDTO, errors);
-			
 			if(errors.hasErrors()) {
 				logger.info("객체 유효성 검증 실패!");
 				chpass_result.put("result", "ERROR");
@@ -234,39 +239,42 @@ public class MemberEditController {
 			, HttpServletRequest request, Model model) throws Exception {
 		
 		logger.info("/chpass POST 진입");
-		
+		// 클라이언트에 요청에 대한 처리를 위한 Map
 		Map<String, String> chpass_result = new HashMap<String, String>();
-		
+		// 암호문 복호화를 위해 string 배열 선언
 		String[] DelteDTO_array = { memberDeleteDTO.getUser_pwd() };
 		
 		// 현재 세션 가져오기 위한 객체 초기화
 		HttpSession session = request.getSession(false);
 		// 개인키 객체 초기화
 		PrivateKey privateKey = session != null ? (PrivateKey) session.getAttribute("_RSA_WEB_KEY_") : null;
-		
+
 		if(session == null || privateKey == null) {
 			chpass_result.put("result", "ERROR");
 			return chpass_result;
 		}
 		
-		
+		// 복호화
 		if(encrypt.decryptRsa(privateKey, DelteDTO_array)) {
 			
 			// 세션에 저장된 아이디 불러오기
 			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
 			
+			// 복호화된 평문을 이용해 객체 입력
 			memberDeleteDTO.setUser_id(authInfo.getId());
 			memberDeleteDTO.setUser_pwd(DelteDTO_array[0]);
 			
+			// 복호화된 객체 유효성 체크
 			new MemberDeleteDTOValidator().validate(memberDeleteDTO, errors);
 			
+			// 유효성 검증
 			if(errors.hasErrors()) {
 				logger.info("객체 유효성 검증 실패!");
 				chpass_result.put("result", "ERROR");
 				return chpass_result;
 				
 			}
-			
+			// 회원 탈퇴 처리
 			if(member_service.member_delete(memberDeleteDTO)) {
 				
 				logger.info("회원 탈퇴 변경 완료!");

@@ -37,7 +37,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter{
 		if(session == null) {
 			logger.info("session이 존재하지 않음");
 			pre_out = response.getWriter();
-			pre_out.println("<script>alert('오류 발생!'); location.href='" + ContextPath + "';</script>");
+			pre_out.println("<script>alert('세션이 만료 되었습니다!'); location.href='" + ContextPath + "';</script>");
 			pre_out.flush();
 			pre_out.close();
 			return false;

@@ -22,6 +22,7 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private BoardDAO bDao;
 
+	// 첨부 파일 처리를 위한 bean 설정
 	@Autowired
 	private FileUtils fileUtils;
 
@@ -41,7 +42,8 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	@Override
 	public BoardVO board_read(int bno) {
-
+		
+		// 조회수 증가 및 게시판 글 조회하기
 		if (bDao.board_viewCount(bno)) {
 			return bDao.board_read(bno);
 		}
@@ -54,14 +56,15 @@ public class BoardServiceImpl implements BoardService {
 	public Boolean board_write(BoardWriteDTO boardWriteDTO, MultipartHttpServletRequest multipartHttpServletRequest) {
 
 		try {
-
-		bDao.board_write(boardWriteDTO);
-
-		int bno = bDao.board_getLastBno();
+			// 게시글 작성 처리
+			bDao.board_write(boardWriteDTO);
+			// 마지막으로 업데이트 된 게시판 번호 가져오기
+			int bno = bDao.board_getLastBno();
 		
-		
+			// 첨부 파일이 존재하는지 확인하고, 존재하면 list로 반환
 			List<Map<String, Object>> list = fileUtils.parseInsertFileInfo(multipartHttpServletRequest);
-
+			
+			// 추가 된 파일이 존재하는 경우 파일 업로드 처리
 			for (Map<String, Object> map : list) {
 				map.put("bno", bno);
 				bDao.board_fileUpload(map);
@@ -81,18 +84,22 @@ public class BoardServiceImpl implements BoardService {
 	public Boolean board_edit(BoardEditDTO boardEditDTO, String[] del_files, MultipartHttpServletRequest multipartHttpServletRequest) {
 		
 		try {
+			// 게시글 수정 처리
 			bDao.board_edit(boardEditDTO);
-			
+			// 첨부 파일이 존재하는지 확인하고, 존재하면 list로 반환
 			List<Map<String, Object>> list = fileUtils.parseInsertFileInfo(multipartHttpServletRequest);
 			
+			// 게시글에 첨부된 파일이 삭제 되었는지 체크
 			if(del_files.length > 0) {
+				// 삭제 된 첨부 파일들을 DB에서 삭제 처리
 				for (String file_no : del_files) {
 					bDao.board_editFile(Integer.parseInt(file_no));
 				}
 			}
 			
+			// 첨부 파일이 추가 됬을 경우를 위해 게시판 번호 추가
 			int bno = boardEditDTO.getBno();
-			
+			// 추가 된 파일이 존재하는 경우 파일 업로드 처리
 			for (Map<String, Object> map : list) {
 				map.put("bno", bno);
 				bDao.board_fileUpload(map);

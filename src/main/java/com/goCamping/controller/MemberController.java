@@ -242,6 +242,7 @@ public class MemberController {
 		logger.info("/logout 진입!");
 		
 		response.setContentType("text/html; charset=utf-8");
+		
 		HttpSession session = request.getSession(false);
 		session.removeAttribute("loginUser");
 		

@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,10 +47,12 @@ public class BoardController {
 		
 		logger.info("/list GET 호출");
 		
+		// view 페이지에 전달 할 페이지 객체 ( 페이징 처리시 사용 )
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setCri(cri);
 		pageMaker.setTotalCount(board_service.BoardCount());
 		
+		// 현재 입력 된 페이지 번호의 게시판 가져오기
 		List<BoardVO> list = board_service.board_list(cri);
 		
 		if(list == null) {
@@ -88,6 +89,11 @@ public class BoardController {
 	public String write(@Valid BoardWriteDTO boardWriteDTO, BindingResult bindingResult, MultipartHttpServletRequest multipartHttpServletRequest) {
 		
 		logger.info("/write POST 진입");
+		
+		// POST 요청으로 들어온 user_id 와 session에 저장된 
+		// user_id가 일치하는지 인터셉터에서 확인
+		
+		// 객체 유효성 검증
 		if( bindingResult.hasErrors() ) {
 		
 			logger.info("객체 유효성 검증 실패!");
@@ -95,6 +101,9 @@ public class BoardController {
 		
 		}
 		
+		// 첨부파일이 6개 초과해서 들어왔는지 아닌지 체크 필요
+		
+		// 게시글 작성 처리
 		if(!board_service.board_write(boardWriteDTO, multipartHttpServletRequest)) {
 			logger.info("게시글 작성 실패!");
 			return "/board/write";
@@ -102,21 +111,31 @@ public class BoardController {
 		
 		return "redirect:/board/list";
 	}
+	
 	// 게시글 수정 페이지 이동
 	@RequestMapping(value = "/edit/{bno}", method = RequestMethod.GET)
 	public String edit(@PathVariable("bno") int bno, String user_id, Model model, RedirectAttributes rttr) throws Exception {
 		
 		logger.info("/edit GET 진입");
 		
+		// DB에 저장 된 현재 게시판의 정보 불러오기
 		BoardVO boardVO = board_service.board_read(bno);
 		
-		
+		// 게시판이 존재하지 않거나, 현재 요청한 아이디와 작성자의 아이디가 같은지 비교
+		// user_id를 클라이언트에서 조작을 해서 요청하더라도, 인터셉터가 가로채서 현재 요청된
+		// 아이디와 세션에 저장 된 아이디를 비교하기 때문에 세션의 user_id를 사용할 필요는 없다.
 		if(boardVO == null || !boardVO.getWriter().equals(user_id)) {
 			rttr.addFlashAttribute("result", "error");
 			return "redirect:/";
 		}
-		
+		// 현재 게시판 번호에 해당하는 파일들을 불러온다.
 		List<Map<String, Object>> board_fileList = board_service.board_fileList(boardVO.getBno());
+		
+		// DB 오류로 인한 board_fileList에 null 값이 들어갈 경우 방지
+		if(board_fileList == null) {
+			rttr.addFlashAttribute("result", "error");
+			return "redirect:/";
+		}
 		
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("board_fileList", board_fileList);
@@ -134,8 +153,13 @@ public class BoardController {
 		
 		logger.info("/edit POST 진입");
 		
+		// POST 요청으로 들어온 user_id 와 session에 저장된 
+		// user_id가 일치하는지 인터셉터에서 확인
+		
+		// 요청 받은 게시글 번호 입력
 		boardEditDTO.setBno(bno);
 		
+		// 게시글 수정 처리
 		if(!board_service.board_edit(boardEditDTO, del_files, multipartHttpServletRequest)) {
 			logger.info("게시글 수정 실패!");
 			return "redirect:/board/edit/" + bno +"?user_id=" + boardEditDTO.getWriter();
@@ -153,6 +177,7 @@ public class BoardController {
 		
 		BoardVO boardVO = board_service.board_read(bno);
 		
+		// 게시판이 존재하지 않는 경우
 		if( boardVO == null) {
 			rttr.addFlashAttribute("result", "error");
 			return "redirect:/";
@@ -160,10 +185,13 @@ public class BoardController {
 		
 		List<Map<String, Object>> board_fileList = board_service.board_fileList(boardVO.getBno());
 		
-		if(board_fileList != null) {
-			model.addAttribute("board_fileList", board_fileList);
+		// DB 오류로 인한 board_fileList에 null 값이 들어갈 경우 방지
+		if(board_fileList == null) {
+			rttr.addFlashAttribute("result", "error");
+			return "redirect:/";
 		}
 		
+		model.addAttribute("board_fileList", board_fileList);
 		model.addAttribute("boardVO", boardVO);
 		
 		return "/board/read";
@@ -205,10 +233,11 @@ public class BoardController {
 		}
 		
 		HashMap<String, Object> del = new HashMap<String, Object>();
-		
+		// 삭제할 게시판 번호와, 작성자 데이터 입력
 		del.put("bno", bno);
 		del.put("writer", user_id);
 		
+		// 게시판 삭제 처리
 		if(!board_service.board_delete(del)) {
 			rttr.addFlashAttribute("result", "error");
 			return "redirect:/";
