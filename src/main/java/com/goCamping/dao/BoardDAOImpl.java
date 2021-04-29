@@ -38,9 +38,9 @@ public class BoardDAOImpl implements BoardDAO {
 		return session.selectOne(NAMESPACE + ".board_read", bno);
 	}
 	@Override
-	public Boolean board_view(int bno) {
+	public Boolean board_viewCount(int bno) {
 		
-		if (session.update(NAMESPACE + ".board_view", bno) == 1) {
+		if (session.update(NAMESPACE + ".board_viewCount", bno) == 1) {
 			return true;
 		}
 		return false;
@@ -87,8 +87,8 @@ public class BoardDAOImpl implements BoardDAO {
 	}
 	// 업로드 파일 수정
 	@Override
-	public void board_editFile(Map<String, Object> map) throws Exception {
-		session.update(NAMESPACE + ".board_editFile", map);
+	public void board_editFile(int file_no) throws Exception {
+		session.update(NAMESPACE + ".board_editFile", file_no);
 	}
 	// 게시글 수정
 	@Override
@@ -104,11 +104,31 @@ public class BoardDAOImpl implements BoardDAO {
 	@Override
 	public Boolean board_delete(HashMap<String, Object> del) {
 		
-		if(session.update(NAMESPACE + ".board_delete", del) == 1) {
-			return true;
-		}
+		try {
+			if(session.update(NAMESPACE + ".board_delete", del) == 1) {
+				return true;
+			}
+			
+			return false;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		
-		return false;
+		}
+	}
+	
+	// 게시글 삭제시 파일도 삭제처리
+	@Override
+	public Boolean board_file_delete(HashMap<String, Object> del) {
+		
+		try {
+			session.update(NAMESPACE + ".board_file_delete", del);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 

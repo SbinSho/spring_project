@@ -38,7 +38,8 @@
 
 <div class="container">
 	<h2>게시판 수정</h2>
-	<form:form commandName="boardVO" id="frm">
+	<form:form commandName="boardVO" id="frm" enctype="multipart/form-data" method="post">
+		<input type="hidden" id="array_fileDel" name="array_fileDel[]" />
 		<div class="mb-3">
 			<label for="title">제목</label>
 			<form:input path="title" class="form-control" value="${ title }"
@@ -52,10 +53,13 @@
 			<form:errors path="writer" />
 		</div>
 		<div class="mb-3">
-			<p>첨부 파일</p>
-			<c:forEach var="file" items="${ board_fileList }">
-				<a href="<c:url value='/board/fileDownload/${ file.FILE_NO }'/>">${file.ORG_FILE_NAME}</a>&nbsp;&nbsp;(${file.FILE_SIZE}kb)<br>
+			<label for="file">첨부파일</label>&nbsp;<button type="button" class="btn btn-sm btn-success ml-3" onclick="file_button_add();">추가</button><button type="button" class="btn btn-sm btn-danger ml-3" onclick="file_button_del();">삭제</button>
+			<hr>
+			<c:forEach var="file" items="${ board_fileList }" varStatus="status">
+				<p id="uploadfile${ status.index + 1 }">${file.ORG_FILE_NAME}&nbsp;&nbsp;(${file.FILE_SIZE} kb)<button type="button" class="btn btn-sm btn-danger ml-3" onclick="remove_file(${ status.index + 1 }, ${ file.FILE_NO });">삭제</button></p>
 			</c:forEach>
+		</div>
+		<div class="mb-3" id="file_add">
 		</div>
 		<div class="mb-3">
 			<label for="content">내용</label>
@@ -77,20 +81,70 @@
 		return contextPath;
 	}
 	
-		var oEditors = [];
-		nhn.husky.EZCreator.createInIFrame({
-			oAppRef: oEditors,
-			elPlaceHolder: "content",
-			sSkinURI: Path() + "smarteditor/SmartEditor2Skin.html",
-			fCreator: "createSEditor2"
-		});
+	// 첨부 파일 버튼  현재 갯수
+	var file_button_count = ${board_FileListCount};
+	// 첨부 파일 버튼 최소 갯수
+	var file_button_countMin = ${board_FileListCount};
+	// 첨부 파일 번호
+	var file_number = ${board_FileListCount};
+	// 첨부 파일 버튼 추가
+	function file_button_add() {
 		
-	    //전송버튼
-	    $("#edit").click(function(){
-	        //id가 smarteditor인 textarea에 에디터에서 대입
-	        oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-	        //폼 submit
-	        $("#frm").submit();
-	    })
+		if(file_button_count >= 6){
+			alert("첨부파일은 최대 6개 까지 가능합니다.");
+			return false;
+		}
+		
+		$("#file_add").append("<span id='uploadfile" + (++file_number) +"' class='mr-3'><input type='file' name='uploadfile" + file_number + "'/><button type='button' class='btn btn-sm btn-danger' onclick='file_cancel("+file_number+");'>취소</button></span>");
+		file_button_count++;
+	}
+	// 첨부 파일 버튼 삭제
+	function file_button_del() {
+		
+		
+		if(file_button_count <= file_button_countMin) {
+			return false;
+		}
+		
+		$("#uploadfile" + file_number).remove();
+		file_button_count--;
+		file_number--;
+		
+	}
+	// 첨부파일 취소
+	function file_cancel(cancel_num) {
+		$("input[name=uploadfile"+ cancel_num +"]").val('');
+	}
+	// 첨부파일 삭제
+	var array = new Array();
+	function remove_file(index, file_no) {
+		
+		array.push(file_no);
+		$("#array_fileDel").attr("value", array);
+		
+		$("#uploadfile"+index).remove();
+		if(file_button_count > 0){
+			file_button_count--;
+		}
+		if(file_button_countMin > 0){
+			file_button_countMin--;
+		}
+	}
+	
+	var oEditors = [];
+	nhn.husky.EZCreator.createInIFrame({
+		oAppRef: oEditors,
+		elPlaceHolder: "content",
+		sSkinURI: Path() + "smarteditor/SmartEditor2Skin.html",
+		fCreator: "createSEditor2"
+	});
+		
+	//전송버튼
+	$("#edit").click(function(){
+		//id가 smarteditor인 textarea에 에디터에서 대입
+	    oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+	    //폼 submit
+	    $("#frm").submit();
+	})
 	</script>
 <%@ include file="../inc/footer.jsp"%>

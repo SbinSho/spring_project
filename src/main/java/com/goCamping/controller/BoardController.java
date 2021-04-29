@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -109,7 +110,8 @@ public class BoardController {
 		
 		BoardVO boardVO = board_service.board_read(bno);
 		
-		if(!boardVO.getWriter().equals(user_id)) {
+		
+		if(boardVO == null || !boardVO.getWriter().equals(user_id)) {
 			rttr.addFlashAttribute("result", "error");
 			return "redirect:/";
 		}
@@ -118,18 +120,23 @@ public class BoardController {
 		
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("board_fileList", board_fileList);
+		model.addAttribute("board_FileListCount", board_fileList.size());
 		
 		return "/board/edit";
 	}
 	// 게시글 수정
 	@RequestMapping(value = "/edit/{bno}", method = RequestMethod.POST)
-	public String edit(@PathVariable("bno") int bno, BoardEditDTO boardEditDTO, Model model) {
+	public String edit(
+			@PathVariable("bno") int bno, 
+			@Valid BoardEditDTO boardEditDTO,
+			@RequestParam("array_fileDel[]") String[] del_files,
+			MultipartHttpServletRequest multipartHttpServletRequest) {
 		
 		logger.info("/edit POST 진입");
 		
 		boardEditDTO.setBno(bno);
 		
-		if(!board_service.board_edit(boardEditDTO, null, null, null)) {
+		if(!board_service.board_edit(boardEditDTO, del_files, multipartHttpServletRequest)) {
 			logger.info("게시글 수정 실패!");
 			return "redirect:/board/edit/" + bno +"?user_id=" + boardEditDTO.getWriter();
 		}
@@ -153,8 +160,11 @@ public class BoardController {
 		
 		List<Map<String, Object>> board_fileList = board_service.board_fileList(boardVO.getBno());
 		
+		if(board_fileList != null) {
+			model.addAttribute("board_fileList", board_fileList);
+		}
+		
 		model.addAttribute("boardVO", boardVO);
-		model.addAttribute("board_fileList", board_fileList);
 		
 		return "/board/read";
 	}
@@ -164,6 +174,7 @@ public class BoardController {
 	public void board_fileDownload(@PathVariable int file_no, HttpServletResponse response) throws Exception{
 		Map<String, Object> resultMap = board_service.board_fileInfo(file_no);
 		
+		logger.info("/board/fileDownload GET 진입");
 		
 		String storedFileName = (String) resultMap.get("STORED_FILE_NAME");
 		String originalFileName = (String) resultMap.get("ORG_FILE_NAME");
@@ -184,9 +195,11 @@ public class BoardController {
 	@RequestMapping(value = "/delete/{bno}", method = RequestMethod.GET)
 	public String delete(@PathVariable("bno") int bno, String user_id, RedirectAttributes rttr) {
 		
+		logger.info("/board/delete GET 진입");
+		
 		BoardVO boardVO = board_service.board_read(bno);
 		
-		if(!boardVO.getWriter().equals(user_id)) {
+		if(boardVO == null || !boardVO.getWriter().equals(user_id)) {
 			rttr.addFlashAttribute("result", "error");
 			return "redirect:/";
 		}

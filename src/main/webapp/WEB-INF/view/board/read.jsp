@@ -22,10 +22,6 @@
 	<!-- Custom styles for this template -->
 	<link href="/css/business-frontpage.css" rel="stylesheet">
 	
-	<script type="text/javascript" src="/js/rsa/jsbn.js"></script>
-	<script type="text/javascript" src="/js/rsa/rsa.js"></script>
-	<script type="text/javascript" src="/js/rsa/prng4.js"></script>
-	<script type="text/javascript" src="/js/rsa/rng.js"></script>
 </head>  
 
 <%@ include file="../inc/top.jsp" %>
@@ -43,9 +39,17 @@
 	</div>
 	<div class="mb-3">
 		<p>첨부 파일</p>
-		<c:forEach var="file" items="${ board_fileList }">
-			<a href="<c:url value='/board/fileDownload/${ file.FILE_NO }'/>">${file.ORG_FILE_NAME}</a>&nbsp;&nbsp;(${file.FILE_SIZE} kb)<br>
-		</c:forEach>
+		<hr>
+		<c:choose>
+			<c:when test="${ empty board_fileList }">
+				<p>첨부파일이 존재하지 않습니다.</p>
+			</c:when>
+			<c:otherwise>
+				<c:forEach var="file" items="${ board_fileList }">
+					<a href="<c:url value='/board/fileDownload/${ file.FILE_NO }'/>">${file.ORG_FILE_NAME}</a>&nbsp;&nbsp;(${file.FILE_SIZE} kb)<br>
+				</c:forEach>
+			</c:otherwise>
+		</c:choose>
 	</div>
 	<div class="mb-3" style="word-break:break-all; ">
 		<p>내용</p>

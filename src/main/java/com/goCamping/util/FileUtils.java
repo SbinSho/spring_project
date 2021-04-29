@@ -36,8 +36,6 @@ public class FileUtils {
 		// DB에 저장하기 위해 파일 정보를 담을 Map
 		Map<String, Object> listMap = null;
 		
-//		int bno = boardVO.getBno();
-		
 		File file = new File(filePath);
 		if(file.exists() == false) {
 			file.mkdirs();
@@ -57,7 +55,6 @@ public class FileUtils {
 				multipartFile.transferTo(file);
 				
 				listMap = new HashMap<String, Object>();
-//				listMap.put("bno", bno);
 				listMap.put("org_file_name", originalFileName);
 				listMap.put("stored_file_name", storedFileName);
 				listMap.put("file_size", multipartFile.getSize());
@@ -66,15 +63,6 @@ public class FileUtils {
 				
 			}
 		}
-		
-//		if(files != null && fileNames!= null) {
-//			for(int i = 0; i < fileNames.length; i++) {
-//				listMap = new HashMap<String, Object>();
-//				listMap.put("IS_NEW", "n");
-//				listMap.put("FILE_NO", files[i]);
-//				list.add(listMap);
-//			}
-//		}
 		
 		return list;
 	}

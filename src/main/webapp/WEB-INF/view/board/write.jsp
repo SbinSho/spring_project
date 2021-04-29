@@ -46,7 +46,7 @@
 		<div class="mb-3">
 			<label for="file">첨부파일</label>&nbsp;<button type="button" class="btn btn-sm btn-success ml-3" onclick="file_button_add();">추가</button><button type="button" class="btn btn-sm btn-danger ml-3" onclick="file_button_del();">삭제</button>
 			<hr>
-			<span id="uploadfile1"><input type="file" name="uploadfile1"/><button type='button' class='btn btn-sm btn-danger' onclick='file_cancel(1);'>취소</button></span>
+			<span id="uploadfile1" class="mr-3"><input type="file" name="uploadfile1"/><button type='button' class='btn btn-sm btn-danger' onclick='file_cancel(1);'>취소</button></span>
 		</div>
 		<div class="mb-3">
 			<label for="content">내용</label>
@@ -72,11 +72,7 @@
 			return false;
 		}
 		
-		if(file_button_count == 3){
-			$("#uploadfile" + file_button_count).after("<span id='uploadfile" + (++file_button_count) +"'><input type='file' name='uploadfile" + file_button_count + "'/><button type='button' class='btn btn-sm btn-danger'>취소</button></span>");
-		} else {
-			$("#uploadfile" + file_button_count).after("<span id='uploadfile" + (++file_button_count) +"' class='ml-3'><input type='file' name='uploadfile" + file_button_count + "'/><button type='button' class='btn btn-sm btn-danger' onclick='file_cancel("+file_button_count+");'>취소</button></span>");
-		}
+		$("#uploadfile" + file_button_count).after("<span id='uploadfile" + (++file_button_count) +"' class='mr-3'><input type='file' name='uploadfile" + file_button_count + "'/><button type='button' class='btn btn-sm btn-danger' onclick='file_cancel("+ file_button_count +");'>취소</button></span>");
 		
 	}
 	// 첨부 파일 버튼 삭제
@@ -111,7 +107,7 @@
 		
 	    //전송버튼
 	    $("#write").click(function(){
-	        //id가 smarteditor인 textarea에 에디터에서 대입
+	        //id가 content인 textarea에 에디터에서 대입
 	        oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
 	        //폼 submit
 	        $("#frm").submit();

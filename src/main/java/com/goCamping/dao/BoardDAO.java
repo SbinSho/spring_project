@@ -20,7 +20,7 @@ public interface BoardDAO {
 	// 게시글 조회
 	public BoardVO board_read(int bno);
 	// 조회수 증가
-	public Boolean board_view(int bno);
+	public Boolean board_viewCount(int bno);
 	// 게시글 작성
 	public Boolean board_write(BoardWriteDTO boardWriteDTO);
 	// 파일 업로드
@@ -30,11 +30,13 @@ public interface BoardDAO {
 	// 업로드 파일 다운로드
 	public Map<String, Object> board_fileInfo(int file_no) throws Exception;
 	// 업로드 파일 수정
-	public void board_editFile(Map<String, Object> map) throws Exception;
+	public void board_editFile(int file_no) throws Exception;
 	// 게시글 작성 후 마지막 번호 가져오기
 	public int board_getLastBno();
 	// 게시글 수정
 	public Boolean board_edit(BoardEditDTO boardEditDTO);
 	// 게시글 삭제
 	public Boolean board_delete(HashMap<String, Object> del);
+	// 게시글 삭제시 파일도 삭제처리
+	public Boolean board_file_delete(HashMap<String, Object> del);
 }
