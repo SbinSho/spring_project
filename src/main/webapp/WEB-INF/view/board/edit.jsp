@@ -69,8 +69,8 @@
 		</div>
 		<div class="text-right">
 			<button type="button" class="btn btn-sm btn-primary" id="edit">수정하기</button>
-			<button type="button" class="btn btn-sm btn-primary" id="list"
-				onclick="history.back();">수정취소</button>
+			<button type="button" class="btn btn-sm btn-primary" id="list" 
+			onclick="location.href='<c:url value="/board/list?page=${page}"/>';">수정취소</button>
 		</div>
 	</form:form>
 </div>
@@ -79,7 +79,7 @@
 	var result = "${result}";
 	
 	if(result == "error"){
-		alert("올바르지 않은값을 입력했는지 다시 확인해주세요!");
+		alert("올바른 값을 입력했는지 다시 확인해주세요!");
 	}
 
 	// 컨텍스트 경로 반환

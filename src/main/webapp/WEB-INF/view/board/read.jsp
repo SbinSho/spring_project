@@ -58,10 +58,10 @@
 	</div>
 	<div class="text-right">
 		<c:if test="${ loginUser.id eq boardVO.writer }">
-			<button type="button" class="btn btn-sm btn-primary" id="button_edit" onclick="location.href='/board/edit/${ boardVO.bno }?user_id=${ loginUser.id }'">수정</button>
+			<button type="button" class="btn btn-sm btn-primary" id="button_edit" onclick="location.href='/board/edit/${ boardVO.bno }?user_id=${ loginUser.id }&page=${ page }'">수정</button>
 			<button type="button" class="btn btn-sm btn-primary" id="button_delete" onclick="delete_cehck()">삭제</button>
 		</c:if>
-		<button type="button" class="btn btn-sm btn-primary" id="list" onclick="history.back()">목록</button>
+		<button type="button" class="btn btn-sm btn-primary" id="list" onclick="location.href='<c:url value="/board/list?page=${page}"/>';">목록</button>
 	</div>
 </div>
 
@@ -69,7 +69,7 @@
 	var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}";
 	function delete_cehck() {
 		if(confirm("정말로 삭제 하시겠습니까?")){
-			location.href='/board/delete/${boardVO.bno}?user_id=${ loginUser.id }';
+			location.href='/board/delete/${boardVO.bno}?user_id=${ loginUser.id }&page=' + ${page};
 		} else {
 			return false;
 		}

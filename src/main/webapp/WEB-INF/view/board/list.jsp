@@ -53,7 +53,7 @@
 		  	</c:when>
 		  	<c:otherwise>
 		  		<c:forEach items="${ list }" var="boardVO">
-				    <tr class="tr" onclick="location.href='<c:url value='/board/read/${ boardVO.bno }'/>'">
+				    <tr class="tr" onclick="location.href='<c:url value='/board/read/${ boardVO.bno }?page=${ page }'/>'">
 				      <th scope="row">${ boardVO.bno }</th>
 				      <td>${ boardVO.title }</td>
 				      <td>${ boardVO.writer }</td>
@@ -76,7 +76,7 @@
 		</c:when>
 		<c:otherwise>
 			<div class="container text-right">
-				<button type="button" class="btn btn-primary" onclick="location.href='/board/write?user_id=${ loginUser.id }'">글쓰기</button>
+				<button type="button" class="btn btn-primary" onclick="location.href='<c:url value="/board/write?user_id=${ loginUser.id }&page=${page}"/>';">글쓰기</button>
 			</div>
 		</c:otherwise>
 	</c:choose>
@@ -87,7 +87,14 @@
 			<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/board/list?page=${ pageMaker.startPage-1 }"/>'">이전</button>
 		</c:if>
 		<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="pageNum">
-			<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/board/list?page=${ pageNum }"/>'">${ pageNum }</button>
+			<c:choose>
+				<c:when test="${ page == pageNum }">
+					<button type="button" class="btn btn-success" onclick="location.href='<c:url value="/board/list?page=${ pageNum }"/>'">${ pageNum }</button>
+				</c:when>
+				<c:otherwise>
+					<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/board/list?page=${ pageNum }"/>'">${ pageNum }</button>
+				</c:otherwise>
+			</c:choose>
 		</c:forEach>
 		<c:if test="${ pageMaker.next && pageMaker.endPage > 0 }">
 			<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/board/list?page=${ pageMaker.endPage + 1}"/>'">다음</button>

@@ -56,7 +56,7 @@
 		</div>
 		<div class="text-right">
 			<button type="button" class="btn btn-sm btn-primary" id="write">글쓰기</button>
-			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="history.back();">목록</button>
+			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="location.href='<c:url value="/board/list?page=${page}"/>';">목록</button>
 		</div>
 	</form:form>
 </div>
