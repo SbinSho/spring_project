@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.goCamping.mapper.boardReplyMapper">
+	<!-- 게시글 수 조회 -->
+	<select id="board_count" resultType="int">
+		SELECT COUNT(*) FROM BOARD
+	</select>
+	<!-- 전체 게시글 리스트 조회 -->
+	<select id="board_list" parameterType="com.goCamping.domain.Criteria" resultType="boardVO">
+	        SELECT
+	            *
+	        FROM
+	            BOARD
+	       	WHERE del_chk = 'n'
+	        ORDER BY bno DESC
+	        LIMIT #{pageStart}, #{perPageNum}
+	</select>
+	<!-- 게시글 조회 -->
+	<select id="board_read" parameterType="int" resultType="boardVO">
+		SELECT * FROM BOARD
+		WHERE
+			DEL_CHK = 'n' AND bno = #{ bno } 
+	</select>
+	<!-- 게시글 조회수 올리기 -->
+	<update id="board_viewCount" parameterType="int">
+	<![CDATA[
+		UPDATE BOARD
+		SET view_cnt = view_cnt + 1
+		WHERE bno = #{ bno }
+	]]>
+	</update>
+	
+	<!-- 게시글 작성 -->
+	<insert id="board_write" parameterType="boardWriteDTO">
+		INSERT INTO BOARD ( TITLE, WRITER, CONTENT)
+		VALUES (#{title}, #{writer}, #{content})
+	
+	</insert>
+	<!-- 파일 업로드 -->
+	<insert id="board_fileUpload">
+		INSERT INTO BOARD_FILE
+		(BNO, ORG_FILE_NAME, STORED_FILE_NAME, FILE_SIZE)
+		VALUES
+		( #{ bno }, #{org_file_name}, #{ stored_file_name }, #{ file_size })
+	
+	</insert>
+	<!-- 업로드 파일 조회 -->
+	<select id="board_fileList" resultType="hashMap">
+		SELECT 
+			FILE_NO, ORG_FILE_NAME, ROUND(FILE_SIZE/1024,1) AS FILE_SIZE
+		FROM
+			BOARD_FILE
+		WHERE 
+			BNO = #{ bno }
+			AND
+			DEL_CHK = 'n'
+		ORDER BY FILE_NO ASC
+	</select>
+	<!-- 업로드 파일 다운로드 -->
+	<select id="board_fileInfo" parameterType="int" resultType="hashMap">
+		SELECT
+			STORED_FILE_NAME,
+			ORG_FILE_NAME
+		FROM
+			BOARD_FILE
+		WHERE FILE_NO = #{file_no}
+	</select>
+	<!-- 업로드 파일 수정 -->
+	<update id="board_editFile" parameterType="int">
+		UPDATE BOARD_FILE
+		SET
+			DEL_CHK = 'y'
+		WHERE
+			FILE_NO = #{FILE_NO}
+	</update>
+	<!-- 게시글 작성(board table) 후 마지막 auto_increment 값 가져오기 -->
+	<select id="board_getLastBno" resultType="int">
+		select last_insert_id();
+	</select>
+	<!-- 게시글 수정 -->
+	<update id="board_edit" parameterType="boardWriteDTO">
+		UPDATE BOARD
+		SET 
+			TITLE = #{ title },
+			CONTENT = #{ content }
+		WHERE
+			BNO = #{ bno } AND WRITER = #{ writer } 	
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<update id="board_delete" parameterType="map">
+		UPDATE BOARD
+		SET
+			DEL_CHK = 'y'
+		WHERE 
+			BNO = #{ bno } AND WRITER = #{ writer }
+			
+	</update>
+	
+	<update id="board_file_delete" parameterType="map">
+		UPDATE BOARD_FILE
+		SET
+			DEL_CHK = 'y'
+		WHERE
+			bno = #{ bno }
+	</update>
+</mapper>

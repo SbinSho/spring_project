@@ -29,6 +29,7 @@
 
 <div class="container">
 	<h2>게시판</h2>
+	<hr>
 	<div class="mb-3">
 		<label for="title">제목</label>
 		<span class="form-control" id="title">${ boardVO.title }</span>
@@ -56,13 +57,26 @@
 		<hr>
 		<span id="content">${ boardVO.content }</span>
 	</div>
-	<div class="text-right">
+	<div class="text-right mb-3">
 		<c:if test="${ loginUser.id eq boardVO.writer }">
 			<button type="button" class="btn btn-sm btn-primary" id="button_edit" onclick="location.href='/board/edit/${ boardVO.bno }?user_id=${ loginUser.id }&page=${ page }'">수정</button>
 			<button type="button" class="btn btn-sm btn-primary" id="button_delete" onclick="delete_cehck()">삭제</button>
 		</c:if>
 		<button type="button" class="btn btn-sm btn-primary" id="list" onclick="location.href='<c:url value="/board/list?page=${page}"/>';">목록</button>
 	</div>
+	<p>댓글 최신순</p>
+	<hr>
+	<div class="mb-3">
+		현재 작성된 댓글이 존재 하지 않습니다.
+	</div>
+	
+	<p>댓글 작성</p>
+	<hr>
+	<textarea class="w-100" rows="3" style="resize: none;" name="content" id="content"></textarea>
+	<div class="text-right">
+		<button type="button" class="btn btn-light" onclick="">댓글 작성</button>
+	</div>
+	
 </div>
 
 <script>
@@ -75,6 +89,9 @@
 		}
 	}
 
+	
+	
+	
 </script>
 
  <%@ include file="../inc/footer.jsp"%>
