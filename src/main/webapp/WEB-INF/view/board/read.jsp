@@ -22,6 +22,8 @@
 	<!-- Custom styles for this template -->
 	<link href="/css/business-frontpage.css" rel="stylesheet">
 	
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
 </head>  
 
 <%@ include file="../inc/top.jsp" %>
@@ -66,8 +68,8 @@
 	</div>
 	<p>댓글 최신순</p>
 	<hr>
-	<div class="mb-3">
-		현재 작성된 댓글이 존재 하지 않습니다.
+	<div class="mb-3 reply">
+
 	</div>
 	
 	<p>댓글 작성</p>
@@ -81,6 +83,61 @@
 
 <script>
 	var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}";
+
+	var bno = "${boardVO.bno}";
+	
+	$(document).ready(function() {
+		
+		getReply();
+		
+	});
+	
+	function getReply() {
+		
+		$.ajax({
+			type: "GET",
+			url: contextPath + "board/reply/list/" + bno,
+			contentType: "application/json; charset=UTF-8",
+			success: function(data){
+				
+				var html = "";
+				if(data.length >= 1){
+					for(i = 0; i < data.length; i++){
+						
+						
+						var timestamp = data[i].regdate;
+						var date = new Date(timestamp);
+						
+						html += "<div class='text-left mb-3'>"+ data[i].writer +"</div>";
+						html += "<div class='mb-3'>";
+						html += 		data[i].content;
+						html += "</div>";
+						html += "<div class='text-right mb-3'>";
+						html += 		date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate()+ " " + date.getHours() + ":" + date.getMinutes();
+						html += "</div>";
+						html += "<div class='text-right'>";
+						html += 		"<button class='btn btn-success mr-3'>수정</button>";
+						html += 		"<button class='btn btn-danger'>삭제</button>";
+						html += "</div>";	
+						html += "<hr>";
+					
+					}
+					
+				} else {
+					html = "등록된 댓글이 존재하지 않습니다.";
+				}
+				
+				$(".reply").html(html);
+			},
+			error: function(error){
+				alert("관리자에게 문의 바랍니다!");
+			}
+			
+			
+		});
+		
+	}
+
 	function delete_cehck() {
 		if(confirm("정말로 삭제 하시겠습니까?")){
 			location.href='/board/delete/${boardVO.bno}?user_id=${ loginUser.id }&page=' + ${page};

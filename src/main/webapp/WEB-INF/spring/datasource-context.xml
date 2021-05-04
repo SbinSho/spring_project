@@ -42,6 +42,7 @@
 		<property name="mapperLocations">
 			<list>
 				<value>classpath:mybatis/board-mapper.xml</value>
+				<value>classpath:mybatis/boardReply-mapper.xml</value>
 				<value>classpath:mybatis/member-mapper.xml</value>
 			</list>
 		</property>

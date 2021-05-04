@@ -4,19 +4,18 @@
 
 
 <mapper namespace="com.goCamping.mapper.boardReplyMapper">
-	<!-- 게시글 수 조회 -->
-	<select id="board_count" resultType="int">
-		SELECT COUNT(*) FROM BOARD
+	<!-- 댓글 갯수 조회 -->
+	<select id="boardReply_count" resultType="int">
+		SELECT COUNT(*) FROM BOARD_REPLY
 	</select>
-	<!-- 전체 게시글 리스트 조회 -->
-	<select id="board_list" parameterType="com.goCamping.domain.Criteria" resultType="boardVO">
+	<!-- 전체 댓글  조회 -->
+	<select id="boardReply_list" parameterType="int" resultType="boardReplyVO">
 	        SELECT
 	            *
 	        FROM
-	            BOARD
-	       	WHERE del_chk = 'n'
-	        ORDER BY bno DESC
-	        LIMIT #{pageStart}, #{perPageNum}
+	            BOARD_REPLY
+	        WHERE
+	        	bno = #{bno}
 	</select>
 	<!-- 게시글 조회 -->
 	<select id="board_read" parameterType="int" resultType="boardVO">

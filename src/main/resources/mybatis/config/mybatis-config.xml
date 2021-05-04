@@ -9,6 +9,7 @@
 		<!-- domain -->
 		<typeAlias alias="memberVO" type="com.goCamping.domain.MemberVO" />
 		<typeAlias alias="boardVO" type="com.goCamping.domain.BoardVO"/>
+		<typeAlias alias="boardReplyVO" type="com.goCamping.domain.BoardReplyVO"/>
 		
 		<!-- dto -->
 		<typeAlias alias="memberLoginDTO" type="com.goCamping.dto.MemberLoginDTO"/>
