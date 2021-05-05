@@ -11,13 +11,21 @@
 		<typeAlias alias="boardVO" type="com.goCamping.domain.BoardVO"/>
 		<typeAlias alias="boardReplyVO" type="com.goCamping.domain.BoardReplyVO"/>
 		
-		<!-- dto -->
+		<!-- dto start-->
+		
+		<!-- Member -->
 		<typeAlias alias="memberLoginDTO" type="com.goCamping.dto.MemberLoginDTO"/>
 		<typeAlias alias="memberChIdDTO" type="com.goCamping.dto.MemberChIdDTO"/>
 		<typeAlias alias="memberChPassDTO" type="com.goCamping.dto.MemberChPassDTO"/>
+		
+		<!-- Board -->
 		<typeAlias alias="boardWriteDTO" type="com.goCamping.dto.BoardWriteDTO"/>
 		<typeAlias alias="boardEditDTO" type="com.goCamping.dto.BoardEditDTO"/>
+		
+		<typeAlias alias="boardReplyWriteDTO" type="com.goCamping.dto.BoardReplyWriteDTO"/>
+		<typeAlias alias="boardReplyEditDTO" type="com.goCamping.dto.BoardReplyEditDTO"/>
 	
+		<!-- dto end -->
 	</typeAliases>
 
 </configuration>

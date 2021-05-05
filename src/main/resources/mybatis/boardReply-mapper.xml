@@ -7,16 +7,35 @@
 	<!-- 댓글 갯수 조회 -->
 	<select id="boardReply_count" resultType="int">
 		SELECT COUNT(*) FROM BOARD_REPLY
+		WHERE
+			bno = #{bno}
 	</select>
 	<!-- 전체 댓글  조회 -->
-	<select id="boardReply_list" parameterType="int" resultType="boardReplyVO">
+	<select id="boardReply_list" parameterType="hashMap" resultType="boardReplyVO">
 	        SELECT
 	            *
 	        FROM
 	            BOARD_REPLY
 	        WHERE
 	        	bno = #{bno}
+	        ORDER BY RNO DESC
+	        LIMIT #{cri.pageStart}, #{cri.perPageNum}
 	</select>
+	<!-- 댓글 작성 -->
+	<insert id="reply_write" parameterType="boardReplyWriteDTO">
+		INSERT INTO BOARD_REPLY ( BNO, WRITER, CONTENT)
+		VALUES (#{bno}, #{writer}, #{content})
+	
+	</insert>
+	<!-- 댓글 수정 -->
+	<insert id="reply_edit" parameterType="boardReplyWriteDTO">
+		UPDATE BOARD_REPLY
+		SET
+			CONTENT = #{ content }
+		WHERE
+			RNO = #{ rno } AND WRITER = #{ writer }
+	
+	</insert>
 	<!-- 게시글 조회 -->
 	<select id="board_read" parameterType="int" resultType="boardVO">
 		SELECT * FROM BOARD
@@ -32,12 +51,7 @@
 	]]>
 	</update>
 	
-	<!-- 게시글 작성 -->
-	<insert id="board_write" parameterType="boardWriteDTO">
-		INSERT INTO BOARD ( TITLE, WRITER, CONTENT)
-		VALUES (#{title}, #{writer}, #{content})
-	
-	</insert>
+
 	<!-- 파일 업로드 -->
 	<insert id="board_fileUpload">
 		INSERT INTO BOARD_FILE

@@ -43,9 +43,13 @@
 			<mvc:mapping path="/member/edit/**"/>
 			<mvc:mapping path="/member/logout/**"/>
 			<mvc:mapping path="/member/delete/**"/>
+			
 			<mvc:mapping path="/board/write/**"/>
 			<mvc:mapping path="/board/edit/**"/>
 			<mvc:mapping path="/board/delete/**"/>
+			
+			
+			<mvc:mapping path="/board/reply/write/**"/>
 			<ref bean="authInterceptor"/>
 		</mvc:interceptor>
 		
