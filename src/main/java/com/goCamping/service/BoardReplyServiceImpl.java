@@ -63,5 +63,16 @@ public class BoardReplyServiceImpl implements BoardReplyService {
 		}
 		
 	}
-
+	// 댓글 삭제
+	@Override
+	public Boolean reply_delete(BoardReplyEditDTO boardReplyEditDTO) {
+		
+		try {
+			return brDAO.reply_delete(boardReplyEditDTO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 }

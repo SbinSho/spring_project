@@ -17,5 +17,7 @@ public interface BoardReplyDAO {
 	public Boolean reply_write(BoardReplyWriteDTO boardReplyWriteDTO) throws Exception;
 	// 댓글 수정
 	public Boolean reply_edit(BoardReplyEditDTO boardReplyEditDTO) throws Exception;
+	// 댓글 삭제
+	public Boolean reply_delete(BoardReplyEditDTO boardReplyEditDTO) throws Exception;
 
 }

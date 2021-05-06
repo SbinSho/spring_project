@@ -54,5 +54,17 @@ public class BoardReplyDAOImpl implements BoardReplyDAO {
 		return false;
 		
 	}
+	
+	// 댓글 삭제
+	@Override
+	public Boolean reply_delete(BoardReplyEditDTO boardReplyEditDTO) throws Exception {
+		
+		if (session.insert(NAMESPAE + ".reply_delete", boardReplyEditDTO) == 1) {
+			return true;
+		}
+		
+		return false;
+		
+	}
 
 }

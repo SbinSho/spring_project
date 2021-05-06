@@ -9,6 +9,8 @@ public class BoardReplyVO {
 	private String content;
 	private String writer;
 	private Timestamp regdate;
+	private Timestamp last_update;
+
 	public int getBno() {
 		return bno;
 	}
@@ -24,12 +26,17 @@ public class BoardReplyVO {
 	public Timestamp getRegdate() {
 		return regdate;
 	}
+	public Timestamp getLast_update() {
+		return last_update;
+	}
+	public void setLast_update(Timestamp last_update) {
+		this.last_update = last_update;
+	}
 	@Override
 	public String toString() {
 		return "BoardReplyVO [bno=" + bno + ", rno=" + rno + ", content=" + content + ", writer=" + writer
-				+ ", regdate=" + regdate + "]";
+				+ ", regdate=" + regdate + ", last_update=" + last_update + "]";
 	}
 	
 	
-
 }

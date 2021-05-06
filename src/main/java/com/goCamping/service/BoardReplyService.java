@@ -18,4 +18,6 @@ public interface BoardReplyService {
 	public Boolean reply_write(BoardReplyWriteDTO boardReplyWriteDTO);
 	// 댓글 수정
 	public Boolean reply_edit(BoardReplyEditDTO boardReplyEditDTO);
+	// 댓글 삭제
+	public Boolean reply_delete(BoardReplyEditDTO boardReplyEditDTO);
 }

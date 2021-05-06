@@ -8,7 +8,7 @@
 	<select id="boardReply_count" resultType="int">
 		SELECT COUNT(*) FROM BOARD_REPLY
 		WHERE
-			bno = #{bno}
+			bno = #{bno} AND DEL_CHK = 'n'
 	</select>
 	<!-- 전체 댓글  조회 -->
 	<select id="boardReply_list" parameterType="hashMap" resultType="boardReplyVO">
@@ -17,7 +17,7 @@
 	        FROM
 	            BOARD_REPLY
 	        WHERE
-	        	bno = #{bno}
+	        	bno = #{bno} AND DEL_CHK = 'n'
 	        ORDER BY RNO DESC
 	        LIMIT #{cri.pageStart}, #{cri.perPageNum}
 	</select>
@@ -31,93 +31,20 @@
 	<insert id="reply_edit" parameterType="boardReplyWriteDTO">
 		UPDATE BOARD_REPLY
 		SET
-			CONTENT = #{ content }
+			CONTENT = #{ content },
+			LAST_UPDATE = now()
 		WHERE
 			RNO = #{ rno } AND WRITER = #{ writer }
-	
 	</insert>
-	<!-- 게시글 조회 -->
-	<select id="board_read" parameterType="int" resultType="boardVO">
-		SELECT * FROM BOARD
-		WHERE
-			DEL_CHK = 'n' AND bno = #{ bno } 
-	</select>
-	<!-- 게시글 조회수 올리기 -->
-	<update id="board_viewCount" parameterType="int">
-	<![CDATA[
-		UPDATE BOARD
-		SET view_cnt = view_cnt + 1
-		WHERE bno = #{ bno }
-	]]>
-	</update>
-	
 
-	<!-- 파일 업로드 -->
-	<insert id="board_fileUpload">
-		INSERT INTO BOARD_FILE
-		(BNO, ORG_FILE_NAME, STORED_FILE_NAME, FILE_SIZE)
-		VALUES
-		( #{ bno }, #{org_file_name}, #{ stored_file_name }, #{ file_size })
-	
-	</insert>
-	<!-- 업로드 파일 조회 -->
-	<select id="board_fileList" resultType="hashMap">
-		SELECT 
-			FILE_NO, ORG_FILE_NAME, ROUND(FILE_SIZE/1024,1) AS FILE_SIZE
-		FROM
-			BOARD_FILE
-		WHERE 
-			BNO = #{ bno }
-			AND
-			DEL_CHK = 'n'
-		ORDER BY FILE_NO ASC
-	</select>
-	<!-- 업로드 파일 다운로드 -->
-	<select id="board_fileInfo" parameterType="int" resultType="hashMap">
-		SELECT
-			STORED_FILE_NAME,
-			ORG_FILE_NAME
-		FROM
-			BOARD_FILE
-		WHERE FILE_NO = #{file_no}
-	</select>
-	<!-- 업로드 파일 수정 -->
-	<update id="board_editFile" parameterType="int">
-		UPDATE BOARD_FILE
-		SET
-			DEL_CHK = 'y'
-		WHERE
-			FILE_NO = #{FILE_NO}
-	</update>
-	<!-- 게시글 작성(board table) 후 마지막 auto_increment 값 가져오기 -->
-	<select id="board_getLastBno" resultType="int">
-		select last_insert_id();
-	</select>
-	<!-- 게시글 수정 -->
-	<update id="board_edit" parameterType="boardWriteDTO">
-		UPDATE BOARD
-		SET 
-			TITLE = #{ title },
-			CONTENT = #{ content }
-		WHERE
-			BNO = #{ bno } AND WRITER = #{ writer } 	
-	</update>
-	
-	<!-- 게시글 삭제 -->
-	<update id="board_delete" parameterType="map">
-		UPDATE BOARD
+	<!-- 댓글 삭제 -->
+	<update id="reply_delete" parameterType="boardReplyWriteDTO">
+		UPDATE BOARD_REPLY
 		SET
 			DEL_CHK = 'y'
 		WHERE 
-			BNO = #{ bno } AND WRITER = #{ writer }
+			RNO = #{ rno } AND WRITER = #{ writer }
 			
 	</update>
-	
-	<update id="board_file_delete" parameterType="map">
-		UPDATE BOARD_FILE
-		SET
-			DEL_CHK = 'y'
-		WHERE
-			bno = #{ bno }
-	</update>
+
 </mapper>

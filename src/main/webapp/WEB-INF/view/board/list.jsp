@@ -25,7 +25,7 @@
 	<style>
 		.tr:hover {
 			cursor: pointer;
-			border-bottom: 2px solid black;
+			border-bottom: 1.5px solid black;
 		}
 	</style>
 </head>

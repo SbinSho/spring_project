@@ -106,8 +106,6 @@ public class BoardReplyController {
 		
 		Map<String, String> result_map = new HashMap<>();
 		
-		System.out.println("content : " + boardReplyEditDTO.getContent());
-		
 		if(session.getAttribute("loginUser") != null) {
 			// 현재 세션에 저장된 정보 가져오기
 			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
@@ -115,6 +113,35 @@ public class BoardReplyController {
 			boardReplyEditDTO.setWriter(authInfo.getId());
 			// 댓글 수정
 			if(boardReplyService.reply_edit(boardReplyEditDTO)) {
+				result_map.put("result", "OK");
+			} else {
+				result_map.put("result", "FAIL");
+			}
+			
+		} else {
+			result_map.put("result", "ERROR");
+		}
+		
+		return result_map;
+	}
+	
+	@RequestMapping(value="/delete", method= RequestMethod.POST)
+	public Map<String, String> reply_delete(
+			BoardReplyEditDTO boardReplyEditDTO, HttpServletRequest request){
+		
+		logger.info("/board/reply/edit POST 호출");
+		
+		HttpSession session = request.getSession();
+		
+		Map<String, String> result_map = new HashMap<>();
+		
+		if(session.getAttribute("loginUser") != null) {
+			// 현재 세션에 저장된 정보 가져오기
+			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
+			// 작성자를 세션에 저장된 아이디로 지정
+			boardReplyEditDTO.setWriter(authInfo.getId());
+			// 댓글 수정
+			if(boardReplyService.reply_delete(boardReplyEditDTO)) {
 				result_map.put("result", "OK");
 			} else {
 				result_map.put("result", "FAIL");

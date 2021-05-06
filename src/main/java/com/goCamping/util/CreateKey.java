@@ -15,7 +15,7 @@ public class CreateKey {
 		request.setAttribute("RSAExponent", map.get("RSAExponent"));
 		
 		// 세션 유지시간 300초 설정
-		session.setMaxInactiveInterval(300);
+		session.setMaxInactiveInterval(1800);
 		
 	}
 

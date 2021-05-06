@@ -23,6 +23,23 @@
 	<link href="/css/business-frontpage.css" rel="stylesheet">
 	
 	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	
+	<style type="text/css">
+	
+		#reply_writer{
+			font-size: 14px;
+		}
+		
+		#reply_content{
+			font-szie: 11px;
+		}
+		
+		#reply_regdate{
+			font-size : 9px;
+			color: gray;
+		    font-weight: bold;
+		}
+	</style>
 
 </head>  
 
@@ -89,15 +106,14 @@
 </div>
 
 <script>
-	var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}";
-
-	var bno = "${boardVO.bno}";
-	
 	$(document).ready(function() {
 		getReply();
 	});
-	
-	
+	// 컨텍스트 패스 경로
+	var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}";
+	// 현재 게시판 번호
+	var bno = "${boardVO.bno}";
+	// 댓글 작성시 글자수 갯수 체크
 	$('#reply_content').keyup(function(){
 	    var content = $(this).val();
 	    $('#counter').html("" +content.length+ " / 1000");    //글자수 실시간 카운팅
@@ -109,6 +125,16 @@
 	    }
 	});
 	
+	// 게시판 삭제
+	function delete_cehck() {
+		if(confirm("정말로 삭제 하시겠습니까?")){
+			location.href='/board/delete/${boardVO.bno}?user_id=${ loginUser.id }&page=' + ${page};
+		} else {
+			return false;
+		}
+	}
+	
+	// 게시판 댓글 불러오기
 	function getReply(reply_page) {
 		
 		if(reply_page == null || reply_page == ""){
@@ -123,21 +149,28 @@
 				if(data.replyList.length >= 1){
 					for(i = 0; i < data.replyList.length; i++){
 						
-						var timestamp = data.replyList[i].regdate;
-						var date = new Date(timestamp);
+						var timestamp_regdate = data.replyList[i].regdate;
+						var date_regdate = new Date(timestamp_regdate);
 						
-						html += "<div class='text-left mb-3'>" + data.replyList[i].writer + "</div>";
+						var timestamp_lastUpdate = data.replyList[i].last_update;
+
+						html += "<div class='text-left mb-3'><span id='reply_writer'>작성자 : " + data.replyList[i].writer + "</span></div>";
 						html += "<div class='mb-3' id='" + data.replyList[i].rno + "_content' style='white-space:pre;'>";
-						html += 		data.replyList[i].content;
+						html += 		"<span id='reply_content'>"+data.replyList[i].content+"</span>";
 						html += "</div>";
-						html += "<div class='text-right mb-3'>";
-						html += 		date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate()+ " " + date.getHours() + ":" + date.getMinutes();
-						html += "</div>";
+						html += "<div class='text-right mb-3'><span id='reply_regdate'>";
+						html += 		"작성일 : " + date_regdate.getFullYear() + "/" + (date_regdate.getMonth()+1) + "/" + date_regdate.getDate()+ " " + date_regdate.getHours() + ":" + date_regdate.getMinutes();
+						html += "<br>";
+						if(timestamp_lastUpdate != null){
+							var date_lastUpdate = new Date(timestamp_lastUpdate);
+							html += 	"최종 수정일 : " + date_lastUpdate.getFullYear() + "/" + (date_lastUpdate.getMonth()+1) + "/" + date_lastUpdate.getDate()+ " " + date_lastUpdate.getHours() + ":" + date_lastUpdate.getMinutes();
+						}
+						html += "</span></div>";
 						if( "${loginUser.id}" != ""){
 							if( "${loginUser.id}" ==  data.replyList[i].writer){
-								html += "<div class='text-right " + data.replyList[i].rno + "_button'>";
+								html += "<div class='text-right' id='"+ data.replyList[i].rno +"_button'>";
 								html += 		"<button class='btn btn-success mr-3' onclick=" + "reply_edit(" + "'" + data.replyList[i].writer + "'," + data.replyList[i].rno + ","+ reply_page +");>수정</button>";
-								html += 		"<button class='btn btn-danger'>삭제</button>";
+								html += 		"<button class='btn btn-danger' onclick=" + "reply_delete(" + "'" + data.replyList[i].writer + "'," + data.replyList[i].rno + ","+ reply_page +");>삭제</button>";
 								html += "</div>";	
 							}
 						}
@@ -195,30 +228,28 @@
 		
 	}
 	
+	// 게시판 댓글 작성
 	function reply_write() {
 		// 사용자가 입력한 댓글
 		var content = $("#reply_content").val();
 		// 현재 보고 있는 댓글 페이지
 		var replyPage = $("#selBtn").text();
 		
+		var text = "작성";
+		
 		if( "${loginUser.id}" == "" || "${loginUser.id}" == null){
 			alert("로그인 후 이용 가능합니다.");
-		} else {
+		} 
+		else if( edit_ButtonCount > 0){
+			alert("현재 수정중인 댓글이 존재합니다.");
+		}
+		else {
 			$.ajax({
 				type: "POST",
 				url: contextPath + "board/reply/write/" + bno +"?user_id=${loginUser.id}",
 				data: { content : content },
 				success: function(data){
-					if(data.result == "OK"){
-						alert("댓글 작성 완료!");
-						getReply(replyPage);
-					}
-					else if(data.result == "FAIL"){
-						alert("댓글 작성 실패! 관리자에게 문의바랍니다!");
-					}
-					else if(data.result == "ERROR"){
-						alert("오류 발생! 관리자에게 문의바랍니다!");
-					}
+					result_check(data, text, replyPage);
 				},
 				error: function(error) {
 					alert("관리자에게 문의 바랍니다!");	
@@ -228,36 +259,59 @@
 		
 	}
 	
-	$('#edit_textarea').keyup(function(){
-	    var content = $(this).val();
-	    $('#edit_counter').html("" +content.length+ " / 1000");    //글자수 실시간 카운팅
-
-	    if (content.length > 1000){
-	        alert("최대 1000자까지 입력 가능합니다.");
-	        $(this).val(content.substring(0, 1000));
-	        $('#edit_counter').html("1000 / 1000");
-	    }
-	});
+	// 다른 수정 버튼 클릭하지 못하게 만들기 위한 count 전역 변수
+	var edit_ButtonCount = 0;
 	
+	// 게시판 댓글 수정
 	function reply_edit(writer, rno, replyPage) {
 		
-		var html = "";
+		if(edit_ButtonCount == 0){
+			var html = "";
+			var content = $("#" + rno + "_content").html();
+			
+			$("#" + rno + "_content").html(
+					"<textarea class='w-100' rows='3' name='content' id='edit_textarea'>" + content + "</textarea>"
+					+"<div class='text-right'><span id='edit_counter'>"+ content.length +" / 1000</span></div>");
+			
+			html += "<button class='btn btn-success mr-3' onclick=" + "reply_update(" + "'" + writer + "'," + rno + "," + replyPage + ");>수정완료</button>";
+			html += "<button class='btn btn-danger' onclick='reply_cancel(" + replyPage + ");'>수정취소</button>";
+			
+			// 현재 수정중인 댓글의 부모 div 태그 선택 후 html 삽입
+			$("#"+ rno +"_button").html(html);
+			
+			// 댓글 수정시 글자수 갯수 체크
+			$("#edit_textarea").keyup(function(){
+				
+			    var content = $(this).val();
+			    $("#edit_counter").html("" +content.length+ " / 1000");    //글자수 실시간 카운팅
+
+			    if (content.length > 1000){
+			        alert("최대 1000자까지 입력 가능합니다.");
+			        $(this).val(content.substring(0, 1000));
+			        $('#edit_counter').html("1000 / 1000");
+			    }
+			});
+
+			edit_ButtonCount = 1;
+			
+		} else {
+			alert("현재 수정중인 댓글이 존재 합니다.");
+		}
 		
-		var content = $("#" + rno + "_content").html();
+	}
+	
+	function reply_cancel(replyPage) {
 		
-		$("#" + rno + "_content").html(
-				"<textarea class='w-100' rows='3' name='content' id='edit_textarea'>" + content + "</textarea>"
-				+"<div class='text-right'><span id='edit_counter'>"+ content.length +" / 1000</span></div>");
+		edit_ButtonCount = 0;
+		getReply(replyPage);
 		
-		html += "<button class='btn btn-success mr-3' onclick=" + "reply_update(" + "'" + writer + "'," + rno + "," + replyPage + ");>수정완료</button>";
-		html += "<button class='btn btn-danger' onclick='getReply(" + replyPage + ");'>수정취소</button>";
-		
-		$("."+rno+"_button").html(html);
 	}
 	
 	function reply_update(writer, rno, replyPage) {
 		
 		var content = $("#edit_textarea").val();
+		
+		var text = "수정";
 		
 		if( "${loginUser.id}" != writer){
 			alert("잘못된 접근 입니다.");
@@ -268,16 +322,7 @@
 				url: contextPath + "board/reply/edit?user_id=${loginUser.id}",
 				data: { content : content, rno : rno },
 				success: function(data){
-					if(data.result == "OK"){
-						alert("댓글 수정 완료!");
-						getReply(replyPage);
-					}
-					else if(data.result == "FAIL"){
-						alert("댓글 수정 실패! 관리자에게 문의바랍니다!");
-					}
-					else if(data.result == "ERROR"){
-						alert("오류 발생! 관리자에게 문의바랍니다!");
-					}
+					result_check(data, text, replyPage);
 				},
 				error: function(error) {
 					alert("관리자에게 문의 바랍니다!");	
@@ -286,12 +331,46 @@
 		}
 		
 	}
-
-	function delete_cehck() {
-		if(confirm("정말로 삭제 하시겠습니까?")){
-			location.href='/board/delete/${boardVO.bno}?user_id=${ loginUser.id }&page=' + ${page};
+	
+	function reply_delete(writer, rno, replyPage) {
+		
+		var text = "삭제";
+		
+		if("${loginUser.id}" == writer){
+			$.ajax({
+				url : contextPath + "board/reply/delete?user_id=${loginUser.id}",
+				type : "POST",
+				data : { writer : writer, rno : rno},
+				success: function(data){
+					result_check(data, text, replyPage);
+				},
+				error: function(error){
+					alert("관리자에게 문의 바랍니다!");
+				}
+				
+			})
+			
 		} else {
-			return false;
+			alert("잘못된 접근입니다.");
+		}
+		
+	}
+
+	// 댓글 작성, 수정, 삭제 공통 부분 함수로 구현
+	function result_check(data, text, replyPage){
+		if(data.result == "OK"){
+			alert("댓글 "+text+" 완료!");
+			getReply(replyPage);
+			if(text == "수정"){
+				edit_ButtonCount = 0;
+			}
+			if(text == "작성"){
+				$("#reply_content").val("");
+			}
+		}
+		else if(data.result == "FAIL" || data.result == "ERROR"){
+			alert("댓글 "+text+" 실패!");
+			getReply(replyPage);
 		}
 	}
 	
