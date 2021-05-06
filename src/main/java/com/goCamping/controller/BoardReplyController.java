@@ -6,11 +6,15 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,14 +70,21 @@ public class BoardReplyController {
 	
 	@RequestMapping(value="/write/{bno}", method= RequestMethod.POST)
 	public Map<String, String> reply_write(
+			@Valid @RequestBody BoardReplyWriteDTO boardReplyWriteDTO, Errors errors,
 			@PathVariable("bno") int bno,
-			BoardReplyWriteDTO boardReplyWriteDTO, HttpServletRequest request){
+			HttpServletRequest request){
 		
 		logger.info("/board/reply/write POST 호출");
 		
-		HttpSession session = request.getSession();
-		
 		Map<String, String> result_map = new HashMap<>();
+		
+		if(errors.hasErrors()) {
+			logger.info("객체 유효성 검증 실패!");
+			result_map.put("result", "ERROR");
+			return result_map;
+		}
+		
+		HttpSession session = request.getSession();
 		
 		if(session.getAttribute("loginUser") != null) {
 			// 현재 세션에 저장된 정보 가져오기
@@ -84,8 +95,10 @@ public class BoardReplyController {
 			boardReplyWriteDTO.setBno(bno);
 			// 댓글 작성
 			if(boardReplyService.reply_write(boardReplyWriteDTO)) {
+				logger.info("댓글 작성 성공!");
 				result_map.put("result", "OK");
 			} else {
+				logger.info("댓글 작성 실패!");
 				result_map.put("result", "FAIL");
 			}
 			
@@ -98,13 +111,22 @@ public class BoardReplyController {
 	
 	@RequestMapping(value="/edit", method= RequestMethod.POST)
 	public Map<String, String> reply_edit(
-			BoardReplyEditDTO boardReplyEditDTO, HttpServletRequest request){
+			@Valid BoardReplyEditDTO boardReplyEditDTO, BindingResult bindingResult, 
+			HttpServletRequest request){
 		
 		logger.info("/board/reply/edit POST 호출");
 		
+		Map<String, String> result_map = new HashMap<>();
+		
+		if(bindingResult.hasErrors()) {
+			logger.info("객체 유효성 검증 실패!");
+			result_map.put("result", "ERROR");
+			System.out.println("error : " + bindingResult.getAllErrors());
+			return result_map;
+		}
+		
 		HttpSession session = request.getSession();
 		
-		Map<String, String> result_map = new HashMap<>();
 		
 		if(session.getAttribute("loginUser") != null) {
 			// 현재 세션에 저장된 정보 가져오기
@@ -113,8 +135,10 @@ public class BoardReplyController {
 			boardReplyEditDTO.setWriter(authInfo.getId());
 			// 댓글 수정
 			if(boardReplyService.reply_edit(boardReplyEditDTO)) {
+				logger.info("댓글 수정 성공!");
 				result_map.put("result", "OK");
 			} else {
+				logger.info("댓글 수정 실패!");
 				result_map.put("result", "FAIL");
 			}
 			
@@ -127,13 +151,20 @@ public class BoardReplyController {
 	
 	@RequestMapping(value="/delete", method= RequestMethod.POST)
 	public Map<String, String> reply_delete(
-			BoardReplyEditDTO boardReplyEditDTO, HttpServletRequest request){
+			BoardReplyEditDTO boardReplyEditDTO, BindingResult bindingResult, 
+			HttpServletRequest request){
 		
 		logger.info("/board/reply/edit POST 호출");
 		
+		Map<String, String> result_map = new HashMap<>();
+		
 		HttpSession session = request.getSession();
 		
-		Map<String, String> result_map = new HashMap<>();
+		if(bindingResult.hasErrors()) {
+			logger.info("객체 유효성 검증 실패!");
+			result_map.put("result", "ERROR");
+			return result_map;
+		}
 		
 		if(session.getAttribute("loginUser") != null) {
 			// 현재 세션에 저장된 정보 가져오기
@@ -142,8 +173,10 @@ public class BoardReplyController {
 			boardReplyEditDTO.setWriter(authInfo.getId());
 			// 댓글 수정
 			if(boardReplyService.reply_delete(boardReplyEditDTO)) {
+				logger.info("댓글 삭제 성공!");
 				result_map.put("result", "OK");
 			} else {
+				logger.info("댓글 삭제 실패!");
 				result_map.put("result", "FAIL");
 			}
 			

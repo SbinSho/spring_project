@@ -35,6 +35,7 @@ public class BoardReplyDAOImpl implements BoardReplyDAO {
 	@Override
 	public Boolean reply_write(BoardReplyWriteDTO boardReplyWriteDTO) throws Exception {
 
+		
 		if (session.insert(NAMESPAE + ".reply_write", boardReplyWriteDTO) == 1) {
 			return true;
 		}

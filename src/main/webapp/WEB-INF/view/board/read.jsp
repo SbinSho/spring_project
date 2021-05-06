@@ -30,12 +30,12 @@
 			font-size: 14px;
 		}
 		
-		#reply_content{
+		#reply_contentStyle{
 			font-szie: 11px;
 		}
 		
 		#reply_regdate{
-			font-size : 9px;
+			font-size : 11px;
 			color: gray;
 		    font-weight: bold;
 		}
@@ -97,7 +97,7 @@
 	<hr>
 	<textarea class="w-100" rows="5" name="content" id="reply_content"></textarea>
 	<div class="text-right">
-		<span id="counter">0 / 1000</span>
+		<span id="counter">0 / 300</span>
 	</div>
 	<div class="text-right">
 		<button type="button" class="btn btn-light" onclick="reply_write();">댓글 작성</button>
@@ -116,12 +116,12 @@
 	// 댓글 작성시 글자수 갯수 체크
 	$('#reply_content').keyup(function(){
 	    var content = $(this).val();
-	    $('#counter').html("" +content.length+ " / 1000");    //글자수 실시간 카운팅
+	    $('#counter').html("" +content.length+ " / 300");    //글자수 실시간 카운팅
 
-	    if (content.length > 1000){
-	        alert("최대 1000자까지 입력 가능합니다.");
-	        $(this).val(content.substring(0, 1000));
-	        $('#counter').html("1000 / 1000");
+	    if (content.length > 300){
+	        alert("최대 300자까지 입력 가능합니다.");
+	        $(this).val(content.substring(0, 300));
+	        $('#counter').html("1000 / 300");
 	    }
 	});
 	
@@ -151,12 +151,13 @@
 						
 						var timestamp_regdate = data.replyList[i].regdate;
 						var date_regdate = new Date(timestamp_regdate);
-						
 						var timestamp_lastUpdate = data.replyList[i].last_update;
+						
+						var content = data.replyList[i].content;
 
 						html += "<div class='text-left mb-3'><span id='reply_writer'>작성자 : " + data.replyList[i].writer + "</span></div>";
-						html += "<div class='mb-3' id='" + data.replyList[i].rno + "_content' style='white-space:pre;'>";
-						html += 		"<span id='reply_content'>"+data.replyList[i].content+"</span>";
+						html += "<div class='mb-3' id='" + data.replyList[i].rno + "_content' style='word-break:break-all;'>";
+						html += 		"<pre>" + data.replyList[i].content + "</pre>";
 						html += "</div>";
 						html += "<div class='text-right mb-3'><span id='reply_regdate'>";
 						html += 		"작성일 : " + date_regdate.getFullYear() + "/" + (date_regdate.getMonth()+1) + "/" + date_regdate.getDate()+ " " + date_regdate.getHours() + ":" + date_regdate.getMinutes();
@@ -204,7 +205,7 @@
 					
 				}
 				
-				if( data.pageMaker.next && data.PageMaker.endPage > 0){
+				if( data.pageMaker.next && data.pageMaker.endPage > 0){
 					html_button += "<button type='button' class='btn btn-secondary'";
 					html_button += "onclick='getReply("+ ( data.pageMaker.endPage + 1) +");'";
 					html_button += ">다음</button>";
@@ -244,10 +245,17 @@
 			alert("현재 수정중인 댓글이 존재합니다.");
 		}
 		else {
+			var form = {
+					'writer' : "${loginUser.id}",
+					'content' : content
+			}
+			
 			$.ajax({
 				type: "POST",
 				url: contextPath + "board/reply/write/" + bno +"?user_id=${loginUser.id}",
-				data: { content : content },
+				data: JSON.stringify(form),
+				dataType : "json",
+				contentType: "application/json; charset=UTF-8",
 				success: function(data){
 					result_check(data, text, replyPage);
 				},
@@ -267,10 +275,12 @@
 		
 		if(edit_ButtonCount == 0){
 			var html = "";
+			
 			var content = $("#" + rno + "_content").html();
+			var replace_content = content.replace("<pre>", "").replace("</pre>", "");
 			
 			$("#" + rno + "_content").html(
-					"<textarea class='w-100' rows='3' name='content' id='edit_textarea'>" + content + "</textarea>"
+					"<textarea class='w-100' rows='5' name='content' id='edit_textarea'>" + replace_content + "</textarea>"
 					+"<div class='text-right'><span id='edit_counter'>"+ content.length +" / 1000</span></div>");
 			
 			html += "<button class='btn btn-success mr-3' onclick=" + "reply_update(" + "'" + writer + "'," + rno + "," + replyPage + ");>수정완료</button>";
@@ -283,12 +293,12 @@
 			$("#edit_textarea").keyup(function(){
 				
 			    var content = $(this).val();
-			    $("#edit_counter").html("" +content.length+ " / 1000");    //글자수 실시간 카운팅
+			    $("#edit_counter").html("" +content.length+ " / 300");    //글자수 실시간 카운팅
 
 			    if (content.length > 1000){
-			        alert("최대 1000자까지 입력 가능합니다.");
-			        $(this).val(content.substring(0, 1000));
-			        $('#edit_counter').html("1000 / 1000");
+			        alert("최대 300자까지 입력 가능합니다.");
+			        $(this).val(content.substring(0, 300));
+			        $('#edit_counter').html("1000 / 300");
 			    }
 			});
 
@@ -313,6 +323,9 @@
 		
 		var text = "수정";
 		
+		// textarea 개행 문자 치환
+		var replace_content = content.replace(/(?:\r\n|\r|\n)/g, "<br>");
+		
 		if( "${loginUser.id}" != writer){
 			alert("잘못된 접근 입니다.");
 		} 
@@ -320,7 +333,7 @@
 			$.ajax({
 				type: "POST",
 				url: contextPath + "board/reply/edit?user_id=${loginUser.id}",
-				data: { content : content, rno : rno },
+				data: { content : replace_content, rno : rno, writer : writer },
 				success: function(data){
 					result_check(data, text, replyPage);
 				},

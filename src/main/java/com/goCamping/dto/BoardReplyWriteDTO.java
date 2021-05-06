@@ -1,9 +1,18 @@
 package com.goCamping.dto;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+
 public class BoardReplyWriteDTO {
 	
 	private int bno;
+	@NotBlank
+	@Pattern(regexp = "^[a-z0-9][a-z0-9_\\\\-]{4,19}$")
 	private String writer;
+	@NotBlank
+	@Size(min = 1, max = 300)
 	private String content;
 	public int getBno() {
 		return bno;

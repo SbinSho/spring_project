@@ -15,7 +15,7 @@ public class BoardWriteDTO {
 	private String	writer;
 	@NotBlank
 	@Size(min = 1, max = 1000)
-	private String	content;
+	private String content;
 	
 	public String getTitle() {
 		return title;
