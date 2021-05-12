@@ -14,6 +14,7 @@
 	<properties>
 		<java-version>1.8</java-version>
 		<org.springframework-version>4.2.9.RELEASE</org.springframework-version>
+		<spring.security.version>4.2.20.RELEASE</spring.security.version>
 		<log4j2.version>2.13.2</log4j2.version>
 	</properties>
 
@@ -184,19 +185,25 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>4.2.20.RELEASE</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 		<!--스프링시큐리티 core 라이브러리 -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>4.2.20.RELEASE</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 		<!--스프링시큐리티 config 라이브러리 -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>4.2.20.RELEASE</version>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<!--스프링시큐리티 taglibs 라이브러리 -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring.security.version}</version>
 		</dependency>
 
 
@@ -206,7 +213,7 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.3.3</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

@@ -11,4 +11,56 @@
 		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 
 
+	<http auto-config="true">
+	
+		<!-- 로그인된 상태에서 로그인 또는 회원가입 화면에 접근 금지 -->
+		<intercept-url pattern="/member/login" access="isAnonymous()"/>
+		<intercept-url pattern="/member/join" access="isAnonymous()"/>
+				
+		<intercept-url pattern="/member/edit/**" access="hasRole('ROLE_MEMBER')"/>
+		
+		
+<!-- 		<intercept-url pattern="/board/write/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/edit/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/delete/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/reply/write/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/reply/edit/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/reply/delete/**" access="hasRole('ROLE_MEMBER')"/> -->
+	    <intercept-url pattern="/**" access="permitAll"/>
+
+		<!-- 권한 설정 -->
+		<form-login
+			username-parameter="user_id"
+			password-parameter="user_pwd"
+			login-processing-url="/member/login"
+			login-page="/member/login"
+			default-target-url="/"
+			authentication-failure-url="/member/login"
+		/>
+		
+		<logout 
+			logout-url="/member/logout"
+			logout-success-url="/"
+			invalidate-session="true"
+			delete-cookies="true"
+		/>
+		
+		<remember-me
+			remember-me-parameter="user_reId"
+			remember-me-cookie="user_reId"
+		/>
+		
+		<!-- 권한이 없어서 금지된 URI 접속할 때 보여줄 페이지(403 에러 페이지 대체) -->
+		<access-denied-handler error-page="/" />
+	</http>
+
+	 	<!-- provider -->
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>
+	            <user name="member" password="memPw" authorities="ROLE_MEMBER"/>
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+
 </beans:beans>

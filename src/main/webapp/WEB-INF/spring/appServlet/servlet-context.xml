@@ -34,15 +34,16 @@
 	<bean id="notLoginInterceptor" class="com.goCamping.interceptor.NotLoginInterceptor" />
 	
 	<mvc:interceptors>
-		<mvc:interceptor>
-			<mvc:mapping path="/member/login"/>
-			<ref bean="loginInterceptor" />
-		</mvc:interceptor>
+	<!-- spring 시큐리티 이용 로그인 처리 -->
+<!-- 		<mvc:interceptor> -->
+<!-- 			<mvc:mapping path="/member/login"/> -->
+<!-- 			<ref bean="loginInterceptor" /> -->
+<!-- 		</mvc:interceptor> -->
 		
 		<mvc:interceptor>
-			<mvc:mapping path="/member/edit/**"/>
-			<mvc:mapping path="/member/logout/**"/>
-			<mvc:mapping path="/member/delete/**"/>
+<!-- 			<mvc:mapping path="/member/edit/**"/> -->
+<!-- 			<mvc:mapping path="/member/logout/**"/> -->
+<!-- 			<mvc:mapping path="/member/delete/**"/> -->
 			
 			<mvc:mapping path="/board/write/**"/>
 			<mvc:mapping path="/board/edit/**"/>

@@ -88,10 +88,11 @@
 	  	<p class="mt-5 mb-3 text-muted">Â© 2017-2020</p>
 	</form>
 	
-	<form id="LoginForm" method="post">
+	<form id="LoginForm" action="/member/login" method="post">
 		<input type="hidden" id="user_id" name="user_id" />
 		<input type="hidden" id="user_pwd" name="user_pwd" />
 		<input type="hidden" id="user_reId" name="user_reId" />
+		<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
 	</form>
 	
 <script>
@@ -132,26 +133,33 @@
 	function submitEncryptedForm(id, pwd, reid){
 		
 		// RSA 암호화 생성
-		var rsa = new RSAKey();
-		if( $("#RSAModulus").val() == "" ||  $("#RSAExponent").val() == ""){
-			location.href="/member/login";		
-		} else {
+		
+		// 스프링 시큐리티 사용위해 잠시 주석
 			
-			rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
+// 		var rsa = new RSAKey();
+// 		if( $("#RSAModulus").val() == "" ||  $("#RSAExponent").val() == ""){
+// 			location.href="/member/login";		
+// 		} else {
+			
+// 			rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
 			
 			// 암호화된 폼 데이터
-			var user_id = rsa.encrypt(id);
-			var user_pwd = rsa.encrypt(pwd);
-			var user_reId = rsa.encrypt(reid);
+// 			var user_id = rsa.encrypt(id);
+// 			var user_pwd = rsa.encrypt(pwd);
+// 			var user_reId = rsa.encrypt(reid);
 			
-			$("#user_id").val(user_id);
-			$("#user_pwd").val(user_pwd);
-			$("#user_reId").val(user_reId);
+// 			$("#user_id").val(user_id);
+// 			$("#user_pwd").val(user_pwd);
+// 			$("#user_reId").val(user_reId);
+
+			$("#user_id").val(id);
+			$("#user_pwd").val(pwd);
+			$("#user_reId").val(reid);
 			
 			
 			$("#LoginForm").submit();
 			
-		}
+// 		}
 	}
 	
 </script>
