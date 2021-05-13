@@ -15,8 +15,9 @@
         <property name="basenames">
             <list>
                 <value>classpath:/messages/error</value>
+                <value>classpath:/messages/security_message</value>
             </list>
-        </property>       
+        </property>
     </bean>
     
 </beans>

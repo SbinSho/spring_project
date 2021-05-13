@@ -70,6 +70,15 @@
 			<input type="password" id="pwd" class="form-control"/>
 			<span style="color: red" id="check"></span>
 	    </div>
+	    <div class="form-group">
+	    	<c:if test="${ not empty SPRING_SECURITY_LAST_EXCEPTION }">
+				<font color="red">
+        			<p>Your login attempt was not successful due to <br/>
+            		${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</p>
+        			<c:remove var="SPRING_SECURITY_LAST_EXCEPTION" scope="session"/>
+   	 			</font>
+	    	</c:if>
+<!-- 	    </div> -->
 		<div class="checkbox mb-3">
 		<c:choose>
 			<c:when  test="${ empty cookie_check }">

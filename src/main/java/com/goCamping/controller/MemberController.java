@@ -1,21 +1,17 @@
 package com.goCamping.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.goCamping.dto.MemberJoinDTO;
-import com.goCamping.dto.MemberLoginDTO;
 import com.goCamping.service.MemberService;
 import com.goCamping.util.CreateKey;
 import com.goCamping.util.Encrypt;
 import com.goCamping.validator.MemberJoinDTOValidator;
-import com.goCamping.validator.MemberLoginValidator;
 
 @Controller
 @RequestMapping("/member")
@@ -176,7 +170,7 @@ public class MemberController {
 		rttr.addFlashAttribute("result", "error");		
 		return "redirect:/";
 	}
-
+	
 	// 로그인 처리
 	// 스프링 시큐리티 작성을 위해 임시로 주석 처리, 2021.05.12
 //	@RequestMapping( value="/login", method = RequestMethod.POST )
