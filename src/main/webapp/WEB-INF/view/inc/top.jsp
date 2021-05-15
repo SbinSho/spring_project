@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <body class="d-flex flex-column min-vh-100">
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -31,26 +32,48 @@
 <!-- 				          <a class="dropdown-item" href="#">캠핑장 공지사항</a> -->
 <!-- 				        </div> -->
 <!-- 			      	</li> -->
-			          <c:choose>
-			          		<c:when test="${ empty loginUser }">
-			          			<li class="nav-item">
-				            		<a class="nav-link" href="<c:url value='/member/login'/>">로그인</a>
-			          			</li>
-						        <li class="nav-item">
-						            <a class="nav-link" href="<c:url value='/member/join'/>">회원가입</a>
-						        </li>
-			          		</c:when>
-			          		<c:otherwise>
-			          			<li class="nav-item">
-						            <a class="nav-link" href="<c:url value='/member/logout?user_id=${ loginUser.id }'/>">
-				            			<span>로그아웃</span>
-				            		</a>
-						        </li>
-						        <li class="nav-item">
-						            <a class="nav-link" href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a>
-						        </li>
-			          		</c:otherwise>
-			          </c:choose>  	
+						<sec:authorize access="isAnonymous()">
+							<li class="nav-item">
+								<a class="nav-link" href="<c:url value='/member/login'/>">로그인</a>
+							</li>
+							<li class="nav-item"><a class="nav-link"
+								href="<c:url value='/member/join'/>">회원가입</a></li>
+							<li class="nav-item">
+						</sec:authorize>
+						<sec:authorize access="isAuthenticated()">
+						<li class="nav-item"></li>
+							<li class="nav-item">
+								<form action="/member/logout" id="logout_form" method="POST">
+									<a class="nav-link" onclick="logout_submit()" style="cursor: pointer;">
+										<span>로그아웃</span>
+									</a>
+		    						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								</form>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link"	href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a>
+	 						</li>
+						</sec:authorize>
+<%-- 			          <c:choose> --%>
+<%-- 			          		<c:when test="${ empty loginUser }"> --%>
+<!-- 			          			<li class="nav-item"> -->
+<%-- 				            		<a class="nav-link" href="<c:url value='/member/login'/>">로그인</a> --%>
+<!-- 			          			</li> -->
+<!-- 						        <li class="nav-item"> -->
+<%-- 						            <a class="nav-link" href="<c:url value='/member/join'/>">회원가입</a> --%>
+<!-- 						        </li> -->
+<%-- 			          		</c:when> --%>
+<%-- 			          		<c:otherwise> --%>
+<!-- 			          			<li class="nav-item"> -->
+<%-- 						            <a class="nav-link" href="<c:url value='/member/logout?user_id=${ loginUser.id }'/>"> --%>
+<!-- 				            			<span>로그아웃</span> -->
+<!-- 				            		</a> -->
+<!-- 						        </li> -->
+<!-- 						        <li class="nav-item"> -->
+<%-- 						            <a class="nav-link" href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a> --%>
+<!-- 						        </li> -->
+<%-- 			          		</c:otherwise> --%>
+<%-- 			          </c:choose>  	 --%>
 					<li class="nav-item">
 						<a class="nav-link" href="#">사업장 등록</a>
 					</li>								      
@@ -58,6 +81,12 @@
 			</div>
 		</div>
 	</nav>
+	
+	<script>
+		function logout_submit() {
+			$("#logout_form").submit();
+		}
+	</script>
 
 	<!-- Header -->
 	<header class="bg-primary py-5 mb-5">
@@ -74,3 +103,4 @@
 			</div>
 		</div>
 	</header>
+	

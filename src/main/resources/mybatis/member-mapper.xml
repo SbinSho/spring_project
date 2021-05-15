@@ -80,4 +80,10 @@
 		WHERE user_id = #{user_id}
 	
 	</delete>
+	
+	<!-- 스프링 시큐리티 작업 처리를 위한 매퍼 -->
+	<select id="selectUserById" resultType="com.goCamping.domain.CustomUserDetails">
+		SELECT * FROM MEMBER
+		WHERE user_id=#{user_id}
+	</select>
 </mapper>

@@ -3,7 +3,14 @@
 	xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
 
 	<!-- 스프링 시큐리티 라이브러리에서 제공하는 BcryptPasswordEncoder- -->
@@ -26,6 +33,7 @@
 <!-- 		<intercept-url pattern="/board/reply/write/**" access="hasRole('ROLE_MEMBER')"/> -->
 <!-- 		<intercept-url pattern="/board/reply/edit/**" access="hasRole('ROLE_MEMBER')"/> -->
 <!-- 		<intercept-url pattern="/board/reply/delete/**" access="hasRole('ROLE_MEMBER')"/> -->
+		
 	    <intercept-url pattern="/**" access="permitAll"/>
 
 		<!-- 권한 설정 -->
@@ -35,6 +43,8 @@
 			login-processing-url="/member/login"
 			login-page="/member/login"
 			default-target-url="/"
+			authentication-success-handler-ref="loginSuccessHandler"
+			authentication-failure-handler-ref="loginFailureHandler"
 		/>
 		
 		<logout 
@@ -43,22 +53,49 @@
 			invalidate-session="true"
 		/>
 		
-		<remember-me
-			remember-me-parameter="user_reId"
-			remember-me-cookie="user_reId"
-		/>
+<!-- 		<remember-me -->
+<!-- 			remember-me-parameter="user_reId" -->
+<!-- 			remember-me-cookie="user_reId" -->
+<!-- 		/> -->
 		
 		<!-- 권한이 없어서 금지된 URI 접속할 때 보여줄 페이지(403 에러 페이지 대체) -->
 		<access-denied-handler error-page="/" />
 	</http>
+	
+	<!-- Mybatis 연결 및 DB를 이용한 간단한 로그인 인증 ( 커스텀 하지 않고 사용 ) -->
+<!-- 	<jdbc-user-service data-source-ref="dataSource" id="userService" -->
+<!-- 		users-by-username-query="SELECT user_id, user_pwd, ENABLED from member where user_id=?" -->
+<!-- 		authorities-by-username-query="SELECT user_id, AUTHORITY FROM member where user_id=?" -->
+<!-- 	/> -->
 
 	<!-- provider -->
 	<authentication-manager>
-		<authentication-provider>
-			<user-service>
-	            <user name="member" password="memPw" authorities="ROLE_MEMBER"/>
-			</user-service>
+		<authentication-provider ref="customAuthenticationProvider">
+			<!-- DB를 이용한 방법이 아닌 인메모리 형식의 계정 정보 -->
+			<!-- <user-service>
+				<user name="user" password="userPW" authorities="ROLE_USER" />
+			</user-service> -->
 		</authentication-provider>
+		
 	</authentication-manager>
+	
+	<!-- 커스텀 userService -->
+	<beans:bean id="userLoginService" class="com.goCamping.service.CustomUserDetailsService" />
+	
+	<!-- 커스텀 provider -->
+	<beans:bean id="customAuthenticationProvider" class="com.goCamping.authentication.CustomAuthenticationProvider" />
+	
+	<!-- 로그인 성공시 처리를 위한 핸들러 등록 -->
+	<beans:bean id="loginSuccessHandler" class="com.goCamping.authentication.LoginSuccessHandler">
+    	<beans:property name="user_id" value="user_id"/>
+    	<beans:property name="defaultUrl" value="/"/>
+	</beans:bean>
 
+
+	<!-- 로그인 실패시 처리를 위한 핸들러 등록 -->
+	<beans:bean id="loginFailureHandler" class="com.goCamping.authentication.LoginFailureHandler">
+		<beans:property name="userID" value="user_id"/>
+		<beans:property name="defaultFailureUrl" value="/member/login?error"/>
+	</beans:bean>
+	
 </beans:beans>

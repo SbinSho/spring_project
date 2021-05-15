@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
+import com.goCamping.domain.CustomUserDetails;
 import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberChPassDTO;
@@ -117,6 +118,15 @@ public class MemberDAOImpl implements MemberDAO {
 		}
 		
 	}
+
+	
+	// 스프링 시큐리티 작업처리를 위한 메소드
+	@Override
+	public CustomUserDetails getUserById(String user_id) {
+		return session.selectOne(NAMESPACE + ".selectUserById", user_id);
+	}
+	
+	
 	
 	
 	

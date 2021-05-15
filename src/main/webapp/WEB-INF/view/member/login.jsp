@@ -62,7 +62,7 @@
 	  	<img class="mb-4" src="./Signin Template Â· Bootstrap_files/bootstrap-solid.svg" alt="" width="72" height="72">
 	  	<div class="form-group">
 	  		<label for="id">아이디</label>
-			<input type="text" id="id" class="form-control" value="${ id }"/>
+			<input type="text" id="id" class="form-control" value="${ user_id }"/>
 			<span style="color: red"></span>
 		</div>
 	    <div class="form-group">
@@ -71,14 +71,11 @@
 			<span style="color: red" id="check"></span>
 	    </div>
 	    <div class="form-group">
-	    	<c:if test="${ not empty SPRING_SECURITY_LAST_EXCEPTION }">
-				<font color="red">
-        			<p>Your login attempt was not successful due to <br/>
-            		${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</p>
-        			<c:remove var="SPRING_SECURITY_LAST_EXCEPTION" scope="session"/>
-   	 			</font>
+	    	<c:if test="${ not empty errormsg }">
+        		<p style="color : red;"> ${ errormsg } </p>
+        		<c:remove var="SPRING_SECURITY_LAST_EXCEPTION" scope="session"/>
 	    	</c:if>
-<!-- 	    </div> -->
+	    </div>
 		<div class="checkbox mb-3">
 		<c:choose>
 			<c:when  test="${ empty cookie_check }">

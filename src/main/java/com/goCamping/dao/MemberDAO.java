@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.dao.DuplicateKeyException;
 
+import com.goCamping.domain.CustomUserDetails;
 import com.goCamping.domain.MemberVO;
 import com.goCamping.dto.MemberChIdDTO;
 import com.goCamping.dto.MemberChPassDTO;
@@ -40,4 +41,8 @@ public interface MemberDAO {
 	
 	// 회원 탈퇴
 	public Boolean member_delete(String user_id);
+	
+	// 스프링 시큐리티 작업 처리를 위한 메소드
+	public CustomUserDetails getUserById(String user_id);
+	
 }
