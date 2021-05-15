@@ -62,7 +62,17 @@
 	  	<img class="mb-4" src="./Signin Template Â· Bootstrap_files/bootstrap-solid.svg" alt="" width="72" height="72">
 	  	<div class="form-group">
 	  		<label for="id">아이디</label>
-			<input type="text" id="id" class="form-control" value="${ user_id }"/>
+	  		<c:choose>
+	  			<c:when test="${ not empty user_id }">
+					<input type="text" id="id" class="form-control" value="${ user_id }">
+	  			</c:when>
+	  			<c:when test="${ not empty id }">
+	  				<input type="text" id="id" class="form-control" value="${ id }">
+	  			</c:when>
+	  			<c:otherwise>
+	  				<input type="text" id="id" class="form-control">
+	  			</c:otherwise>
+	  		</c:choose>
 			<span style="color: red"></span>
 		</div>
 	    <div class="form-group">

@@ -35,7 +35,7 @@
 <!-- 		<intercept-url pattern="/board/reply/delete/**" access="hasRole('ROLE_MEMBER')"/> -->
 		
 	    <intercept-url pattern="/**" access="permitAll"/>
-
+	    
 		<!-- 권한 설정 -->
 		<form-login
 			username-parameter="user_id"
@@ -46,16 +46,28 @@
 			authentication-success-handler-ref="loginSuccessHandler"
 			authentication-failure-handler-ref="loginFailureHandler"
 		/>
-		
+        <!-- 
+	           	 로그아웃
+	            logout-url            :    로그아웃 url
+	            logout-success-url    :    로그아웃 정상적일때 보내는 url
+	            invalidate-session    :    로그아웃 했을때 세션을 무효화 할껀지 설정
+	            delete-cookies        :    삭제하는 쿠키
+         -->		
 		<logout 
 			logout-url="/member/logout"
 			logout-success-url="/"
 			invalidate-session="true"
 		/>
-		
+        <!-- 
+               	자동로그인  
+            	key                      :    키 이름
+            	token-validity-seconds   :    유효시간
+           		remember-me-parameter    :    로그인 폼 파라미터 (remember-me)
+        -->		
 <!-- 		<remember-me -->
-<!-- 			remember-me-parameter="user_reId" -->
-<!-- 			remember-me-cookie="user_reId" -->
+<!-- 			key="hsweb" -->
+<!-- 			token-validity-seconds="60000" -->
+<!-- 			authentication-success-handler-ref="loginSuccessHandler" -->
 <!-- 		/> -->
 		
 		<!-- 권한이 없어서 금지된 URI 접속할 때 보여줄 페이지(403 에러 페이지 대체) -->

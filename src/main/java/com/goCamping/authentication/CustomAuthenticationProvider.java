@@ -40,7 +40,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		if(user == null) {
 			throw new AuthenticationServiceException(user_id);
 		} else if (!user_id.equals(user.getUsername()) || !passwordEncoder.matches(user_pwd, user.getPassword())) {
-			System.out.println("아이디 및 비밀번호 오류");
 			throw new BadCredentialsException(user_id);
 		}
 		

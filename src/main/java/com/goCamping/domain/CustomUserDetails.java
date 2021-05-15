@@ -72,7 +72,4 @@ public class CustomUserDetails implements UserDetails{
 		this.user_pwd = user_pwd;
 	}
 	
-	
-	
-	
 }

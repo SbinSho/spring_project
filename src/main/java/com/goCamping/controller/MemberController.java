@@ -151,19 +151,27 @@ public class MemberController {
 		// 개인키 공개키 생성
 		Map<String, Object> map = encrypt.createKey();
 		
+		
+		
 		// 생성된 개인키 및 공개키가 존재하지 않으면 null
 		if (map != null) {
-			
-			CreateKey.set(request, map);
-			
-			// 브라우저에 저장된 cookie 체크
-			if(cookie != null) {
-				// 브라우저에 저장된 cookie가 존재하면 cookie의 내용을 가져와서 loginDTO id값으로 지정
-				request.setAttribute("id", cookie.getValue());
-				// 뷰페이지 체크박스 체크를 위해 값 저장
-				request.setAttribute("cookie_check", "checked");
+			if(request.getParameter("user_id") == null) {
+				CreateKey.set(request, map);
+				
+				// 브라우저에 저장된 cookie 체크
+				if(cookie != null) {
+					// 브라우저에 저장된 cookie가 존재하면 cookie의 내용을 가져와서 loginDTO id값으로 지정
+					request.setAttribute("id", cookie.getValue());
+					// 뷰페이지 체크박스 체크를 위해 값 저장
+					request.setAttribute("cookie_check", "checked");
+				}
+			} else {
+				if(cookie != null) {
+					// 뷰페이지 체크박스 체크를 위해 값 저장
+					request.setAttribute("cookie_check", "checked");
+				}
+				
 			}
-			
 			return "/member/login";
 		}
 		
