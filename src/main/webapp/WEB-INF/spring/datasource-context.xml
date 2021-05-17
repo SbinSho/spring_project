@@ -23,22 +23,18 @@
 	<!-- <property name="password" value="${jdbc.userpassword}" /> -->
 	<!-- </bean> -->
 
-
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName"
-			value="${jdbc.driver.mybatis}" />
+	<!-- dataSource 생성 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driver.mybatis}" />
 		<property name="url" value="${jdbc.url.mybatis}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.userpassword}" />
 	</bean>
 
 	<!-- sqlSessionFactory 생성 -->
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean">
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation"
-			value="classpath:mybatis/config/mybatis-config.xml" />
+		<property name="configLocation"	value="classpath:mybatis/config/mybatis-config.xml" />
 		<property name="mapperLocations">
 			<list>
 				<value>classpath:mybatis/board-mapper.xml</value>
@@ -55,11 +51,11 @@
 	</bean>
 	
 	<!-- 트랜젝션 매니저 -->
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-
-
+	<!-- 다이내믹 프록시를 적용할 인터페이스가 없기 때문에, 클래스 프록시 모드 사용을 위한 설정 -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	
+	
 </beans>
