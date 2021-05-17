@@ -32,7 +32,7 @@
 
 <div class="container">
 	<h2>게시판 글쓰기</h2>
-	<form:form commandName="boardWriteDTO" id="frm" enctype="multipart/form-data">
+	<form:form commandName="boardWriteDTO" id="frm" enctype="multipart/form-data" action="/board/write?${_csrf.parameterName}=${_csrf.token}&user_id=${ loginUser.id }&page=${ page }">
 		<div class="mb-3">
 			<label for="title">제목</label> 
 			<form:input path="title" class="form-control" value="${ title }" placeholder="제목을 입력해 주세요" />
@@ -59,6 +59,7 @@
 			<button type="button" class="btn btn-sm btn-primary" id="list" onclick="location.href='<c:url value="/board/list?page=${page}"/>';">목록</button>
 		</div>
 	</form:form>
+	
 </div>
 
 	<script>
@@ -93,25 +94,26 @@
 	
 	// 컨텍스트 경로 반환
 	function Path() {
-		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}"; 
-		return contextPath;
+		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}";
+		return contextPath; 
 	}
 	
-		var oEditors = [];
-		nhn.husky.EZCreator.createInIFrame({
-			oAppRef: oEditors,
-			elPlaceHolder: "content",
-			sSkinURI: Path() + "smarteditor/SmartEditor2Skin.html",
-			fCreator: "createSEditor2"
-		});
+	var oEditors = [];
+	nhn.husky.EZCreator.createInIFrame({
+		oAppRef: oEditors,
+		elPlaceHolder: "content",
+		sSkinURI: Path() + "smarteditor/SmartEditor2Skin.html",
+		fCreator: "createSEditor2"
+	});
 		
-	    //전송버튼
-	    $("#write").click(function(){
-	        //id가 content인 textarea에 에디터에서 대입
-	        oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-	        //폼 submit
-	        $("#frm").submit();
-	    })
+	//전송버튼
+	$("#write").click(function(){
+	    //id가 content인 textarea에 에디터에서 대입
+	    oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+	    //폼 submit
+	    $("#frm").submit();
+	 });
+	    
 	</script>
 
  <%@ include file="../inc/footer.jsp"%>

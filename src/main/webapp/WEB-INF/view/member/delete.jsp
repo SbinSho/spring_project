@@ -44,6 +44,17 @@
 		return contextPath;
 	}
 	
+	$(document).ready(function() {
+		
+        var csrfToken = "${_csrf.token}";
+        var csrfHeader = "${_csrf.headerName}";
+        
+	    // ajax 요청하기 전 호출되는 이벤트 ( 토큰값 설정 하기 )
+		$(document).ajaxSend(function (e, xhr, options){
+			xhr.setRequestHeader(csrfHeader, csrfToken);
+		});
+	});
+	
 	
 	function form_check() {
 		

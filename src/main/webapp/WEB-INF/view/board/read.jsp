@@ -106,8 +106,17 @@
 </div>
 
 <script>
+
 	$(document).ready(function() {
 		getReply();
+		
+        var csrfToken = "${_csrf.token}";
+        var csrfHeader = "${_csrf.headerName}";
+		
+        // ajax 요청하기 전 호출되는 이벤트 ( 토큰값 설정 하기 )
+		$(document).ajaxSend(function (e, xhr, options){
+			xhr.setRequestHeader(csrfHeader, csrfToken);
+		});
 	});
 	// 컨텍스트 패스 경로
 	var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}";

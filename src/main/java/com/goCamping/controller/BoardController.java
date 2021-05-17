@@ -90,7 +90,7 @@ public class BoardController {
 
 		model.addAttribute("boardWriteDTO", boardWriteDTO);
 		model.addAttribute("page", page);
-
+		
 		return "/board/write";
 
 	}

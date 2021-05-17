@@ -42,72 +42,72 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a class="nav-link" href="<c:url value='/'/>">캠핑 GO</a></li>
-					<li class="nav-item"><a class="nav-link" href="<c:url value='/board/list'/>">게시판</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="<c:url value='/'/>">캠핑 GO</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="<c:url value='/board/list'/>">게시판</a></li>
 					<!-- 기본적인 게시판 처리 부터 하고 나서 사용할 예정 -->
-					<!-- 					<li class="nav-item dropdown"> -->
-					<!-- 						<a class="nav-link dropdown-toggle"  -->
-					<!-- 						href="#" id="navbarDropdown" role="button"  -->
-					<!-- 						data-toggle="dropdown" aria-haspopup="true"  -->
-					<!-- 						aria-expanded="false">고객센터</a> -->
-					<!-- 				        <div class="dropdown-menu" aria-labelledby="navbarDropdown"> -->
-					<!-- 						  <a class="dropdown-item" href="#">공지사항</a> -->
-					<!-- 				          <a class="dropdown-item" href="#">캠핑장 정보 수정요청</a> -->
-					<%-- 				          <a class="dropdown-item" href="<c:url value='/unregistered/question'/>">미등록야영장 불법영업문의</a> --%>
-					<!-- 				          <a class="dropdown-item" href="#">캠핑장 공지사항</a> -->
-					<!-- 				        </div> -->
-					<!-- 			      </li> -->
+					<%-- <li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false">고객센터</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" href="#">공지사항</a> <a
+								class="dropdown-item" href="#">캠핑장 정보 수정요청</a> <a
+								class="dropdown-item"
+								href="<c:url value='/unregistered/question'/>">미등록야영장 불법영업문의</a>
+							<a class="dropdown-item" href="#">캠핑장 공지사항</a>
+						</div></li> --%>
+
+					<!-- spring security 사용 할 경우-->
 					<sec:authorize access="isAnonymous()">
-						<li class="nav-item">
-							<a class="nav-link" href="<c:url value='/member/login'/>">로그인</a>
-						</li>
+						<li class="nav-item"><a class="nav-link"
+							href="<c:url value='/member/login'/>">로그인</a></li>
 						<li class="nav-item"><a class="nav-link"
 							href="<c:url value='/member/join'/>">회원가입</a></li>
 						<li class="nav-item">
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
-					<li class="nav-item"></li>
+						<li class="nav-item"></li>
 						<li class="nav-item">
 							<form action="/member/logout" id="logout_form" method="POST">
-								<a class="nav-link" onclick="logout_submit()" style="cursor: pointer;">
-									<span>로그아웃</span>
-								</a>
-	    						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								<a class="nav-link" onclick="logout_submit()"
+									style="cursor: pointer;"> <span>로그아웃</span>
+								</a> <input type="hidden" name="${_csrf.parameterName}"
+									value="${_csrf.token}" />
 							</form>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link"	href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a>
- 						</li>
+						<li class="nav-item"><a class="nav-link"
+							href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a>
+						</li>
 					</sec:authorize>
-<%-- 					<c:choose> --%>
-<%-- 						<c:when test="${ empty loginUser }"> --%>
-<!-- 							<li class="nav-item"> -->
-<%-- 								<a class="nav-link" href="<c:url value='/member/login'/>">로그인</a> --%>
-<!-- 							</li> -->
-<!-- 							<li class="nav-item"> -->
-<%-- 							<sec:authorize access="isAnonymous()"> --%>
-<%-- 									<a class="nav-link" href="<c:url value='/member/login'/>">로그인</a> --%>
-<%-- 							</sec:authorize> --%>
-<!--  							</li> -->
-<!-- 							<li class="nav-item"><a class="nav-link" -->
-<%-- 								href="<c:url value='/member/join'/>">회원가입</a></li> --%>
-<!-- 							<li class="nav-item"> -->
-<!-- 								<form action="/member/logout" method="POST"> -->
-<!--     								<input type="submit" value="LOGOUT"/> -->
-<%--     								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /> --%>
-<!-- 								</form> -->
-<!-- 							</li> -->
-<%-- 						</c:when> --%>
-<%-- 						<c:otherwise> --%>
-<!-- 							<li class="nav-item"><a class="nav-link" -->
-<%-- 								href="<c:url value='/member/logout?user_id=${ loginUser.id }'/>"> --%>
-<!-- 									<span>로그아웃</span> -->
-<!-- 							</a></li> -->
-<!-- 							<li class="nav-item"><a class="nav-link" -->
-<%-- 								href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a> --%>
-<!-- 							</li> -->
-<%-- 						</c:otherwise> --%>
-<%-- 					</c:choose> --%>
+
+					<!-- spring security 사용하지 않을 경우 -->
+					<%-- <c:choose>
+						<c:when test="${ empty loginUser }">
+							<li class="nav-item"><a class="nav-link"
+								href="<c:url value='/member/login'/>">로그인</a></li>
+							<li class="nav-item"><a class="nav-link"
+								href="<c:url value='/member/join'/>">회원가입</a></li>
+							<li class="nav-item">
+								<form action="/member/logout" id="logout_form" method="POST">
+									<a class="nav-link" onclick="logout_submit()"
+										style="cursor: pointer;"> <span>로그아웃</span>
+									</a> <input type="hidden" name="${_csrf.parameterName}"
+										value="${_csrf.token}" />
+								</form>
+							</li>
+						</c:when>
+						<c:otherwise>
+							<li class="nav-item"><a class="nav-link"
+								href="<c:url value='/member/logout?user_id=${ loginUser.id }'/>">
+									<span>로그아웃</span>
+							</a></li>
+							<li class="nav-item"><a class="nav-link"
+								href="<c:url value='/member/edit/info?user_id=${ loginUser.id }'/>">회원정보수정</a>
+							</li>
+						</c:otherwise>
+					</c:choose> --%>
 					<li class="nav-item"><a class="nav-link" href="#">사업장 등록</a></li>
 				</ul>
 			</div>
@@ -224,7 +224,7 @@
 		if (result == "error") {
 			alert("오류 발생!");
 		}
-		
+
 		function logout_submit() {
 			$("#logout_form").submit();
 		}

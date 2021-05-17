@@ -55,6 +55,17 @@
 	var chFlag = false;
 	var chConFlag = false;
 	
+	$(document).ready(function() {
+		
+        var csrfToken = "${_csrf.token}";
+        var csrfHeader = "${_csrf.headerName}";
+        
+	    // ajax 요청하기 전 호출되는 이벤트 ( 토큰값 설정 하기 )
+		$(document).ajaxSend(function (e, xhr, options){
+			xhr.setRequestHeader(csrfHeader, csrfToken);
+		});
+	});
+	
 	// 영문, 숫자 조합의 8~20자리
 	var isPw = /^[a-zA-Z0-9]{8,20}$/;
 	

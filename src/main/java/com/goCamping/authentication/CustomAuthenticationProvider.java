@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.goCamping.domain.CustomUserDetails;
+import com.goCamping.util.Encrypt;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
@@ -26,6 +27,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		
 		System.out.println("CustomAuthenticationProvider 실행!" );
+		
 		
 		/* 사용자가 입력한 정보 */
 		String user_id = (String) authentication.getPrincipal();

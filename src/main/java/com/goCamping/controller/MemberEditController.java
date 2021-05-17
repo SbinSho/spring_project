@@ -102,7 +102,7 @@ public class MemberEditController {
 			
 			// 복호화 된 평문을 다시 객체에 입력
 			memberChIdDTO.setUser_id(authInfo.getId());
-			memberChIdDTO.setCh_id(chIdDTO_array[1]);
+			memberChIdDTO.setCh_id(chIdDTO_array[0]);
 			
 			// 유효성 검증
 			new MemberChIdDTOValidator().validate(memberChIdDTO, errors);

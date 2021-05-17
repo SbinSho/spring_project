@@ -57,6 +57,17 @@
 
 	var Flag = false;
 	
+	$(document).ready(function() {
+		
+        var csrfToken = "${_csrf.token}";
+        var csrfHeader = "${_csrf.headerName}";
+        
+	    // ajax 요청하기 전 호출되는 이벤트 ( 토큰값 설정 하기 )
+		$(document).ajaxSend(function (e, xhr, options){
+			xhr.setRequestHeader(csrfHeader, csrfToken);
+		});
+	});
+	
 	// 컨텍스트 경로 반환
 	function Path() {
 		var contextPath = "${pageContext.request.contextPath}" == "" ? "/" : "${pageContext.request.contextPath}"; 
@@ -161,7 +172,7 @@
 			success: function(data){
 				if(data.result == "OK"){
 					alert("아이디 변경 완료!");
-					location.href = Path() + "member/edit/info?user_id=" + ch_id;
+					location.href = Path() + "member/edit/info?user_id=" + ch_user_id;
 				}
 				else if (data.result == "DB_ERROR"){
 					alert("중복확인을 다시 해주세요!");
