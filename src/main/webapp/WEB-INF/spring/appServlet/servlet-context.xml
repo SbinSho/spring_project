@@ -15,52 +15,51 @@
 	<!-- spring mvc 컴포넌트 활성화 RquestMapping 사용 -->
 	<mvc:annotation-driven />
 	
-	
 	<!-- 정적 파일 관리를 위한 설정 -->
 	<mvc:resources location="/static/" mapping="/**"/>
+	<!-- 네이버 에디터 파일 관련 설정 -->
 	<mvc:resources location="/smarteditor/" mapping="/smarteditor/**"/>
 	
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/view/"/>
 		<property name="suffix" value=".jsp" />
 	</bean>
-	
-		
-	<!-- 로그인시 사용되는 인터셉터 bean 등록 -->
-	<bean id="loginInterceptor" class="com.goCamping.interceptor.LoginInterceptor" />
+
 	<!-- 로그인 하지 않은 경우 또는 세션에 저장된 유저가 현재 요청받은 유저와 일치한지 체크하여 권한이 필요한 작업에 사용할 인터셉터 -->
 	<bean id="authInterceptor" class="com.goCamping.interceptor.AuthInterceptor" />
-	<!-- 로그인 하지 않은 경우,  -->
-	<bean id="notLoginInterceptor" class="com.goCamping.interceptor.NotLoginInterceptor" />
 	
 	<mvc:interceptors>
-	<!-- spring 시큐리티 이용 로그인 처리 -->
+		<mvc:interceptor>
+			<!-- 게시판 접근 권한 확인 -->
+			<mvc:mapping path="/board/write/**"/>
+			<mvc:mapping path="/board/edit/**"/>
+			<mvc:mapping path="/board/delete/**"/>
+			<!-- 댓글 작성 접근 권한 확인 -->
+			<mvc:mapping path="/board/reply/write/**"/>
+			<ref bean="authInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<context:component-scan base-package="com.goCamping.controller" />
+	
+		<!-- 로그인시 사용되는 인터셉터 bean 등록 -->
+	<!-- spring security 도입으로 주석 처리 -->
+<!-- 	<bean id="loginInterceptor" class="com.goCamping.interceptor.LoginInterceptor" /> -->
+	
+	<!-- 로그인 하지 않은 경우,  -->
+<!-- 	<bean id="notLoginInterceptor" class="com.goCamping.interceptor.NotLoginInterceptor" /> -->
+		<!-- spring 시큐리티 이용 로그인 처리 -->
 <!-- 		<mvc:interceptor> -->
 <!-- 			<mvc:mapping path="/member/login"/> -->
 <!-- 			<ref bean="loginInterceptor" /> -->
 <!-- 		</mvc:interceptor> -->
-		
-		<mvc:interceptor>
 <!-- 			<mvc:mapping path="/member/edit/**"/> -->
 <!-- 			<mvc:mapping path="/member/logout/**"/> -->
 <!-- 			<mvc:mapping path="/member/delete/**"/> -->
-			
-			<mvc:mapping path="/board/write/**"/>
-			<mvc:mapping path="/board/edit/**"/>
-			<mvc:mapping path="/board/delete/**"/>
-			
-			
-			<mvc:mapping path="/board/reply/write/**"/>
-			<ref bean="authInterceptor"/>
-		</mvc:interceptor>
-		
 		
 <!-- 		<mvc:interceptor> -->
 <!-- 			<mvc:mapping path="/member/check/**"/> -->
 <!-- 			<ref bean="notLoginInterceptor" /> -->
 <!-- 		</mvc:interceptor> -->
-		
-	</mvc:interceptors>
-	
-	<context:component-scan base-package="com.goCamping.controller" />
 </beans>
+

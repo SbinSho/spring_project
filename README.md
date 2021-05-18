@@ -49,6 +49,7 @@
 * 회원가입, 회원수정, 회원탈퇴 기능 
 * 게시판 기능 ( 작성, 수정, 삭제, Interceptor를 이용해서 권한 확인 ), 게시판 댓글 기능
 * 클라이언트와 서버 HTTP로 통신 간 평문을 암호화 하기 위해, RSA 암호 알고리즘 사용
+* 요청 받은 데이터가 유효한지 검사 ( 유효성 검사 )
 * 클라이언트 응답 요청만을 위한 @RestController 구현
 
 ### Spring 환경설정 ( xml 방식 )
@@ -61,13 +62,13 @@
     
 ---
 
-#### root-context.xml
+### root-context.xml
     
 * properties 파일 사용
 
 ![properties](https://github.com/SbinSho/spring_project/blob/master/img/root-context(properties).png)
 
-DB 유저 아이디 및 비밀번호를 properties 파일을 만들어 설정 파일에서 사용하기 위한 설정 ( git에 프로젝트 올리시 보안에 유리, 편리함 )
+DB 유저 아이디 및 비밀번호를 properties 파일을 만들어 spring 설정 파일에서 사용하기 위한 설정 ( git에 프로젝트 올리시 보안에 유리, 편리함 )
 
 * 파일 업로드 처리
 
@@ -142,8 +143,43 @@ ___
     - 디폴트 provider 사용하지 않고, 커스텀 provider 사용
     - DB에 저장되어 있는 암호화된 비밀번호를 비교하기 위해 사용
     
-[provider 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/authentication/CustomAuthenticationProvider.java)
-        
+[CustomProvider 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/authentication/CustomAuthenticationProvider.java)
+
+---
+
+#### message-context, mail-context
+
+* message-context
+
+![mssage](https://github.com/SbinSho/spring_project/blob/master/img/message-context.png)
+
+messageSource을 설정해 spring에서의 유효성 검사를 통한 에러 메시지를 properties로 만들고 출력하고, messageSourceAccessor을 설정하여 java 클래스에서 예외가 발생시 에러 메시지 처리를 위해 설정
+
+---
+
+* mail-context
+
+![mail](https://github.com/SbinSho/spring_project/blob/master/img/mail-context.png)
+
+회원 가입에 필요한 메일 인증을 구현하기 위해 mailSender 환경 설정
+
+---
+
+### servlet-context
+
+![servlet](https://github.com/SbinSho/spring_project/blob/master/img/servlet-context.png)
+
+* resources : 정적 파일 관리와 네이버 에디터 사용을 위해 설정 
+    - /** 로 오는 모든 요청은 static 폴더 밑에서 찾는다.
+    - /smarteditor/** 로 오는 모든 요청은 smarteditor 폴더 밑에서 찾는다.
+    
+* ViewResolver : 사용자가 요청한 것에 대한 응답 view를 랜더링 처리를 위해 설정
+
+* intercpetors :  컨트롤러에 들어오는 요청 HttpRequest와 컨트롤러가 응답하는 HttpResponse를 가로채 접근 권한 인증을 위해 사용 ( 필터랑은 다름 )
+    - authInterceptor : 로그인 하지 않은 경우 또는 세션에 저장된 유저가 현재 요청한 유저와 동일한지 체크하기 위한 Interceptor 이다.
+
+[AuthInterceptor 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/interceptor/AuthInterceptor.java)
+
 ## 마치며
 ### 프로젝트의 부족한점
 - 공통 관심 기능을 분리하여 반복되는 부분 줄이지 못한 점, 예를 들어 RSA 암호화 알고리즘으로 받은 암호문을 복호화 처리 하는 부분
