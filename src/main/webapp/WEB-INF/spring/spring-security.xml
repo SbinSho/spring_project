@@ -17,27 +17,14 @@
 	<beans:bean id="bcryptPasswordEncoder"
 		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 
-
 	<http auto-config="true">
 	
-		<!-- 실습 목적의 시큐리티 적용임으로 csrf 토큰값 확인을 제거 -->
-<!-- 		<csrf disabled="true"/> -->
-		
 		<!-- 로그인된 상태에서 로그인 또는 회원가입 화면에 접근 금지 -->
 		<intercept-url pattern="/member/login" access="isAnonymous()"/>
 		<intercept-url pattern="/member/join" access="isAnonymous()"/>
 		
 		<!-- 계정 정보 변경 접근 권한 -->
 		<intercept-url pattern="/member/edit/**" access="hasRole('ROLE_MEMBER')"/>
-		
-		<!-- 게시판 접근 권한 -->
-<!-- 		<intercept-url pattern="/board/write/**" access="hasRole('ROLE_MEMBER')"/> -->
-<!-- 		<intercept-url pattern="/board/edit/**" access="hasRole('ROLE_MEMBER')"/> -->
-<!-- 		<intercept-url pattern="/board/delete/**" access="hasRole('ROLE_MEMBER')"/> -->
-<!-- 		<intercept-url pattern="/board/reply/write/**" access="hasRole('ROLE_MEMBER')"/> -->
-<!-- 		<intercept-url pattern="/board/reply/edit/**" access="hasRole('ROLE_MEMBER')"/> -->
-<!-- 		<intercept-url pattern="/board/reply/delete/**" access="hasRole('ROLE_MEMBER')"/> -->
-		
 	    <intercept-url pattern="/**" access="permitAll"/>
 	    
 		<!-- 권한 설정 -->
@@ -46,50 +33,32 @@
 			password-parameter="user_pwd"
 			login-processing-url="/member/login"
 			login-page="/member/login"
-			default-target-url="/board/list"
 			authentication-success-handler-ref="loginSuccessHandler"
 			authentication-failure-handler-ref="loginFailureHandler"
 		/>
-        <!-- 
-	           	 로그아웃
-	            logout-url            :    로그아웃 url
-	            logout-success-url    :    로그아웃 정상적일때 보내는 url
-	            invalidate-session    :    로그아웃 했을때 세션을 무효화 할껀지 설정
-	            delete-cookies        :    삭제하는 쿠키
-         -->		
+		<!-- 로그아웃 처리 관련 -->
 		<logout 
 			logout-url="/member/logout"
 			logout-success-url="/"
 			invalidate-session="true"
 		/>
-        <!-- 
-               	자동로그인  
-            	key                      :    키 이름
-            	token-validity-seconds   :    유효시간
-           		remember-me-parameter    :    로그인 폼 파라미터 (remember-me)
-        -->		
-<!-- 		<remember-me -->
-<!-- 			key="hsweb" -->
-<!-- 			token-validity-seconds="60000" -->
-<!-- 			authentication-success-handler-ref="loginSuccessHandler" -->
-<!-- 		/> -->
-		
-		<!-- 권한이 없어서 금지된 URI 접속할 때 보여줄 페이지(403 에러 페이지 대체) -->
-		<!-- <access-denied-handler error-page="/" /> -->
 		
 		<!-- 네이버 에디터 오류 해결  -->
 		<headers>
 			<frame-options disabled="true"/>
 		</headers>
+		
+		<!-- 권한이 없어서 금지된 URI 접속할 때 보여줄 페이지(403 에러 페이지 대체) -->
+		<access-denied-handler error-page="/" />
+		
+		<!-- 중복로그인 방지 및 세션 고정 공격 방어 -->
+		<session-management invalid-session-url="/" session-fixation-protection="migrateSession">
+			<concurrency-control max-sessions="1" expired-url="/member/login"/>
+		</session-management>
+		
 	</http>
-	
-	<!-- Mybatis 연결 및 DB를 이용한 간단한 로그인 인증 ( 커스텀 하지 않고 사용 ) -->
-<!-- 	<jdbc-user-service data-source-ref="dataSource" id="userService" -->
-<!-- 		users-by-username-query="SELECT user_id, user_pwd, ENABLED from member where user_id=?" -->
-<!-- 		authorities-by-username-query="SELECT user_id, AUTHORITY FROM member where user_id=?" -->
-<!-- 	/> -->
 
-	<!-- provider -->
+	<!-- 인증과 관련된 정보를 설정 -->
 	<authentication-manager>
 		<authentication-provider ref="customAuthenticationProvider">
 			<!-- DB를 이용한 방법이 아닌 인메모리 형식의 계정 정보 -->
@@ -97,7 +66,6 @@
 				<user name="user" password="userPW" authorities="ROLE_USER" />
 			</user-service> -->
 		</authentication-provider>
-		
 	</authentication-manager>
 	
 	<!-- 커스텀 userService -->
@@ -111,12 +79,44 @@
     	<beans:property name="user_id" value="user_id"/>
     	<beans:property name="defaultUrl" value="/"/>
 	</beans:bean>
-
-
+	
 	<!-- 로그인 실패시 처리를 위한 핸들러 등록 -->
 	<beans:bean id="loginFailureHandler" class="com.goCamping.authentication.LoginFailureHandler">
 		<beans:property name="userID" value="user_id"/>
 		<beans:property name="defaultFailureUrl" value="/member/login?error"/>
 	</beans:bean>
+		
+	     <!-- 
+	           	 로그아웃
+	            logout-url            :    로그아웃 url
+	            logout-success-url    :    로그아웃 정상적일때 보내는 url
+	            invalidate-session    :    로그아웃 했을때 세션을 무효화 할껀지 설정
+	            delete-cookies        :    삭제하는 쿠키
+         -->
 	
+        <!-- 
+               	자동로그인  
+            	key                      :    키 이름
+            	token-validity-seconds   :    유효시간
+           		remember-me-parameter    :    로그인 폼 파라미터 (remember-me)
+        -->		
+		<!-- 게시판 접근 권한 -->
+<!-- 		<intercept-url pattern="/board/write/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/edit/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/delete/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/reply/write/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/reply/edit/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<intercept-url pattern="/board/reply/delete/**" access="hasRole('ROLE_MEMBER')"/> -->
+<!-- 		<remember-me -->
+<!-- 			key="hsweb" -->
+<!-- 			token-validity-seconds="60000" -->
+<!-- 			authentication-success-handler-ref="loginSuccessHandler" -->
+<!-- 		/> -->
+		
+	<!-- Mybatis 연결 및 DB를 이용한 간단한 로그인 인증 ( 커스텀 하지 않고 사용 ) -->
+<!-- 	<jdbc-user-service data-source-ref="dataSource" id="userService" -->
+<!-- 		users-by-username-query="SELECT user_id, user_pwd, ENABLED from member where user_id=?" -->
+<!-- 		authorities-by-username-query="SELECT user_id, AUTHORITY FROM member where user_id=?" -->
+<!-- 	/> -->
+
 </beans:beans>

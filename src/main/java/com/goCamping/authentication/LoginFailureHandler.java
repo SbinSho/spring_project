@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 
 import com.goCamping.util.MessageUtils;
 
+// spring security에서 자체적 으로 예외가 발생하게 되면 세션에 key가 SPRING_SECURITY_LAST_EXCEPTION인
+// 예외 메시지를 저장하게 되는데 세션을 이용해서 계속해서 저장하게되면 서버에 부담이 가서 직접 예외처리 하기 위해 핸들러 사용
 public class LoginFailureHandler implements AuthenticationFailureHandler{
 
 	private String userID;
@@ -28,15 +30,24 @@ public class LoginFailureHandler implements AuthenticationFailureHandler{
 		String user_id = request.getParameter(userID);
 		String errormsg = null;
 		
+		// 인증요구가 거부 되었을때 예외 발생
 		if(auException instanceof AuthenticationServiceException) {
             errormsg = MessageUtils.getMessage("error.Authentication");
-        } else if(auException instanceof BadCredentialsException) {
+        } 
+		// 비밀번호가 일치하지 않을 때 던지는 예외
+		else if(auException instanceof BadCredentialsException) {
             errormsg = MessageUtils.getMessage("error.BadCredentials");
-        } else if(auException instanceof InternalAuthenticationServiceException) {
+        } 
+		// 존재하지 않는 아이디일때 던지는 예외
+		else if(auException instanceof InternalAuthenticationServiceException) {
             errormsg = MessageUtils.getMessage("error.BadCredentials");
-        } else if(auException instanceof DisabledException) {
+        } 
+		// 인증 거부 - 계정 비활성화
+		else if(auException instanceof DisabledException) {
             errormsg = MessageUtils.getMessage("error.Disaled");
-        } else if(auException instanceof CredentialsExpiredException) {
+        } 
+		// 인증 거부 - 비밀번호 유효기간 만료
+		else if(auException instanceof CredentialsExpiredException) {
             errormsg = MessageUtils.getMessage("error.CredentialsExpired");
         }
 		

@@ -24,6 +24,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 	private String user_id;
 	private String defaultUrl;
 	
+	// spring에서 제공하는 사용자의 요청을 저장하고 꺼낼 수 있는 인터페이스
     private RequestCache requestCache = new HttpSessionRequestCache();
     private RedirectStrategy redirectStratgy = new DefaultRedirectStrategy();
 
@@ -52,23 +53,26 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		// 브라우저에 작성한 cookie를 응답함
 		response.addCookie(loginCookie);
-		
+		// 로그인 하는 과정에서 생긴 세션에 저장된 메시지를 삭제
 		clearAuthenticationAttributes(request);
-		
+		// 어느 URL로 보낼지 판단하기 위한 메소드
 		resultRedirectStrategy(request, response, authentication);
 	}
 	
     protected void resultRedirectStrategy(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-        
+    	
+        // RequestCache를 이용해 사용자 요청 정보들이 들어있는 SavedRequest 클래스 생성
         SavedRequest savedRequest = requestCache.getRequest(request, response);
         
+        // 세션에 이동할 url의 정보가 담겨져 있는지 판단( 접근 권한이 없는 URL에 요청 한 경우, 직접 로그인 페이지 접속시 생성 안됨 )
         if(savedRequest!=null) {
-        	
+        	// 존재하면 요청한 URL로 이동
             String targetUrl = savedRequest.getRedirectUrl();
             redirectStratgy.sendRedirect(request, response, targetUrl);
             
         } else {
+        	// 존재하지 않으면 홈 화면으로 이동
             redirectStratgy.sendRedirect(request, response, defaultUrl);
             
         }

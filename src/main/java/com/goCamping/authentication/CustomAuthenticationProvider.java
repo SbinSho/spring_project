@@ -1,7 +1,6 @@
 package com.goCamping.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.goCamping.domain.CustomUserDetails;
-import com.goCamping.util.Encrypt;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
