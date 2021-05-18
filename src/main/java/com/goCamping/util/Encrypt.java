@@ -55,15 +55,14 @@ public class Encrypt {
 	}
 
 	public Boolean decryptRsa(PrivateKey privateKey, String[] encrypt_arry) {
-
+		// 암호화 된 데이터 바이트 배열
 		byte[] encryptedBytes;
+		// 복호화 된 데이터 바이트 배열
 		byte[] decryptedBytes;
-
 		/*
 		 * 암호화 된 값은 byte 배열이다. 이를 문자열 폼으로 전송하기 위해 16진 문자열(hex)로 변경한다. 서버측에서도 값을 받을 때 hex
 		 * 문자열을 받아서 이를 다시 byte 배열로 바꾼 뒤에 복호화 과정을 수행한다.
 		 */
-
 		try {
 			Cipher cipher = Cipher.getInstance("RSA");
 			cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -76,24 +75,19 @@ public class Encrypt {
 				encrypt_arry[i] = new String(decryptedBytes, "utf-8"); // 문자 인코딩 주의.
 
 			}
-
-
 		} catch (Exception e) {
 
 			logger.info("decryptRsa Exception Error");
 			e.printStackTrace();
 			return false;
 		}
-
 		return true;
 	}
 
 	public byte[] hexToByteArray(String hex) {
-
 		if (hex == null || hex.length() % 2 != 0) {
 			return new byte[] {};
 		}
-
 		byte[] bytes = new byte[hex.length() / 2];
 		for (int i = 0; i < hex.length(); i += 2) {
 			byte value = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);

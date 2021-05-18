@@ -40,7 +40,7 @@ public class MemberController {
 	
 	// 회원가입 페이지 이동
 	@RequestMapping( value="/join", method = RequestMethod.GET )
-	public String join(HttpServletRequest request, RedirectAttributes rttr) throws Exception {
+	public String join(HttpServletRequest request, RedirectAttributes rttr) {
 		
 		logger.info("join GET 요청");
 		

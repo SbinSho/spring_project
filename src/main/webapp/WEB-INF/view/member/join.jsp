@@ -31,10 +31,12 @@
 
 </head>
 <body>
+
+	<input type="hidden" id="RSAModulus" value="${RSAModulus}" /><!-- 서버에서 전달한값을 셋팅한다. -->
+	<input type="hidden" id="RSAExponent" value="${RSAExponent}" /><!-- 서버에서 전달한값을 셋팅한다. -->
+	
 	<div class="signup-form">
 		<form>
-			<input type="hidden" id="RSAModulus" value="${RSAModulus}" /><!-- 서버에서 전달한값을 셋팅한다. -->
-			<input type="hidden" id="RSAExponent" value="${RSAExponent}" /><!-- 서버에서 전달한값을 셋팅한다. -->
 			<h2>회원가입</h2>
 			<p class="hint-text">Create your account. It's free and only
 				takes a minute.</p>
@@ -98,7 +100,17 @@
 </body>
 
 <script>
-	
+	// spring security 토큰 설정
+	$(document).ready(function() {
+		
+	    var csrfToken = "${_csrf.token}";
+	    var csrfHeader = "${_csrf.headerName}";
+	    
+	    // ajax 요청하기 전 호출되는 이벤트 ( 토큰값 설정 하기 )
+		$(document).ajaxSend(function (e, xhr, options){
+			xhr.setRequestHeader(csrfHeader, csrfToken);
+		});
+	});
 	var idFlag = false;
 	var nameFlag = false;
 	var nickFlag = false;
@@ -413,6 +425,7 @@
 		var en_pwd = rsa.encrypt(pwd);
 		var en_code = rsa.encrypt(code);
 		
+		
 		// json 형태의 객체 전달을 위해 초기화
 		var form = {
 			"user_id" : en_id,
@@ -422,6 +435,14 @@
 			"user_pwd" : en_pwd,
 			"auth_code" : en_code
 		};
+		
+		console.log("user_id : " + en_id);
+		console.log("user_name : " + en_name);
+		console.log("user_nickname : " + en_nickname);
+		console.log("user_mail : " + en_mail);
+		console.log("user_pwd : " + en_pwd);
+		console.log("auth_code : " + en_code);
+		
 		
 		$.ajax({
 			type:"POST",

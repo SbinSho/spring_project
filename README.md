@@ -49,7 +49,7 @@
 * 회원가입, 회원수정, 회원탈퇴 기능 
 * 게시판 기능 ( 작성, 수정, 삭제, Interceptor를 이용해서 권한 확인 ), 게시판 댓글 기능
 * 클라이언트와 서버 HTTP로 통신 간 평문을 암호화 하기 위해, RSA 암호 알고리즘 사용
-* 요청 받은 데이터가 유효한지 검사 ( 유효성 검사 )
+* 요청 받은 데이터가 유효한지 검사 ( Validator와 Bean Validation 두 가지 사용 )
 * 클라이언트 응답 요청만을 위한 @RestController 구현
 
 ### Spring 환경설정 ( xml 방식 )
@@ -179,6 +179,91 @@ messageSource을 설정해 spring에서의 유효성 검사를 통한 에러 메
     - authInterceptor : 로그인 하지 않은 경우 또는 세션에 저장된 유저가 현재 요청한 유저와 동일한지 체크하기 위한 Interceptor 이다.
 
 [AuthInterceptor 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/interceptor/AuthInterceptor.java)
+
+
+
+### RSA 암호화 알고리즘
+
+* 암호화 순서
+    - Controller 에서 키(개인키, 공개키)를 발급, 개인키는 세션에 저장, 공개키는 request 영역에 저장 -> 클라이언트는 전달받은 공개키를 이용해 데이터 암호화 후 전송 -> 서버는 전달받은 암호문을 세션에 저장된 개인키로 복호화
+    
+
+#### Controller에서 키(개인키, 공개키) 발급 및 저장
+
+> controller
+
+![key발급](https://github.com/SbinSho/spring_project/blob/master/img/key발급.png)
+    
+> createKey() ( 키 생성 메소드 )
+
+![createKey](https://github.com/SbinSho/spring_project/blob/master/img/createkey.png)
+
+java.security를 사용하여 RSA 암호화에 필요한 공개키와 개인키를 생성한다.
+
+
+> 키 저장
+
+![keySet](https://github.com/SbinSho/spring_project/blob/master/img/keySet.png)
+
+생성된 개인키는 세션에 저장하고, 공개키는 request 영역에 저장한다.
+
+---
+
+#### 클라이언트 데이터 암호화 및 전송
+
+> 클라이언트 데이터 전송 전 암호화
+
+![keySet](https://github.com/SbinSho/spring_project/blob/master/img/rsa.png)
+
+서버에서 전달받은 공개키를 사용하기 위해 input 태그의 hidden을 사용하여 view 페이지에 저장
+
+![rsa_en](https://github.com/SbinSho/spring_project/blob/master/img/rsa_en.png)
+
+전달받은 공개키를 사용하여 전송하고 싶은 데이터를 암호화 처리
+
+> 서버로 전송시 데이터 값
+
+![데이터암호화](https://github.com/SbinSho/spring_project/blob/master/img/데이터 암호화.png)
+
+암호화 처리가 완료된 데이터
+
+---
+
+#### 전달 받은 암호문을 복호화
+
+> 바이트 배열로 변환
+
+![hexToByteArray](https://github.com/SbinSho/spring_project/blob/master/img/hexToByteArray.png)
+
+복호화 처리를 위해 전달받은 암호문을 바이트 배열로 변환
+
+> 암호문 복호화
+
+![decryptRsa](https://github.com/SbinSho/spring_project/blob/master/img/decryptRsa.png)
+
+
+변환된 바이트 배열을 개인키를 사용하여 복호화 처리
+
+
+## 객체 유효성 검사
+
+* Validator 
+
+![Validator](https://github.com/SbinSho/spring_project/blob/master/img/validator.png)
+
+클라이언트에서 전달 된 데이터는 최초에 암호화 처리가 되있기 때문에 Bean Validator를 사용하기엔 어려움이 있어서, 복호화 처리 후 자체적으로 객체 유효성을 검증하는 코드를 작성 ( Validator 인터페이스의 구현체 )
+
+> [Validator 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/validator/MemberJoinDTOValidator.java)
+
+* Hibernate Bean Validator
+
+![Bean Validator](https://github.com/SbinSho/spring_project/blob/master/img/beanvalidator.png)
+
+민감하지 않는 정보들은 암호화 처리를 하지 않고 평문으로 보내기 떄문에 간단한 Bean Validtor을 이용
+
+> [Bean Validator 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/dto/BoardEditDTO.java)
+
+
 
 ## 마치며
 ### 프로젝트의 부족한점
