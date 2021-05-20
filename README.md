@@ -186,6 +186,8 @@ messageSource을 설정해 spring에서의 유효성 검사를 통한 에러 메
 
 ---
 
+#### AOP
+
 ![AOP](https://github.com/SbinSho/spring_project/blob/master/img/servlet(aop).png)
 
 * 핵심 기능 외의 공통 기능인, 요청 메소드 진입 확인 로그 출력을 AOP 처리
