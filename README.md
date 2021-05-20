@@ -192,6 +192,10 @@ messageSource을 설정해 spring에서의 유효성 검사를 통한 에러 메
 * 로그 내용은 현재 요청 받은 Controller 이름과 메소드를 console창에 출력
 * 프로젝트 성능 측정을 할만큼 큰 프로젝트는 아니지만 실습 목적의 프로젝트 이므로 성능측정을 AOP 처리
 
+> LogAspect 
+
+![LogAspect](https://github.com/SbinSho/spring_project/blob/master/img/LogAspect.png)
+
 [LogAspect 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/aop/LogAspect.java)
 
 ### RSA 암호화 알고리즘
