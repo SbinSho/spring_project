@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 
 @Aspect
 public class LogAspect {
@@ -17,11 +16,8 @@ public class LogAspect {
 	// 현재 요청 받은 컨틀롤러의 메소드명
 	private static String methdoName;
 
-	// 실제 Advice가 적용되는 Joinpoint를 나타낸다.
-	@Pointcut("execution(public * com.goCamping.controller..*(..))")
-	private void publicTarget() {}
 	// 대상 객체의 메서드 실행 전, 후 또는 익셉션 발생 시점에 공통 기능을 싱핼하는데 사용된다.
-	@Around("publicTarget()")
+	@Around("execution(public * com.goCamping.controller..*(..))")
 	public Object logger(ProceedingJoinPoint joinPoint) throws Throwable {
 		// 성능 측정을 위한 나노타임 반환
 		long start = System.nanoTime();

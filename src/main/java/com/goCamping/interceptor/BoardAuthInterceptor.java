@@ -13,7 +13,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.goCamping.util.AuthInfo;
 
-// 로그인이 되어있지 않으면 접근할수 없는 부분을 위한 인터셉터 
+// 게시판 쓰기, 수정, 삭제 시 접근 권한을 체크하는 Interceptor
 public class BoardAuthInterceptor extends HandlerInterceptorAdapter{
 	
 	private static final Logger logger = LogManager.getLogger(BoardAuthInterceptor.class);
@@ -26,7 +26,6 @@ public class BoardAuthInterceptor extends HandlerInterceptorAdapter{
 		
 		// 현재 세션을 가져옴
 		HttpSession session = request.getSession(false);
-		
 		
 		// PrintWriter 객체 생성 전 인코딩 설정
 		response.setContentType("text/html; charset=utf-8");
@@ -72,6 +71,5 @@ public class BoardAuthInterceptor extends HandlerInterceptorAdapter{
 		logger.info("BoardAuthInterceptor postHandle 진입");
 		
 	}
-	
 	
 }
