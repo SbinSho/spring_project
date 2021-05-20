@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.goCamping.util.AuthInfo;
@@ -21,7 +22,7 @@ public class MemberEditAuthInterceptor extends HandlerInterceptorAdapter{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
-		logger.info("AuthInterceptor preHandle 진입");
+		logger.info("MemberEditAuthInterceptor preHandle 진입");
 		
 		// 현재 세션을 가져옴
 		HttpSession session = request.getSession(false);
@@ -67,4 +68,12 @@ public class MemberEditAuthInterceptor extends HandlerInterceptorAdapter{
 		
 		return true;
 	}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
+		logger.info("MemberEditAuthInterceptor postHandle 진입");
+	}
+	
+	
 }

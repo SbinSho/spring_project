@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.goCamping.util.AuthInfo;
@@ -63,4 +64,14 @@ public class BoardAuthInterceptor extends HandlerInterceptorAdapter{
 		
 		return true;
 	}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
+		
+		logger.info("BoardAuthInterceptor postHandle 진입");
+		
+	}
+	
+	
 }

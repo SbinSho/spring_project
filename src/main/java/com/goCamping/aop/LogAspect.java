@@ -7,8 +7,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
-import com.goCamping.controller.BoardController;
-
 @Aspect
 public class LogAspect {
 	
@@ -25,7 +23,7 @@ public class LogAspect {
 	// 대상 객체의 메서드 실행 전, 후 또는 익셉션 발생 시점에 공통 기능을 싱핼하는데 사용된다.
 	@Around("publicTarget()")
 	public Object logger(ProceedingJoinPoint joinPoint) throws Throwable {
-		
+		// 성능 측정을 위한 나노타임 반환
 		long start = System.nanoTime();
 		
 		try {
@@ -50,10 +48,9 @@ public class LogAspect {
 			long finish = System.nanoTime();
 			
 			logger.info(controllerName + "의 " + methdoName + " 메소드 종료!");
-			logger.info("실행 시간 : %d ns\n", (finish - start));
-			logger.info("===============================================");
-
-			
+			logger.info("실행 시간 (nanoTime) : " + ((finish - start)));
+			logger.info("실행 시간 (초) : " + ((finish - start)/1000000000));
+			logger.info("===============================================\n\n");
 		}
 		
 		
