@@ -39,15 +39,28 @@ import com.goCamping.util.AuthInfo;
 public class BoardController {
 
 	private static final Logger logger = LogManager.getLogger(BoardController.class);
+	
+	/*
+	 	AOP 적용으로, 핵심 기능외의 공통적인 기능인 메소드 진입 로그 확인을 주석처리
+	 	
+		logger.info("/board/list GET 호출");
+		logger.info("/board/write GET 진입");
+		logger.info("/board/write POST 진입");
+		logger.info("/board/edit GET 진입");
+		logger.info("/edit POST 진입");
+		logger.info("/board/read GET 진입");
+		logger.info("/board/fileDownload GET 진입");
+		logger.info("/board/delete GET 진입");
+		
+	*/
 
 	@Autowired
 	private BoardService board_service;
 
 	// 전체 게시글 리스트 보기 페이지 이동
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String notice(Criteria cri, Model model) {
+	public String list(Criteria cri, Model model) {
 
-		logger.info("/list GET 호출");
 
 		// view 페이지에 전달 할 페이지 객체 ( 페이징 처리시 사용 )
 		PageMaker pageMaker = new PageMaker();
@@ -72,21 +85,15 @@ public class BoardController {
 	public String write(
 			BoardWriteDTO boardWriteDTO,
 			@RequestParam("page") int page,
-			HttpServletRequest request, Model model) {
+			HttpServletRequest request, Model model, RedirectAttributes rttr) {
 
-		logger.info("/write GET 진입");
 
-		// write 페이지 진입 전에는 인터셉터에서 세션이 존재하는지 유무를 판단함
-		// 현재 요청한 user_id와 세션에 저장된 user_id의 값이 일치한지 검증함
-		
-		if (boardWriteDTO.getWriter() == null) {
-			// 현재 세션 가져오기
-			HttpSession session = request.getSession();
-			// 세션에 저장된 정보 가져오기
-			AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
-			// 세션에 저장된 아이디를 이용해 작성자 셋팅
-			boardWriteDTO.setWriter(authInfo.getId());
-		}
+		// Interceptor에서 세션이 존재하는지 유무를 판단함		
+		HttpSession session = request.getSession();
+		// 세션에 저장된 정보 가져오기
+		AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
+		// 세션에 저장된 아이디를 이용해 작성자 셋팅
+		boardWriteDTO.setWriter(authInfo.getId());
 
 		model.addAttribute("boardWriteDTO", boardWriteDTO);
 		model.addAttribute("page", page);
@@ -100,10 +107,11 @@ public class BoardController {
 	public String write(@Valid BoardWriteDTO boardWriteDTO, Errors errors,
 			MultipartHttpServletRequest multipartHttpServletRequest, RedirectAttributes rttr) {
 
-		logger.info("/write POST 진입");
 
-		// POST 요청으로 들어온 user_id 와 session에 저장된
-		// user_id가 일치하는지 인터셉터에서 확인
+		// write 페이지 진입 전에는 Interceptor에서 세션이 존재하는지 유무를 판단함		
+		HttpSession session = multipartHttpServletRequest.getSession();
+		// 세션에 저장된 정보 가져오기
+		AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
 
 		// 객체 유효성 검증
 		if (errors.hasErrors()) {
@@ -111,6 +119,12 @@ public class BoardController {
 			logger.info("객체 유효성 검증 실패!");
 			return "/board/write";
 
+		}
+		
+		// 현재 세션에 저장된 유저 정보와 글쓰기 요청한 작성자 정보와 일치하는지 체크
+		if( !boardWriteDTO.getWriter().equals(authInfo.getId())) {
+			rttr.addFlashAttribute("result", "error");
+			return "redirect:/";
 		}
 
 		// 첨부파일이 갯수가 6개 초과해서 들어왔는지 아닌지 체크 ( 파일 유효성 검사 ) start
@@ -142,20 +156,22 @@ public class BoardController {
 	@RequestMapping(value = "/edit/{bno}", method = RequestMethod.GET)
 	public String edit(
 			@PathVariable("bno") int bno, 
-			@RequestParam("user_id") String user_id,
 			@RequestParam("page") int page,
+			HttpServletRequest request,
 			Model model, RedirectAttributes rttr)
 			throws Exception {
 
-		logger.info("/edit GET 진입");
 
 		// DB에 저장 된 현재 게시판의 정보 불러오기
 		BoardVO boardVO = board_service.board_read(bno);
+		
+		// Interceptor에서 세션이 존재하는지 유무를 판단함		
+		HttpSession session = request.getSession();
+		// 세션에 저장된 정보 가져오기
+		AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
 
-		// 게시판이 존재하지 않거나, 현재 요청한 아이디와 작성자의 아이디가 같은지 비교
-		// user_id를 클라이언트에서 조작을 해서 요청하더라도, 인터셉터가 가로채서 현재 요청된
-		// 아이디와 세션에 저장 된 아이디를 비교하기 때문에 세션의 user_id를 사용할 필요는 없다.
-		if (boardVO == null || !boardVO.getWriter().equals(user_id)) {
+		// 게시판이 존재하지 않거나, 현재 요청한 아이디와 세션에 저장 된 아이디가 같은지 비교
+		if (boardVO == null || !boardVO.getWriter().equals(authInfo.getId())) {
 			rttr.addFlashAttribute("result", "error");
 			return "redirect:/";
 		}
@@ -185,14 +201,13 @@ public class BoardController {
 
 	// 게시글 수정
 	@RequestMapping(value = "/edit/{bno}", method = RequestMethod.POST)
-	public String edit(@PathVariable("bno") int bno, 
-			@RequestParam("user_id") String user_id,
+	public String edit(
+			@PathVariable("bno") int bno, 
 			@RequestParam("page") int page,
 			@Valid BoardEditDTO boardEditDTO, BindingResult bindingResult,
 			@RequestParam("array_fileDel[]") String[] del_files,
 			MultipartHttpServletRequest multipartHttpServletRequest, RedirectAttributes rttr) {
 
-		logger.info("/edit POST 진입");
 
 		// POST 요청으로 들어온 user_id 와 session에 저장된
 		// user_id가 일치하는지 인터셉터에서 확인
@@ -202,8 +217,22 @@ public class BoardController {
 
 			logger.info("객체 유효성 검증 실패!");
 			rttr.addFlashAttribute("result", "error");
-			return "redirect:/board/edit/" + bno + "?user_id=" + user_id;
+			return "redirect:/board/edit/" + bno +"?page=" + page;
 
+		}
+		
+		// Interceptor에서 세션이 존재하는지 유무를 판단함		
+		HttpSession session = multipartHttpServletRequest.getSession();
+		// 세션에 저장된 정보 가져오기
+		AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
+		
+		// DB에 저장 된 현재 게시판의 정보 불러오기
+		BoardVO boardVO = board_service.board_read(bno);
+
+		// 게시판이 존재하지 않거나, 현재 요청한 아이디와 작성자의 아이디가 같은지, 현재 수정하고자 하는 DTO 객체의 게시판 번호(bno) 확인
+		if (boardVO == null || !boardVO.getWriter().equals(authInfo.getId()) || boardEditDTO.getBno() != bno) {
+			rttr.addFlashAttribute("result", "error");
+			return "redirect:/";
 		}
 
 		// 첨부파일이 갯수가 6개 초과해서 들어왔는지 아닌지 체크 ( 파일 유효성 검사 ) start
@@ -228,7 +257,7 @@ public class BoardController {
 		// 게시글 수정 처리
 		if (!board_service.board_edit(boardEditDTO, del_files, multipartHttpServletRequest)) {
 			logger.info("게시글 수정 실패!");
-			return "redirect:/board/edit/" + bno + "?user_id=" + boardEditDTO.getWriter();
+			return "redirect:/board/edit/" + bno + "?page=" + page;
 		}
 
 		return "redirect:/board/list?page=" + page;
@@ -241,7 +270,6 @@ public class BoardController {
 			int page,
 			Model model, RedirectAttributes rttr) throws Exception {
 
-		logger.info("/read GET 진입");
 
 		BoardVO boardVO = board_service.board_read(bno);
 
@@ -271,7 +299,6 @@ public class BoardController {
 	public void board_fileDownload(@PathVariable int file_no, HttpServletResponse response) throws Exception {
 		Map<String, Object> resultMap = board_service.board_fileInfo(file_no);
 
-		logger.info("/board/fileDownload GET 진입");
 
 		String storedFileName = (String) resultMap.get("STORED_FILE_NAME");
 		String originalFileName = (String) resultMap.get("ORG_FILE_NAME");
@@ -294,15 +321,19 @@ public class BoardController {
 	@RequestMapping(value = "/delete/{bno}", method = RequestMethod.GET)
 	public String delete(
 			@PathVariable("bno") int bno, 
-			@RequestParam("user_id") String user_id,
 			@RequestParam("page") int page,
+			HttpServletRequest request,
 			RedirectAttributes rttr) {
 
-		logger.info("/board/delete GET 진입");
 
 		BoardVO boardVO = board_service.board_read(bno);
+		
+		// Interceptor에서 세션이 존재하는지 유무를 판단함		
+		HttpSession session = request.getSession();
+		// 세션에 저장된 정보 가져오기
+		AuthInfo authInfo = (AuthInfo) session.getAttribute("loginUser");
 
-		if (boardVO == null || !boardVO.getWriter().equals(user_id)) {
+		if (boardVO == null || !boardVO.getWriter().equals(authInfo.getId())) {
 			rttr.addFlashAttribute("result", "error");
 			return "redirect:/";
 		}
@@ -310,7 +341,7 @@ public class BoardController {
 		HashMap<String, Object> del = new HashMap<String, Object>();
 		// 삭제할 게시판 번호와, 작성자 데이터 입력
 		del.put("bno", bno);
-		del.put("writer", user_id);
+		del.put("writer", authInfo.getId());
 
 		// 게시판 삭제 처리
 		if (!board_service.board_delete(del)) {

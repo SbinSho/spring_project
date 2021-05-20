@@ -24,9 +24,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		
-		System.out.println("CustomAuthenticationProvider 실행!" );
-		
-		
 		/* 사용자가 입력한 정보 */
 		String user_id = (String) authentication.getPrincipal();
 		String user_pwd = (String) authentication.getCredentials();
@@ -46,7 +43,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		if(!user.isEnabled()) {
 			throw new BadCredentialsException(user_id);
 		}
-		
 		// 객체를 계속 사용해야 하므로 패스워드 정보 삭제
 		user.setUser_pwd(null);
 		

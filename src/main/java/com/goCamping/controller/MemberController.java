@@ -32,6 +32,15 @@ public class MemberController {
 
 	private static final Logger logger = LogManager.getLogger(MemberController.class);
 
+	/*
+	 	AOP 적용으로, 핵심 기능외의 공통적인 기능인 메소드 진입 확인 로그를 주석처리
+	 	
+		logger.info("join GET 요청");
+		logger.info("join POST 요청");
+		logger.info("login GET 요청");
+	*/
+		
+		
 	@Autowired
 	private MemberService member_service;
 	
@@ -42,7 +51,6 @@ public class MemberController {
 	@RequestMapping( value="/join", method = RequestMethod.GET )
 	public String join(HttpServletRequest request, RedirectAttributes rttr) {
 		
-		logger.info("join GET 요청");
 		
 		// 개인키 공개키 생성
 		Map<String, Object> map = encrypt.createKey();
@@ -66,7 +74,6 @@ public class MemberController {
 			HttpServletRequest request, 
 			RedirectAttributes rttr) throws Exception{
 		
-		logger.info("join POST 요청");
 		
 		// 클라이언트에 반환할 데이터
 		Map<String, String> join_result = new HashMap<String, String>();
@@ -146,12 +153,9 @@ public class MemberController {
 	public String login(@CookieValue(value="loginCookie", required = false) Cookie cookie, 
 			HttpServletRequest request, RedirectAttributes rttr) throws Exception {
 		
-		logger.info("login GET 요청");
 		
 		// 개인키 공개키 생성
 		Map<String, Object> map = encrypt.createKey();
-		
-		
 		
 		// 생성된 개인키 및 공개키가 존재하지 않으면 null
 		if (map != null) {
@@ -180,91 +184,97 @@ public class MemberController {
 	}
 	
 	// 로그인 처리
-	// 스프링 시큐리티 작성을 위해 임시로 주석 처리, 2021.05.12
-//	@RequestMapping( value="/login", method = RequestMethod.POST )
-//	public void login(MemberLoginDTO memberLoginDTO, BindingResult bindingResult, HttpServletRequest request, Model model) throws Exception{
-//		
-//		logger.info("login POST 요청");
-//		
-//		// 현재 세션 가져오기 위한 객체 초기화
-//		HttpSession session = request.getSession(false);
-//		// 개인키 객체 초기화
-//		PrivateKey privateKey = session != null ? (PrivateKey) session.getAttribute("_RSA_WEB_KEY_") : null;
-//		
-//		// 개인키가 존재하는지 체크
-//		if(privateKey != null) {
-//			// memberLoginDTO 필드에 저장된 값들을 저장할 String 배열
-//			String[] memberLoginDTO_Encrypt_Array = { 
-//					memberLoginDTO.getUser_id(), memberLoginDTO.getUser_pwd(), memberLoginDTO.getUser_reId() };
-//			
-//			// 암호화된 객체를 복호화	( 복호화 성공시 true를 반환한다 )
-//			if(encrypt.decryptRsa(privateKey, memberLoginDTO_Encrypt_Array)) {
-//				
-//				// 복호화된 평문을 다시 객체에 입력
-//				memberLoginDTO.setUser_id(memberLoginDTO_Encrypt_Array[0]);
-//				memberLoginDTO.setUser_pwd(memberLoginDTO_Encrypt_Array[1]);
-//				memberLoginDTO.setUser_reId( memberLoginDTO_Encrypt_Array[2]);
-//				
-//				// 복호화된 객체 유효성 체크
-//				new MemberLoginValidator().validate(memberLoginDTO, bindingResult);
-//				
-//				// 유효성에 문제가 발생하면 새로운 요청을 통해 회원가입 페이지로 이동
-//				if(bindingResult.hasErrors()) {
-//					
-//					logger.info("MemberLoginDTO 객체 유효성 검사 실패");
-//					// 객체 유효성 검증 실패
-//					model.addAttribute("check", "fail");
-//					
-//				}
-//				
-//				// DB 아이디 조회 후 클라이언트 요청 아이디와 비밀번호가 일치 할 경우 true
-//				if(member_service.member_login(memberLoginDTO)) {
-//					return;
-//				}
-//				// DB 아이디 비밀번호 매칭 실패
-//				model.addAttribute("check", "fail");
-//				
-//			} 
-//			// 암호문 복호화 실패
-//			else {
-//				model.addAttribute("check", "fail");
-//			}
-//			
-//			return;
-//		}
-//		
-//		// 개인키가 존재하지 않을 경우
-//		model.addAttribute("private", "private_error");
-//		return;
-//	}
+	/*
+		스프링 시큐리티 사용으로 주석처리
+		
+	@RequestMapping( value="/login", method = RequestMethod.POST )
+	public void login(MemberLoginDTO memberLoginDTO, BindingResult bindingResult, HttpServletRequest request, Model model) throws Exception{
+		
+		logger.info("login POST 요청");
+		
+		// 현재 세션 가져오기 위한 객체 초기화
+		HttpSession session = request.getSession(false);
+		// 개인키 객체 초기화
+		PrivateKey privateKey = session != null ? (PrivateKey) session.getAttribute("_RSA_WEB_KEY_") : null;
+		
+		// 개인키가 존재하는지 체크
+		if(privateKey != null) {
+			// memberLoginDTO 필드에 저장된 값들을 저장할 String 배열
+			String[] memberLoginDTO_Encrypt_Array = { 
+					memberLoginDTO.getUser_id(), memberLoginDTO.getUser_pwd(), memberLoginDTO.getUser_reId() };
+			
+			// 암호화된 객체를 복호화	( 복호화 성공시 true를 반환한다 )
+			if(encrypt.decryptRsa(privateKey, memberLoginDTO_Encrypt_Array)) {
+				
+				// 복호화된 평문을 다시 객체에 입력
+				memberLoginDTO.setUser_id(memberLoginDTO_Encrypt_Array[0]);
+				memberLoginDTO.setUser_pwd(memberLoginDTO_Encrypt_Array[1]);
+				memberLoginDTO.setUser_reId( memberLoginDTO_Encrypt_Array[2]);
+				
+				// 복호화된 객체 유효성 체크
+				new MemberLoginValidator().validate(memberLoginDTO, bindingResult);
+				
+				// 유효성에 문제가 발생하면 새로운 요청을 통해 회원가입 페이지로 이동
+				if(bindingResult.hasErrors()) {
+					
+					logger.info("MemberLoginDTO 객체 유효성 검사 실패");
+					// 객체 유효성 검증 실패
+					model.addAttribute("check", "fail");
+					
+				}
+				
+				// DB 아이디 조회 후 클라이언트 요청 아이디와 비밀번호가 일치 할 경우 true
+				if(member_service.member_login(memberLoginDTO)) {
+					return;
+				}
+				// DB 아이디 비밀번호 매칭 실패
+				model.addAttribute("check", "fail");
+				
+			} 
+			// 암호문 복호화 실패
+			else {
+				model.addAttribute("check", "fail");
+			}
+			
+			return;
+		}
+		
+		// 개인키가 존재하지 않을 경우
+		model.addAttribute("private", "private_error");
+		return;
+	}*/
+	
+	//==============================================================================
 	
 	//로그아웃 처리
-	// 스프링 시큐리티 작성을 위해 임시로 주석 처리, 2021.05.12
-//	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-//	public void logout(HttpServletRequest request, HttpServletResponse response){
-//		
-//		logger.info("/logout 진입!");
-//		
-//		response.setContentType("text/html; charset=utf-8");
-//		
-//		HttpSession session = request.getSession(false);
-//		session.removeAttribute("loginUser");
-//		
-//		// contextPath 가져오기
-//		String ContextPath = request.getContextPath() != "" ? request.getContextPath() : "/";
-//		
-//		try {
-//			PrintWriter out = response.getWriter();
-//			out.println("<script>alert('로그아웃 성공!'); location.href='"+ ContextPath + "';</script>");
-//			out.flush();
-//			out.close();
-//			
-//		} catch (IOException e) {
-//			logger.info("/logout : PrintWriter 객체 초기화 실패");
-//			e.printStackTrace();
-//		}
-//		
-//	}
+	/*
+		스프링 시큐리티 사용으로 주석처리
+		
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public void logout(HttpServletRequest request, HttpServletResponse response){
+		
+		logger.info("/logout 진입!");
+		
+		response.setContentType("text/html; charset=utf-8");
+		
+		HttpSession session = request.getSession(false);
+		session.removeAttribute("loginUser");
+		
+		// contextPath 가져오기
+		String ContextPath = request.getContextPath() != "" ? request.getContextPath() : "/";
+		
+		try {
+			PrintWriter out = response.getWriter();
+			out.println("<script>alert('로그아웃 성공!'); location.href='"+ ContextPath + "';</script>");
+			out.flush();
+			out.close();
+			
+		} catch (IOException e) {
+			logger.info("/logout : PrintWriter 객체 초기화 실패");
+			e.printStackTrace();
+		}
+		
+	}*/
 	
 	
 }

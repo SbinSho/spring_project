@@ -67,7 +67,7 @@
 							href="<c:url value='/member/join'/>">회원가입</a></li>
 						<li class="nav-item">
 					</sec:authorize>
-					<sec:authorize access="isAuthenticated()">
+					<sec:authorize access="hasRole('ROLE_MEMBER')">
 						<li class="nav-item"></li>
 						<li class="nav-item">
 							<form action="/member/logout" id="logout_form" method="POST">

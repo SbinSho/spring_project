@@ -13,7 +13,7 @@
 	<!-- maven 설정파일에서 사용할 속성 정의 -->
 	<properties>
 		<java-version>1.8</java-version>
-		<org.springframework-version>4.2.9.RELEASE</org.springframework-version>
+		<org.springframework-version>4.3.22.RELEASE</org.springframework-version>
 		<spring.security.version>4.2.20.RELEASE</spring.security.version>
 		<log4j2.version>2.13.2</log4j2.version>
 	</properties>
@@ -219,9 +219,14 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-
-
-
+		
+		<!-- 스프링이 AOP를 구현할 때 사용하는 모듈 -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.13</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

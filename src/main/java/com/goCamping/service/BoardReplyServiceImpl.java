@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.goCamping.dao.BoardReplyDAO;
 import com.goCamping.domain.BoardReplyVO;
+import com.goCamping.dto.BoardReplyDeleteDTO;
 import com.goCamping.dto.BoardReplyEditDTO;
 import com.goCamping.dto.BoardReplyWriteDTO;
 
@@ -65,10 +66,10 @@ public class BoardReplyServiceImpl implements BoardReplyService {
 	}
 	// 댓글 삭제
 	@Override
-	public Boolean reply_delete(BoardReplyEditDTO boardReplyEditDTO) {
+	public Boolean reply_delete(BoardReplyDeleteDTO boardReplyDeleteDTO) {
 		
 		try {
-			return brDAO.reply_delete(boardReplyEditDTO);
+			return brDAO.reply_delete(boardReplyDeleteDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

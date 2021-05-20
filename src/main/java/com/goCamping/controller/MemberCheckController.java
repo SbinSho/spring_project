@@ -37,11 +37,20 @@ public class MemberCheckController {
 
 	private static final Logger logger = LogManager.getLogger(MemberCheckController.class);
 
+	/*
+	 	AOP 적용으로, 핵심 기능외의 공통적인 기능인 메소드 진입 확인 로그를 주석처리
+	 	
+		logger.info("/idCheck 요청");
+		logger.info("/nickCheck 요청");
+		logger.info("/mailCheck 요청");
+		
+	*/
+	
+	
 	// 아이디 중복 확인
 	@RequestMapping(value = "/idCheck", method = RequestMethod.POST)
 	public int id_Check(@ModelAttribute("value") String value, BindingResult bindingResult) throws Exception {
 
-		logger.info("/idCheck 요청");
 		
 		// 유효성 검증
 		new MemberIdCheckValidator().validate(value, bindingResult);
@@ -59,7 +68,6 @@ public class MemberCheckController {
 	@RequestMapping(value = "/nickCheck", method = RequestMethod.POST)
 	public int nick_Check(@ModelAttribute("value") String value, Errors errors) throws Exception {
 
-		logger.info("/nickCheck 요청");
 		
 		// 유효성 검증
 		new MemberNickCheckValidator().validate(value, errors);
@@ -79,7 +87,6 @@ public class MemberCheckController {
 			@ModelAttribute("user_mail") String user_mail, Errors errors, 
 			HttpServletRequest request) throws Exception {
 
-		logger.info("/mailCheck 요청");
 
 		Map<String, String> mail_result = new HashMap<String, String>();
 

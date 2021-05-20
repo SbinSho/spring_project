@@ -50,6 +50,7 @@ public class BoardServiceImpl implements BoardService {
 
 		return null;
 	}
+	
 	// 게시글 작성
 	@Transactional
 	@Override
@@ -60,22 +61,18 @@ public class BoardServiceImpl implements BoardService {
 			bDao.board_write(boardWriteDTO);
 			// 마지막으로 업데이트 된 게시판 번호 가져오기
 			int bno = bDao.board_getLastBno();
-		
 			// 첨부 파일이 존재하는지 확인하고, 존재하면 list로 반환
 			List<Map<String, Object>> list = fileUtils.parseInsertFileInfo(multipartHttpServletRequest);
-			
 			// 추가 된 파일이 존재하는 경우 파일 업로드 처리
 			for (Map<String, Object> map : list) {
 				map.put("bno", bno);
 				bDao.board_fileUpload(map);
 			}
-
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		
 	}
 	
 	// 게시글 수정

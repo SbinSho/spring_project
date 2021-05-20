@@ -18,6 +18,8 @@
 	<Loggers>
 
 		<Logger name="com.goCamping.controller" level="info" />
+		
+		<Logger name="com.goCamping.aop" level="info" />
 
 		<Logger name="com.goCamping.util" level="info" />
 

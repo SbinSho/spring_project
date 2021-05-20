@@ -3,14 +3,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
-       
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       	
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+       http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	   http://www.springframework.org/schema/aop
+	   http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
 	<!-- spring mvc 컴포넌트 활성화 RquestMapping 사용 -->
 	<mvc:annotation-driven />
@@ -25,8 +28,10 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-	<!-- 로그인 하지 않은 경우 또는 세션에 저장된 유저가 현재 요청받은 유저와 일치한지 체크하여 권한이 필요한 작업에 사용할 인터셉터 -->
-	<bean id="authInterceptor" class="com.goCamping.interceptor.AuthInterceptor" />
+	<!-- 게시판 관련 접근 권한 확인 -->
+	<bean id="boardAuthInterceptor" class="com.goCamping.interceptor.BoardAuthInterceptor" />
+	<!-- 멤버 수정 관련 접근 권한 확인 -->
+	<bean id="memberEditAuthInterceptor" class="com.goCamping.interceptor.MemberEditAuthInterceptor" />
 	
 	<mvc:interceptors>
 		<mvc:interceptor>
@@ -34,32 +39,29 @@
 			<mvc:mapping path="/board/write/**"/>
 			<mvc:mapping path="/board/edit/**"/>
 			<mvc:mapping path="/board/delete/**"/>
+			
 			<!-- 댓글 작성 접근 권한 확인 -->
 			<mvc:mapping path="/board/reply/write/**"/>
-			<ref bean="authInterceptor"/>
+			<mvc:mapping path="/board/reply/edit/**"/>
+			<mvc:mapping path="/board/reply/delte/**"/>
+			
+			<ref bean="boardAuthInterceptor"/>
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<!-- 멤버 수정 접근 권한 확인 -->
+			<mvc:mapping path="/member/edit/**"/>
+			<ref bean="memberEditAuthInterceptor"/>
+			
 		</mvc:interceptor>
 	</mvc:interceptors>
 	
 	<context:component-scan base-package="com.goCamping.controller" />
 	
-		<!-- 로그인시 사용되는 인터셉터 bean 등록 -->
-	<!-- spring security 도입으로 주석 처리 -->
-<!-- 	<bean id="loginInterceptor" class="com.goCamping.interceptor.LoginInterceptor" /> -->
+	<!-- @Aspect 클래스 빈 파일로 등록 -->
+	<bean id="logAspect" class="com.goCamping.aop.LogAspect" />
+	<!-- @Aspect 어노테이션을 통해 어드바이스가 동작 하도록 설정 -->
+	<aop:aspectj-autoproxy />
 	
-	<!-- 로그인 하지 않은 경우,  -->
-<!-- 	<bean id="notLoginInterceptor" class="com.goCamping.interceptor.NotLoginInterceptor" /> -->
-		<!-- spring 시큐리티 이용 로그인 처리 -->
-<!-- 		<mvc:interceptor> -->
-<!-- 			<mvc:mapping path="/member/login"/> -->
-<!-- 			<ref bean="loginInterceptor" /> -->
-<!-- 		</mvc:interceptor> -->
-<!-- 			<mvc:mapping path="/member/edit/**"/> -->
-<!-- 			<mvc:mapping path="/member/logout/**"/> -->
-<!-- 			<mvc:mapping path="/member/delete/**"/> -->
-		
-<!-- 		<mvc:interceptor> -->
-<!-- 			<mvc:mapping path="/member/check/**"/> -->
-<!-- 			<ref bean="notLoginInterceptor" /> -->
-<!-- 		</mvc:interceptor> -->
 </beans>
 

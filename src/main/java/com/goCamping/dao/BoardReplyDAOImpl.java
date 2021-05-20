@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.goCamping.domain.BoardReplyVO;
+import com.goCamping.dto.BoardReplyDeleteDTO;
 import com.goCamping.dto.BoardReplyEditDTO;
 import com.goCamping.dto.BoardReplyWriteDTO;
 
@@ -58,9 +59,9 @@ public class BoardReplyDAOImpl implements BoardReplyDAO {
 	
 	// 댓글 삭제
 	@Override
-	public Boolean reply_delete(BoardReplyEditDTO boardReplyEditDTO) throws Exception {
+	public Boolean reply_delete(BoardReplyDeleteDTO boardReplyDeleteDTO) throws Exception {
 		
-		if (session.insert(NAMESPAE + ".reply_delete", boardReplyEditDTO) == 1) {
+		if (session.insert(NAMESPAE + ".reply_delete", boardReplyDeleteDTO) == 1) {
 			return true;
 		}
 		

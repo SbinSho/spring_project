@@ -78,7 +78,7 @@
 	</div>
 	<div class="text-right mb-3">
 		<c:if test="${ loginUser.id eq boardVO.writer }">
-			<button type="button" class="btn btn-sm btn-primary" id="button_edit" onclick="location.href='/board/edit/${ boardVO.bno }?user_id=${ loginUser.id }&page=${ page }'">수정</button>
+			<button type="button" class="btn btn-sm btn-primary" id="button_edit" onclick="location.href='/board/edit/${ boardVO.bno }?page=${ page }'">수정</button>
 			<button type="button" class="btn btn-sm btn-primary" id="button_delete" onclick="delete_cehck()">삭제</button>
 		</c:if>
 		<button type="button" class="btn btn-sm btn-primary" id="list" onclick="location.href='<c:url value="/board/list?page=${page}"/>';">목록</button>
@@ -137,7 +137,7 @@
 	// 게시판 삭제
 	function delete_cehck() {
 		if(confirm("정말로 삭제 하시겠습니까?")){
-			location.href='/board/delete/${boardVO.bno}?user_id=${ loginUser.id }&page=' + ${page};
+			location.href='/board/delete/${boardVO.bno}?page=' + ${page};
 		} else {
 			return false;
 		}
@@ -271,7 +271,7 @@
 				error: function(error) {
 					alert("관리자에게 문의 바랍니다!");	
 				}
-			})
+			});
 		}
 		
 	}
@@ -339,10 +339,18 @@
 			alert("잘못된 접근 입니다.");
 		} 
 		else {
+			var form = {
+					"content" : replace_content,
+					"rno" : rno,
+					"writer" : writer
+			}
+			
 			$.ajax({
-				type: "POST",
+				type: "PUT",
 				url: contextPath + "board/reply/edit?user_id=${loginUser.id}",
-				data: { content : replace_content, rno : rno, writer : writer },
+				data: JSON.stringify(form),
+				dataType : "json",
+				contentType: "application/json; charset=UTF-8",
 				success: function(data){
 					result_check(data, text, replyPage);
 				},
@@ -359,10 +367,17 @@
 		var text = "삭제";
 		
 		if("${loginUser.id}" == writer){
+			var form = {
+					"writer" : writer,
+					"rno" : rno
+			}
+			
 			$.ajax({
-				url : contextPath + "board/reply/delete?user_id=${loginUser.id}",
-				type : "POST",
-				data : { writer : writer, rno : rno},
+				url : contextPath + "board/reply/delete",
+				type : "DELETE",
+				data : JSON.stringify(form),
+				dataType : "json",
+				contentType: "application/json; charset=UTF-8",
 				success: function(data){
 					result_check(data, text, replyPage);
 				},

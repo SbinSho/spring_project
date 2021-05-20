@@ -251,7 +251,7 @@ java.security를 사용하여 RSA 암호화에 필요한 공개키와 개인키�
 
 ![Validator](https://github.com/SbinSho/spring_project/blob/master/img/validator.png)
 
-클라이언트에서 전달 된 데이터는 최초에 암호화 처리가 되있기 때문에 Bean Validator를 사용하기엔 어려움이 있어서, 복호화 처리 후 자체적으로 객체 유효성을 검증하는 코드를 작성 ( Validator 인터페이스의 구현체 )
+클라이언트에서 전달 된 데이터는 최초에 암호화 처리가 되있기 때문에 Bean Validation를 사용하기엔 어려움이 있어서, 복호화 처리 후 자체적으로 객체 유효성을 검증하는 코드를 작성 ( Validator 인터페이스의 구현체 )
 
 > [Validator 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/validator/MemberJoinDTOValidator.java)
 
@@ -262,6 +262,9 @@ java.security를 사용하여 RSA 암호화에 필요한 공개키와 개인키�
 민감하지 않는 정보들은 암호화 처리를 하지 않고 평문으로 보내기 떄문에 간단한 Bean Validtor을 이용
 
 > [Bean Validator 코드 확인](https://github.com/SbinSho/spring_project/blob/master/src/main/java/com/goCamping/dto/BoardEditDTO.java)
+
+
+## 기능 시연
 
 
 

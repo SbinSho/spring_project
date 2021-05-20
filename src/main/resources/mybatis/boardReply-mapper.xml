@@ -28,7 +28,7 @@
 	
 	</insert>
 	<!-- 댓글 수정 -->
-	<insert id="reply_edit" parameterType="boardReplyWriteDTO">
+	<insert id="reply_edit" parameterType="com.goCamping.dto.BoardReplyEditDTO">
 		UPDATE BOARD_REPLY
 		SET
 			CONTENT = #{ content },
@@ -38,7 +38,7 @@
 	</insert>
 
 	<!-- 댓글 삭제 -->
-	<update id="reply_delete" parameterType="boardReplyWriteDTO">
+	<update id="reply_delete" parameterType="com.goCamping.dto.BoardReplyDeleteDTO">
 		UPDATE BOARD_REPLY
 		SET
 			DEL_CHK = 'y'

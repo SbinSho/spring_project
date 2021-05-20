@@ -45,24 +45,25 @@ public class FileUtils {
 			multipartFile = multipartHttpServletRequest.getFile(iterator.next());
 			
 			if(multipartFile.isEmpty() == false) {
-
+				// 원본 파일명
 				originalFileName = multipartFile.getOriginalFilename();
+				// 원본 파일 확장자명
 				originalFileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+				// 서버에 저장될 파일명
 				storedFileName = getRandomString() + originalFileExtension;
-				
+				// 파일 객체 생성
 				file = new File(filePath, storedFileName);
+				// 파일 저장
 				multipartFile.transferTo(file);
-				
+				// DB에 원본 파일명, DB 저장 파일명, 파일 크기 저장 하기위해 list 입력
 				listMap = new HashMap<String, Object>();
 				listMap.put("org_file_name", originalFileName);
 				listMap.put("stored_file_name", storedFileName);
 				listMap.put("file_size", multipartFile.getSize());
 				
 				list.add(listMap);
-				
 			}
 		}
-		
 		return list;
 	}
 	

@@ -21,9 +21,7 @@ public class MemberJoinDTOValidator extends MemberValidator {
 	// 첫 번째 파라미터로 전달받은 객체를 검증하고 오류 결과를 Errors에 담는 기능을 한다.
 	@Override
 	public void validate(Object target, Errors errors) {
-		
 		MemberJoinDTO memberJoinDTO = ( MemberJoinDTO ) target;
-		
 		// 전달받은 target 객체의 데이터 담기 위해 사용
 		Map<String, String> memberJoinDTO_Map = new HashMap<String, String>();
 		// 정규식 검사를 위해, 정규식 표현을 담기 위해 사용
@@ -46,7 +44,6 @@ public class MemberJoinDTOValidator extends MemberValidator {
 		// map에 담긴 데이터 현재 전달 받은 객체 필드를 key로 필드에 저장된 데이터를 value 값으로 가지고 있다.
 		// key ( 객체 필드명 ) : value ( 필드에 담긴 데이터 )
 		for(String key : memberJoinDTO_Map.keySet()) {
-			
 			// 현재 필드 null 값 또는 공백의 값인지 체크
 			if(memberJoinDTO_Map.get(key) == null || memberJoinDTO_Map.get(key).trim().isEmpty()) {
 				// null 또는 공백일 경우 에러코드 저장
@@ -60,8 +57,6 @@ public class MemberJoinDTOValidator extends MemberValidator {
 				}
 			}
 		}
-		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "auth_code", "NotBlank");
 	}
-		
 }

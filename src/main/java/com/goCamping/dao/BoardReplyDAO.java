@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.goCamping.domain.BoardReplyVO;
+import com.goCamping.dto.BoardReplyDeleteDTO;
 import com.goCamping.dto.BoardReplyEditDTO;
 import com.goCamping.dto.BoardReplyWriteDTO;
 
@@ -18,6 +19,6 @@ public interface BoardReplyDAO {
 	// 댓글 수정
 	public Boolean reply_edit(BoardReplyEditDTO boardReplyEditDTO) throws Exception;
 	// 댓글 삭제
-	public Boolean reply_delete(BoardReplyEditDTO boardReplyEditDTO) throws Exception;
+	public Boolean reply_delete(BoardReplyDeleteDTO boardReplyDeleteDTO) throws Exception;
 
 }

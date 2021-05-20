@@ -101,7 +101,7 @@
 		</c:choose>
 		</div>
 	  	<button class="btn btn-lg btn-primary btn-block" type="button" onclick="form_check();">로그인</button>
-	  	<p class="mt-5 mb-3 text-muted">Â© 2017-2020</p>
+	  	<p class="mt-5 mb-3 text-muted">Â© 2020-2021</p>
 	</form>
 	
 	<form id="LoginForm" action="/member/login" method="post">

@@ -32,7 +32,7 @@
 
 <div class="container">
 	<h2>게시판 글쓰기</h2>
-	<form:form commandName="boardWriteDTO" id="frm" enctype="multipart/form-data" action="/board/write?${_csrf.parameterName}=${_csrf.token}&user_id=${ loginUser.id }&page=${ page }">
+	<form:form commandName="boardWriteDTO" id="frm" enctype="multipart/form-data" action="/board/write?${_csrf.parameterName}=${_csrf.token}&page=${ page }">
 		<div class="mb-3">
 			<label for="title">제목</label> 
 			<form:input path="title" class="form-control" value="${ title }" placeholder="제목을 입력해 주세요" />

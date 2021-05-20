@@ -35,6 +35,19 @@ import com.goCamping.validator.MemberDeleteDTOValidator;
 public class MemberEditController {
 
 	private static final Logger logger = LogManager.getLogger(MemberEditController.class);
+	
+	/*
+	 	AOP 적용으로, 핵심 기능외의 공통적인 기능인 메소드 진입 확인 로그를 주석처리
+	 	
+		logger.info("/member/edit/info GET 진입");
+		logger.info("/member/edit/chid GET 진입");
+		logger.info("/member/edit/chid POST 진입");
+		logger.info("/member/edit/chpass GET 진입");
+		logger.info("/member/edit/chpass POST 진입");
+		logger.info("/chpass GET 진입");
+		logger.info("/chpass POST 진입");
+	
+	*/
 
 	@Autowired
 	private MemberService member_service;
@@ -46,7 +59,6 @@ public class MemberEditController {
 	@RequestMapping( value = "/info", method = RequestMethod.GET)
 	public String edit(String user_id, Model model) {
 		
-		logger.info("/edit GET 진입");
 		
 		model.addAttribute("memberVO", member_service.member_select(user_id));
 		
@@ -57,7 +69,6 @@ public class MemberEditController {
 	@RequestMapping( value = "/chid", method = RequestMethod.GET)
 	public String chid(String user_id, Model model, HttpServletRequest request, RedirectAttributes rttr) {
 		
-		logger.info("/chid GET 진입");
 		
 		if(encrypt.createKey() != null) {
 			// 개인키 공개키 생성
@@ -76,7 +87,6 @@ public class MemberEditController {
 	public Map<String, String> chid(
 			@RequestBody MemberChIdDTO memberChIdDTO, Errors errors, HttpServletRequest request ) throws Exception {
 		
-		logger.info("/chid POST 진입");
 
 		// 클라이언트에 요청에 대한 처리를 위한 Map
 		Map<String, String> chid_result = new HashMap<String, String>();
@@ -136,7 +146,6 @@ public class MemberEditController {
 	@RequestMapping(value = "/chpass", method = RequestMethod.GET)
 	public String chpass(String user_id, HttpServletRequest request, Model model) {
 		
-		logger.info("/chpass GET 진입");
 		
 		if(encrypt.createKey() != null) {
 			// 개인키 공개키 생성
@@ -152,10 +161,10 @@ public class MemberEditController {
 	// 비밀번호 수정
 	@RequestMapping(value = "/chpass", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, String> chpass(@RequestBody MemberChPassDTO memberChPassDTO, Errors errors
-			, HttpServletRequest request, Model model) throws Exception {
+	public Map<String, String> chpass(
+			@RequestBody MemberChPassDTO memberChPassDTO, Errors errors,
+			HttpServletRequest request, Model model) throws Exception {
 		
-		logger.info("/chpass POST 진입");
 		// 클라이언트에 요청에 대한 처리를 위한 Map
 		Map<String, String> chpass_result = new HashMap<String, String>();
 		
@@ -218,7 +227,6 @@ public class MemberEditController {
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
 	public String delete(String user_id, HttpServletRequest request, Model model) throws Exception {
 		
-		logger.info("/chpass GET 진입");
 		
 		if(encrypt.createKey() != null) {
 			// 개인키 공개키 생성
@@ -238,7 +246,6 @@ public class MemberEditController {
 			@RequestBody MemberDeleteDTO memberDeleteDTO, Errors errors
 			, HttpServletRequest request, Model model) throws Exception {
 		
-		logger.info("/chpass POST 진입");
 		// 클라이언트에 요청에 대한 처리를 위한 Map
 		Map<String, String> chpass_result = new HashMap<String, String>();
 		// 암호문 복호화를 위해 string 배열 선언

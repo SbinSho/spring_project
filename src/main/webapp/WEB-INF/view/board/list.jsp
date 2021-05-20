@@ -76,7 +76,7 @@
 		</c:when>
 		<c:otherwise>
 			<div class="container text-right">
-				<button type="button" class="btn btn-primary" onclick="location.href='<c:url value="/board/write?user_id=${ loginUser.id }&page=${page}"/>';">글쓰기</button>
+				<button type="button" class="btn btn-primary" onclick="location.href='<c:url value="/board/write?page=${page}"/>';">글쓰기</button>
 			</div>
 		</c:otherwise>
 	</c:choose>

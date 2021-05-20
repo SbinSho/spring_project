@@ -38,7 +38,7 @@
 
 <div class="container">
 	<h2>게시판 수정</h2>
-	<form:form commandName="boardEditDTO" id="frm" enctype="multipart/form-data" action="/board/write?${_csrf.parameterName}=${_csrf.token}&user_id=${ loginUser.id }&page=${ page }">
+	<form:form commandName="boardEditDTO" id="frm" enctype="multipart/form-data" action="/board/edit/${boardEditDTO.bno}?${_csrf.parameterName}=${_csrf.token}&page=${ page }">
 		<input type="hidden" id="array_fileDel" name="array_fileDel[]" />
 		<div class="mb-3">
 			<label for="title">제목</label>
