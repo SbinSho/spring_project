@@ -17,13 +17,17 @@ public class LogAspect {
 	private static String methdoName;
 
 	// 대상 객체의 메서드 실행 전, 후 또는 익셉션 발생 시점에 공통 기능을 싱핼하는데 사용된다.
-	@Around("execution(public * com.goCamping.controller..*(..))")
+	// public에 모든 리턴타입, controller 패키지 및 하위 패키지에 있는, 인자값이 0개이상인 메서드 호출시 적용
+	@Around("execution(public * com.goCamping.controller..*(..))") 
 	public Object logger(ProceedingJoinPoint joinPoint) throws Throwable {
 		// 성능 측정을 위한 나노타임 반환
 		long start = System.nanoTime();
 		
 		try {
-			// 메소드의 클래스명을 가져오기
+			
+			// getSignature() : 호출되는 되는 메소드에 대한 정보를 구함
+			
+			// 현재 요청 받은 메소드의 클래스명을 가져오기
 			String temp = joinPoint.getSignature().getDeclaringTypeName();
 			
 			// 현재 요청 받은 컨트롤러 이름
