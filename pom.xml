@@ -43,6 +43,14 @@
 			<artifactId>standard</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+		
+		<!-- 2021.09.14 수정 ( 이유 : mavan 빌드 오류 ) -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <version>3.0.1</version>
+		    <scope>provided</scope>
+		</dependency>
 
 		<!-- spring mvc 테스트를 위한 의존설정 -->
 		<dependency>
@@ -244,9 +252,10 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-
+			<plugin>
+	          <artifactId>maven-war-plugin</artifactId>
+	          <version>3.2.2</version>
+	        </plugin>
 		</plugins>
-
-
 	</build>
 </project>

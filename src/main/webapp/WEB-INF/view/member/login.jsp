@@ -31,10 +31,10 @@
 	<meta name="theme-color" content="#563d7c">
 
 	<!-- RSA 자바스크립트 라이브러리 -->
-	<script type="text/javascript" src="/js/rsa/jsbn.js"></script>
-	<script type="text/javascript" src="/js/rsa/rsa.js"></script>
-	<script type="text/javascript" src="/js/rsa/prng4.js"></script>
-	<script type="text/javascript" src="/js/rsa/rng.js"></script>
+	<script type="text/javascript" src="<c:url value='/js/rsa/jsbn.js'/>"></script>
+	<script type="text/javascript" src="<c:url value='/js/rsa/rsa.js'/>"></script>
+	<script type="text/javascript" src="<c:url value='/js/rsa/prng4.js'/>"></script>
+	<script type="text/javascript" src="<c:url value='/js/rsa/rng.js'/>"></script>
 	
     <style>
       .bd-placeholder-img {
