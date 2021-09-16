@@ -238,7 +238,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>spring_project</finalName>
+		<finalName>goCamping</finalName>
 
 		<!-- maven 설정 start -->
 		<plugins>
